@@ -184,6 +184,8 @@
             userRole = 'Supervisor';
         } else if (user === 'Technician' && pass === 'instrument13') {
             userRole = 'Technician';
+        } else if (user === 'Instrument' && pass === 'inst') {
+            userRole = 'Technician';
         } else {
             error.style.display = 'block';
             return;
