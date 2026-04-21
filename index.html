@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Instrument Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5c00ff; /* สีม่วงแบบในรูป */
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            /* สร้าง Gradient อ่อนๆ พื้นหลังเหมือนในรูป */
+            background-image: radial-gradient(at 0% 0%, rgba(92, 0, 255, 0.05) 0px, transparent 50%), 
+                              radial-gradient(at 100% 100%, rgba(92, 0, 255, 0.05) 0px, transparent 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #a855f7, var(--primary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-icon svg { fill: white; width: 25px; }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-color);
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            margin-bottom: 8px;
+            font-size: 20px;
+            color: var(--text-color);
+        }
+
+        p.subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(92, 0, 255, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #4a00cc;
+            transform: translateY(-1px);
+        }
+
+        button:active { transform: translateY(0); }
+
+        .error-msg {
+            background-color: #fee2e2;
+            color: #ef4444;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="logo-area">
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm6 16H6v-9l6-4.5 6 4.5v9zM8 15h8v2H8v-2z"/></svg>
+        </div>
+        <div class="brand-name">Instrument DataBase</div>
+    </div>
+
+    <h2>เข้าสู่ระบบ</h2>
+    <p class="subtitle">กรุณากรอกข้อมูลเพื่อเข้าใช้งานระบบ</p>
+
+    <div id="error" class="error-msg">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label>ชื่อผู้ใช้</label>
+            <input type="text" id="username" placeholder="admin" required>
+        </div>
+        <div class="form-group">
+            <label>รหัสผ่าน</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit">Sign In</button>
+        
+        <!-- <a href="registor.html" class="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/25">
+        <!-- <i class="fa-solid fa-plus"></i> -->
+        <!-- <span class="hidden sm:inline">Register</span> -->
+        <!-- </a> --> 
+    </form>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const error = document.getElementById('error');
+
+        // ตรวจสอบและกำหนดสิทธิ์
+        let userRole = '';
+        if (user === 'Engineer' && pass === 'instrument13') {
+            userRole = 'Engineer';
+        } else if (user === 'Supervisor' && pass === 'instrument13') {
+            userRole = 'Supervisor';
+        } else if (user === 'Technician' && pass === 'instrument13') {
+            userRole = 'Technician';
+        } else {
+            error.style.display = 'block';
+            return;
+        }
+
+        // เก็บข้อมูลผู้ใช้และสิทธิ์ใน localStorage
+        localStorage.setItem('currentUser', user);
+        localStorage.setItem('userRole', userRole);
+        
+        window.location.href = 'main.html';
+    });
+</script>
+
+</body>
+</html>

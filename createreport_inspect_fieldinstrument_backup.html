@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เพิ่มข้อมูล Field Instrument — Technical Data Management</title>
+ 
+  <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+ 
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+  <!-- html2pdf.js for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+ 
+<style>
+  /* A4 Print Styles */
+  @media print {
+    body {
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .container {
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 10mm !important;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+
+    /* Print Border Frame - A4 format for printing only */
+    .a4-container {
+      border: 3px solid #2563eb !important;
+      border-radius: 8px !important;
+      padding: 12mm !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      width: 210mm !important;
+      min-height: 297mm !important;
+      background: white !important;
+    }
+
+    /* Print header styling */
+    .print-header-border {
+      border: 2px solid #2563eb !important;
+      border-radius: 6px !important;
+      background: linear-gradient(to right, #6366f1, #14b8a6) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Ensure gradient colors print correctly */
+    .print-header-border * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Force white text in print */
+    .print-header-border h1,
+    .print-header-border label,
+    .print-header-border .text-white {
+      color: white !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Ensure input field backgrounds are preserved */
+    .print-header-border input {
+      background: rgba(255, 255, 255, 0.9) !important;
+      color: #1f2937 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Print table border */
+    .print-table-border {
+      border: 1px solid #2563eb !important;
+    }
+
+    /* Print table cell borders */
+    .print-table-border th,
+    .print-table-border td {
+      border: 1px solid #cbd5e1 !important;
+    }
+
+    /* Print section borders */
+    .print-section-border {
+      border: 1px solid #3b82f6 !important;
+      border-radius: 4px !important;
+    }
+
+    /* Print table header styling */
+    .print-table-header {
+      background: linear-gradient(to right, #6366f1, #14b8a6) !important;
+      color: white !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .print-table-header th {
+      color: white !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      border: 1px solid #ffffff40 !important;
+    }
+  }
+
+  /* Screen table styling for better UX */
+  @media screen {
+    .table-bordered {
+      border: 4px solid #0ea5e9;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(14, 165, 233, 0.15), 0 0 0 1px rgba(14, 165, 233, 0.1);
+      outline: 2px solid #e0f2fe;
+      outline-offset: 2px;
+    }
+
+    .table-bordered th {
+      border-right: 2px solid rgba(255, 255, 255, 0.6);
+      border-bottom: 3px solid rgba(255, 255, 255, 0.6);
+      padding: 12px 8px;
+    }
+
+    .table-bordered th:last-child {
+      border-right: none;
+    }
+
+    .table-bordered td {
+      border-right: 2px solid #cbd5e1;
+      border-bottom: 2px solid #cbd5e1;
+      padding: 8px;
+      vertical-align: middle;
+    }
+
+    .table-bordered td:last-child {
+      border-right: none;
+    }
+
+    .table-bordered tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-bordered tbody tr:hover {
+      background-color: #f1f5f9;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Enhanced General Remarks Section */
+    .remarks-section {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1px solid #0ea5e9;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .remarks-section:hover {
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .remarks-section .remarks-header {
+      color: #0369a1;
+      font-weight: 600;
+    }
+
+    .remarks-section .remarks-textarea {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #7dd3fc;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .remarks-section .remarks-textarea:focus {
+      background: #ffffff;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+      outline: none;
+    }
+  }
+
+  /* A4 Screen Preview - REMOVED for normal webpage view */
+  @media screen {
+    body {
+      background-color: #f3f4f6;
+    }
+
+    .a4-container {
+      width: 100%;
+      max-width: 1200px;
+      min-height: auto;
+      margin: 20px auto;
+      background: rgb(255, 255, 255);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 8px;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <form action="/electrical/air" method="POST" enctype="multipart/form-data">
+    @csrf
+
+    <!-- Image Upload Errors -->
+    <!-- @if ($errors->any())
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded shadow-md" role="alert"> 
+      <div class="font-bold">Image upload failed:</div>
+      <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+    </div>
+    @endif -->
+
+    <div class="a4-container bg-green-200">
+      <!-- Header Section -->
+      <div class="bg-gradient-to-r from-indigo-500 to-teal-400 rounded-lg mb-6 print-header-border">
+        <div class="p-6">
+          <!-- Title -->
+          <div class="flex items-center justify-center mb-6 gap-4">
+
+            <!-- Instrument Inspection Report -->
+            <h1 class="text-2xl md:text-3xl font-bold text-center text-white flex-1">
+              Instrument Inspection Report
+            </h1>
+            <!-- Balance space for centered alignment -->
+            <div class="flex-shrink-0 w-16 md:w-20"></div>
+          </div>
+
+          <!-- Field Instrument Selector from Database -->
+          <div class="mb-6 bg-white/10 border border-white/25 rounded-xl p-4">
+            <label class="block text-sm font-semibold text-white mb-2">Choose Field Instrument from database</label>
+            <select id="field-instrument-select" name="field_instrument_record"
+              class="select select-bordered select-sm w-full text-slate-800 bg-white">
+              <option value="">-- เลือก Field Instrument จากฐานข้อมูล --</option>
+            </select>
+            <input type="hidden" id="field_instrument_id" name="field_instrument_id" />
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-slate-800">
+              <div class="bg-white/90 rounded-lg p-3">
+                <label class="block text-xs font-medium mb-1 text-slate-700">Tag Number</label>
+                <input type="text" id="selected-material-code" readonly
+                  class="input input-sm w-full bg-white text-slate-800 border-0" />
+              </div>
+              <div class="bg-white/90 rounded-lg p-3">
+                <label class="block text-xs font-medium mb-1 text-slate-700">Description</label>
+                <input type="text" id="selected-description" readonly
+                  class="input input-sm w-full bg-white text-slate-800 border-0" />
+              </div>
+              <div class="bg-white/90 rounded-lg p-3">
+                <label class="block text-xs font-medium mb-1 text-slate-700">Plant / Area</label>
+                <input type="text" id="selected-keeping-area" readonly
+                  class="input input-sm w-full bg-white text-slate-800 border-0" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Machine Information Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-white">
+            <!-- Row 1 -->
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Machine Name:</label>
+              <input type="text" name="machine_name" placeholder="Enter machine name"
+                class="input input-sm w-full bg-white/90 text-gray-800 border-0" />
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Equipment No:</label>
+              <input type="text" name="equipment_number" placeholder="Enter equipment number"
+                class="input input-sm w-full bg-white/90 text-gray-800 border-0" />
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Model:</label>
+              <input type="text" name="model" placeholder="Enter model"
+                class="input input-sm w-full bg-white/90 text-gray-800 border-0" />
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Serial No:</label>
+              <input type="text" name="serial_number" placeholder="Enter serial number"
+                class="input input-sm w-full bg-white/90 text-gray-800 border-0" />
+            </div>
+
+            <!-- Row 2 -->
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Plant:</label>
+              <input type="text" name="plant_name" placeholder="Enter plant name"
+                class="input input-sm w-full bg-white/90 text-gray-800 border-0" />
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Work Order:</label>
+              <input type="text" name="work_order_number" placeholder="Enter work order number"
+                class="input input-sm w-full bg-white/90 text-gray-800 border-0" />
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Inspection Date:</label>
+              <input type="date" name="inspection_date" class="input input-sm w-full bg-white/90 text-gray-800 border-0" />
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-3">
+              <label class="block text-sm font-medium mb-1">Report ID:</label>
+              <input type="text" name="report_id" placeholder="Enter report ID"
+                class="input input-sm w-full bg-white/90 text-gray-800 border-0" id="report-id" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Machine Inspection Checklist Table -->
+      <div class="mb-6">
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full table-compact print-table-border table-bordered">
+            <!-- Table Header -->
+            <thead>
+              <tr class="bg-gradient-to-r from-indigo-500 to-teal-400 text-white print-table-header">
+                <th class="text-center w-12 text-sm font-semibold">No.</th>
+                <th class="text-left w-20 text-sm font-semibold">Description</th>
+                <th class="text-left w-45 text-sm font-semibold">Criteria</th>
+                <th class="text-center w-24 text-sm font-semibold">(Normal | Abnormal | Not Applicable)</th>
+                <th class="text-left text-sm font-semibold">Comments</th>
+              </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody>
+              <!-- Row 1 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">1</td>
+                <td class="font-medium">Water proof</td>
+                <td class="text-sm">ตรวจสอบการมีน้ำขังในอุปกรณ์ หรือพบการชำรุดของซีลหรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number1_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number1_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number1_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number1_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 2 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">2</td>
+                <td class="font-medium">Body/Case</td>
+                <td class="text-sm">ตรวจสภาพความพร้อมใช้งานทั่วไป เช่น การผุกร่อน การเป็นสนิม เป็นต้น, ตรวจสอบว่ามีการรั่วตาม Body</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number2_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number2_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number2_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number2_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 3 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">3</td>
+                <td class="font-medium">Bolt/Nut</td>
+                <td class="text-sm">ตรวจเช็ค Nut & Bolt ใส่ครบหรือไม่ ตรวจการผุกร่อน การเป็นสนิม และมีสภาพสมบูรณ์พร้อมใช้งานหรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number3_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number3_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number3_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number3_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 4 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">4</td>
+                <td class="font-medium">Label</td>
+                <td class="text-sm">ตรวจสอบ Name plate, Tag number  ว่าผุ กร่อน สูญหายหรือไม่, ตรวจสอบความถูกต้องของตัวอุปกรณ์ว่าตรงกับ Tag number หรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number4_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number4_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number4_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number4_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 5 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">5</td>
+                <td class="font-medium">Terminal</td>
+                <td class="text-sm">ตรวจเช็ค Terminal ความแน่นของการขันสกรูที่จุดต่อ หากมีความเสี่ยงต่อการทำให้อุปกรณ์ fail ให้รอทำในช่วงหยุดการใช้งาน</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number5_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number5_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number5_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number5_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 6 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">6</td>
+                <td class="font-medium">Cable gland</td>
+                <td class="text-sm">ตรวจเช็ค Cable gland อยู่ในสภาพพร้อมใช้งานหรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number6_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number6_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number6_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number6_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 7 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">7</td>
+                <td class="font-medium">Conduit/Support</td>
+                <td class="text-sm">ตรวจเช็คสภาพ Conduit / Flexible conduit และ clamp ที่ lock ว่ามีสนิม ผุกร่อน ชิ้นส่วนครบปกติ</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number7_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number7_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number7_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number7_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 8 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">8</td>
+                <td class="font-medium">Leaked</td>
+                <td class="text-sm">ตรวจเช็คการรั่วซึมที่ตัวอุปกรณ์ ว่ามีการรั่วซึมออกมาภายนอกหรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number8_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number8_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number8_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number8_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 9 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">9</td>
+                <td class="font-medium">Vibration</td>
+                <td class="text-sm">ตรวจสอบการสั่นสะเทือนที่อาจส่งผลให้เกิดความเสียหายต่ออุปกรณ์หรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number9_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number9_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number9_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number9_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 10 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">10</td>
+                <td class="font-medium">Oil seal</td>
+                <td class="text-sm">ตรวจสอบปริมาณกลีเซอรีน หรือ ปริมาณน้ำมันว่ามีการรั่วซึมออกมาหรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number10_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number1_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number10_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number9_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 11 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">11</td>
+                <td class="font-medium">Indicator or pointer</td>
+                <td class="text-sm">ตรวจเช็คหน้าจอ Indicator ชัดเจน อ่านค่าได้ปกติหรือไม่, ตรวจเช็คว่าเข็มหัก งอ ลบเลือน สกปรกหรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number11_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number11_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number11_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number11_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 12 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">12</td>
+                <td class="font-medium">Insulation of steam tracing</td>
+                <td class="text-sm">ตรวจเช็คฉนวนความร้อนที่หุ้ม ว่าเปื่อย ยุ่ย ขาด ว่ามีสนิม ผุกร่อน หรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number12_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number12_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number12_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number12_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 13 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">13</td>
+                <td class="font-medium">Impulse line</td>
+                <td class="text-sm">ตรวจเช็ค สภาพของ Tube และ Tube fitting, ตรวจเช็ค การรั่วซึมของ Fitting, Connector ทุกจุด</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number13_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number13_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number13_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number13_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 14 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">14</td>
+                <td class="font-medium">Capillary tube</td>
+                <td class="text-sm">ตรวจเช็ค การแตก, หัก, งอ หรือหลุดจาก Clamp ที่ยึดไว้หรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number14_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number14_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number14_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number14_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 15 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">15</td>
+                <td class="font-medium">Position</td>
+                <td class="text-sm">ตรวจสอบตำแหน่งการติดตั้งของอุปกรณ์ ว่าอยู่ในตำแหน่งที่ถูกต้องหรือไม่</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number15_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number15_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number15_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number15_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+
+              <!-- Row 16 -->
+              <tr class="text-sm">
+                <td class="text-center font-semibold">16</td>
+                <td class="font-medium">Testing</td>
+                <td class="text-sm">ตรวจสอบการทำงานของอุปกรณ์ (Verify, Function test) (กรณีที่สามารถทำได้)</td>
+                <td class="text-center">
+                  <div class="flex justify-center gap-3">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-green-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number16_is_passed1" value="1" class="radio radio-success radio-sm" />
+                      <span class="text-sm text-success font-medium">Yes</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number16_is_passed1" value="0" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">No</span>
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer hover:bg-red-200 p-2 rounded-lg transition-colors">
+                      <input type="radio" name="item_number16_is_passed1" value="2" class="radio radio-error radio-sm" />
+                      <span class="text-sm text-error font-medium">N/A</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <textarea name="item_number16_comments" class="textarea textarea-bordered textarea-xs w-full resize-none" placeholder="Comments..."
+                    rows="1"></textarea>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Photo Documentation Section -->
+
+        <!-- Final Approval Section -->
+        <div class="mt-4 p-4 bg-accent/10 border border-accent/20 rounded-lg print-section-border">
+          <h3 class="text-lg font-bold mb-4 text-accent-content flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Final Approval & Authorization
+          </h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Inspection By -->
+            <div class="form-control">
+              <label class="label py-1">
+                <span class="label-text font-semibold text-primary text-sm">Inspection By</span>
+              </label>
+              <div class="space-y-2">
+                <input type="text" name="inspected_by" placeholder="Full Name" class="input input-sm input-bordered w-full" />
+                <input type="text" name="inspected_position" placeholder="Position/Title" class="input input-sm input-bordered w-full" />
+                <input type="date" name="approved_inspected_date" class="input input-sm input-bordered w-full" />
+
+              </div>
+            </div>
+
+            <!-- Approved By -->
+            <div class="form-control">
+              <label class="label py-1">
+                <span class="label-text font-semibold text-success text-sm">Approved By</span>
+              </label>
+              <div class="space-y-2">
+                <input type="text" name="approved_by" placeholder="Full Name" class="input input-sm input-bordered w-full" />
+                <input type="text" name="approved_by_position" placeholder="Position/Title" class="input input-sm input-bordered w-full" />
+                <input type="date" name="approved_by_date" class="input input-sm input-bordered w-full" />
+
+              </div>
+            </div>
+
+            <!-- Contractor Approved By -->
+            <!-- <div class="form-control"> 
+              <label class="label py-1">
+                <span class="label-text font-semibold text-warning text-sm">Contractor Approved By</span>
+              </label>
+              <div class="space-y-2">
+                <input type="text" name="contractor_approved_by" placeholder="Full Name" class="input input-sm input-bordered w-full" />
+                <input type="text" name="contractor_approved_company" placeholder="Company Name" class="input input-sm input-bordered w-full" />
+                <input type="date" name="contractor_approved_by_date" class="input input-sm input-bordered w-full" />
+
+              </div>
+            </div> -->
+          </div>
+
+          <!-- Additional Authorization Fields -->
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <!-- <div class="form-control">
+              <label class="label py-1">
+                <span class="label-text font-medium text-sm">Equipment/System ID</span>
+              </label>
+              <input type="text" name="equipment_system_id" placeholder="AC Unit ID or System Reference"
+                class="input input-sm input-bordered w-full" />
+            </div> -->
+            <div class="form-control">
+              <label class="label py-1">
+                <span class="label-text font-medium text-sm">Next Inspection Due</span>
+              </label>
+              <input type="date" name="next_inspection_date" class="input input-sm input-bordered w-full" />
+            </div>
+          </div>
+
+          <!-- Enhanced Status Indicator -->
+          <div class="mt-6 p-4 bg-gradient-to-r from-slate-50 to-blue-50 border-2 border-blue-200 rounded-xl shadow-lg">
+            <!-- Header Section -->
+            <div class="flex items-center gap-3 mb-4">
+              <div class="p-2 bg-blue-100 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h4 class="text-lg font-bold text-blue-800">Overall Inspection Status</h4>
+            </div>
+
+            <!-- Status Options and Report Date Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <!-- PASS Option -->
+              <label
+                class="flex items-center gap-3 p-3 bg-white border-2 border-transparent rounded-lg cursor-pointer transition-all duration-200 hover:border-green-300 hover:bg-green-50 has-[:checked]:border-green-500 has-[:checked]:bg-green-100 has-[:checked]:shadow-md">
+                <input type="radio" name="overall_status" value="pass" class="radio radio-success" />
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span class="text-green-700 font-semibold text-sm">PASS</span>
+                </div>
+                <div class="ml-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </label>
+
+              <!-- CONDITIONAL Option -->
+              <label
+                class="flex items-center gap-3 p-3 bg-white border-2 border-transparent rounded-lg cursor-pointer transition-all duration-200 hover:border-yellow-300 hover:bg-yellow-50 has-[:checked]:border-yellow-500 has-[:checked]:bg-yellow-100 has-[:checked]:shadow-md">
+                <input type="radio" name="overall_status" value="conditional" class="radio radio-warning" />
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <span class="text-yellow-700 font-semibold text-sm">CONDITIONAL</span>
+                </div>
+                <div class="ml-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-600" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.732 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+              </label>
+
+              <!-- FAIL Option -->
+              <label
+                class="flex items-center gap-3 p-3 bg-white border-2 border-transparent rounded-lg cursor-pointer transition-all duration-200 hover:border-red-300 hover:bg-red-50 has-[:checked]:border-red-500 has-[:checked]:bg-red-100 has-[:checked]:shadow-md">
+                <input type="radio" name="overall_status" value="fail" class="radio radio-error" />
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <span class="text-red-700 font-semibold text-sm">FAIL</span>
+                </div>
+                <div class="ml-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+              </label>
+
+              <!-- Report Date Card -->
+              <div class="bg-blue-500 text-white p-3 rounded-lg shadow-lg">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div class="text-sm">
+                    <div class="font-medium">Report Generated</div>
+                    <div class="text-blue-100" id="report-date"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enhanced Action Buttons -->
+        <div
+          class="mt-6 p-6 bg-gradient-to-r from-blue-300 to-blue-50 border border-gray-200 rounded-xl shadow-md no-print">
+          <div class="text-center mb-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Save Report
+            </h3>
+            <p class="text-sm text-gray-600">Complete your inspection report with the actions below</p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-4xl mx-auto">
+            <!-- Submit Inspection Button -->
+            <button type="submit"
+              class="btn btn-success btn-lg w-full sm:w-auto flex-1 sm:flex-none min-w-[200px] h-16 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              <div class="flex flex-col items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div class="text-center">
+                  <div class="font-bold text-sm">Submit Inspection</div>
+                  <div class="text-xs opacity-80">Complete Report</div>
+                </div>
+              </div>
+            </button>
+
+            <!-- Export to PDF Button -->
+            <button type="button" onclick="exportToPDF()"
+              class="btn btn-primary btn-lg w-full sm:w-auto flex-1 sm:flex-none min-w-[200px] h-16 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              <div class="flex flex-col items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <div class="text-center">
+                  <div class="font-bold text-sm">Export to PDF</div>
+                  <div class="text-xs opacity-80">Download Report</div>
+                </div>
+              </div>
+            </button>
+          </div>
+
+
+        </div>
+      </div>
+  </form>
+
+  <script>
+    // Helper functions to preserve form state across print operations
+
+    // Auto-populate current date and generate report ID
+    document.addEventListener('DOMContentLoaded', function() {
+      const reportDate = document.getElementById('report-date')
+      const fieldInstrumentSelect = document.getElementById('field-instrument-select')
+      const materialCodeInput = document.getElementById('selected-material-code')
+      const descriptionInput = document.getElementById('selected-description')
+      const keepingAreaInput = document.getElementById('selected-keeping-area')
+      const fieldInstrumentIdInput = document.getElementById('field_instrument_id')
+
+      const FIELD_INSTRUMENT_API = 'https://script.google.com/macros/s/AKfycbwSIYw2GZ-oYXuawLw-gjrB0CfIXSQwZQt-Ufkp1YeM0Iuzi-nooSYk4e_EoKsVkhw/exec'
+
+      if (reportDate) {
+        const today = new Date()
+        reportDate.textContent = today.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      }
+
+      if (fieldInstrumentSelect) {
+        loadFieldInstrumentDatabase()
+      }
+
+      async function loadFieldInstrumentDatabase() {
+        try {
+          const response = await fetch(FIELD_INSTRUMENT_API + '?action=read&t=' + Date.now(), {
+            method: 'GET',
+            redirect: 'follow'
+          })
+          const result = await response.json()
+
+          if (!result.success || !Array.isArray(result.data)) {
+            throw new Error(result.message || 'ไม่สามารถโหลดข้อมูล Field Instrument ได้')
+          }
+
+          fieldInstrumentSelect.innerHTML = '<option value="">-- เลือก Field Instrument จากฐานข้อมูล --</option>'
+          result.data.forEach(item => {
+            const option = document.createElement('option')
+            option.value = item.ID || ''
+            option.dataset.material = item.MaterialCode || ''
+            option.dataset.description = item.Description || ''
+            option.dataset.area = item.KeepingArea || ''
+            option.textContent = `${item.MaterialCode || 'ไม่มีรหัส'} | ${item.Description || 'ไม่มีคำอธิบาย'}`
+            fieldInstrumentSelect.appendChild(option)
+          })
+
+          fieldInstrumentSelect.addEventListener('change', handleFieldInstrumentSelect)
+        } catch (error) {
+          console.error('Field instrument load error:', error)
+        }
+      }
+
+      function handleFieldInstrumentSelect() {
+        const selected = fieldInstrumentSelect.options[fieldInstrumentSelect.selectedIndex]
+        const material = selected?.dataset?.material || ''
+        const description = selected?.dataset?.description || ''
+        const area = selected?.dataset?.area || ''
+
+        if (materialCodeInput) materialCodeInput.value = material
+        if (descriptionInput) descriptionInput.value = description
+        if (keepingAreaInput) keepingAreaInput.value = area
+        if (fieldInstrumentIdInput) fieldInstrumentIdInput.value = selected?.value || ''
+      }
+
+      // Image preview functionality
+      function setupImagePreview() {
+        const fileInputs = document.querySelectorAll('input[type="file"][accept="image/*"]')
+
+        fileInputs.forEach((input, index) => {
+          input.addEventListener('change', function(e) {
+            const file = e.target.files[0]
+            const previewDiv = input.parentElement.querySelector('.border-dashed')
+
+            if (file && file.type.startsWith('image/')) {
+              const reader = new FileReader()
+
+              reader.onload = function(e) {
+                previewDiv.innerHTML = `
+                    <div class="relative">
+                      <img src="${e.target.result}" alt="Preview" 
+                           class="max-w-full max-h-[120px] object-contain rounded-lg shadow-sm">
+                      <div class="absolute top-1 right-1">
+                        <button type="button" onclick="clearImagePreview(this)" 
+                                class="btn btn-circle btn-xs btn-error text-white hover:btn-error">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="mt-1 text-xs text-blue-600 font-medium">${file.name}</div>
+                      <div class="text-xs text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                  `
+              }
+
+              reader.readAsDataURL(file)
+            } else if (file) {
+              // Handle non-image files
+              previewDiv.innerHTML = `
+                  <div class="text-red-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.732 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <span class="text-xs">Please select an image file</span>
+                  </div>
+                `
+            } else {
+              // Reset to original state
+              resetPreviewDiv(previewDiv)
+            }
+          })
+        })
+      }
+
+      // Clear image preview function
+      window.clearImagePreview = function(button) {
+        const previewDiv = button.closest('.border-dashed')
+        const fileInput = button.closest('.form-control').querySelector('input[type="file"]')
+
+        // Clear the file input
+        fileInput.value = ''
+
+        // Reset preview div
+        resetPreviewDiv(previewDiv)
+      }
+
+      // Reset preview div to original state
+      function resetPreviewDiv(previewDiv) {
+        previewDiv.innerHTML = `
+            <div class="text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span class="text-xs">Preview will appear here</span>
+            </div>
+          `
+      }
+
+      // Initialize image preview functionality
+      setupImagePreview()
+
+      // PDF Export Function
+      window.exportToPDF = function() {
+        try {
+          const element = document.querySelector('.a4-container');
+          if (!element) {
+            alert('ไม่พบเนื้อหาที่ต้องการ export กรุณาลองใหม่อีกครั้ง');
+            return;
+          }
+
+          console.log('Starting PDF export...');
+
+          // Override problematic CSS for PDF generation
+          const overrideStyle = document.createElement('style');
+          overrideStyle.id = 'pdf-override-style';
+          overrideStyle.textContent = `
+            * {
+              background: white !important;
+              background-color: white !important;
+            }
+            .bg-gradient-to-r {
+              background: linear-gradient(to right, #6366f1, #14b8a6) !important;
+            }
+            .glass-card {
+              background: rgba(255, 255, 255, 0.95) !important;
+              backdrop-filter: none !important;
+            }
+            .bg-white\/20 {
+              background-color: rgba(255, 255, 255, 0.8) !important;
+            }
+            .bg-white\/10 {
+              background-color: rgba(255, 255, 255, 0.9) !important;
+            }
+            .bg-white\/90 {
+              background-color: rgba(255, 255, 255, 0.95) !important;
+            }
+            .bg-accent\/10 {
+              background-color: rgba(249, 250, 251, 0.9) !important;
+            }
+            .bg-gradient-to-r {
+              background: linear-gradient(to right, #6366f1, #14b8a6) !important;
+            }
+            .bg-blue-300 {
+              background-color: #93c5fd !important;
+            }
+            .bg-slate-50 {
+              background-color: #f8fafc !important;
+            }
+            .bg-blue-500 {
+              background-color: #3b82f6 !important;
+            }
+          `;
+          document.head.appendChild(overrideStyle);
+
+          // Clone the element and remove problematic styles
+          const clonedElement = element.cloneNode(true);
+          const allElements = clonedElement.querySelectorAll('*');
+          allElements.forEach(el => {
+            const computedStyle = window.getComputedStyle(el);
+            // Remove oklch and other unsupported color functions
+            if (computedStyle.backgroundColor && computedStyle.backgroundColor.includes('oklch')) {
+              el.style.backgroundColor = 'white';
+            }
+            if (computedStyle.color && computedStyle.color.includes('oklch')) {
+              el.style.color = 'black';
+            }
+            if (computedStyle.borderColor && computedStyle.borderColor.includes('oklch')) {
+              el.style.borderColor = 'black';
+            }
+            // Remove backdrop-filter and other problematic properties
+            el.style.backdropFilter = 'none';
+            el.style.webkitBackdropFilter = 'none';
+            // Remove box-shadow that might use oklch
+            if (computedStyle.boxShadow && computedStyle.boxShadow.includes('oklch')) {
+              el.style.boxShadow = 'none';
+            }
+          });
+
+          // Show loading
+          const exportBtn = document.querySelector('button[onclick="exportToPDF()"]');
+          const originalText = exportBtn.innerHTML;
+          exportBtn.innerHTML = `
+            <div class="flex flex-col items-center gap-1">
+              <div class="loading loading-spinner loading-sm"></div>
+              <div class="text-center">
+                <div class="font-bold text-sm">กำลังสร้าง PDF...</div>
+                <div class="text-xs opacity-80">กรุณารอสักครู่</div>
+              </div>
+            </div>
+          `;
+          exportBtn.disabled = true;
+
+          const opt = {
+            margin: [0.5, 0.5, 0.5, 0.5], // top, right, bottom, left
+            filename: 'instrument-inspection-report.pdf',
+            image: { type: 'jpeg', quality: 0.95 },
+            html2canvas: {
+              scale: 1.5,
+              useCORS: true,
+              allowTaint: true,
+              backgroundColor: '#ffffff',
+              removeContainer: true,
+              foreignObjectRendering: false,
+              logging: false
+            },
+            jsPDF: {
+              unit: 'in',
+              format: 'a4',
+              orientation: 'portrait',
+              compress: true
+            }
+          };
+
+          html2pdf()
+            .set(opt)
+            .from(clonedElement)
+            .save()
+            .then(() => {
+              console.log('PDF export completed successfully');
+              alert('PDF ถูกสร้างและดาวน์โหลดเรียบร้อยแล้ว!');
+              // Reset button
+              exportBtn.innerHTML = originalText;
+              exportBtn.disabled = false;
+              // Remove override style
+              if (document.getElementById('pdf-override-style')) {
+                document.head.removeChild(overrideStyle);
+              }
+            })
+            .catch((error) => {
+              console.error('PDF export failed:', error);
+              alert('เกิดข้อผิดพลาดในการสร้าง PDF: ' + error.message);
+              // Reset button
+              exportBtn.innerHTML = originalText;
+              exportBtn.disabled = false;
+              // Remove override style
+              if (document.getElementById('pdf-override-style')) {
+                document.head.removeChild(overrideStyle);
+              }
+            });
+
+        } catch (error) {
+          console.error('PDF export error:', error);
+          alert('เกิดข้อผิดพลาด: ' + error.message);
+          // Remove override style if exists
+          const overrideStyle = document.getElementById('pdf-override-style');
+          if (overrideStyle) {
+            document.head.removeChild(overrideStyle);
+          }
+        }
+      }
+
+    });
+  </script>
+
+</body>
+
+
+
+@endsection

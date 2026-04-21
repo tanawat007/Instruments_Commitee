@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เพิ่มข้อมูล Pump REDV — Instrument Refinery</title>
+ 
+  <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+ 
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+  <style>
+    body {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 40%, #93c5fd 100%);
+      min-height: 100vh;
+    }
+
+    .form-card {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .field-icon {
+      @apply text-primary text-lg;
+    }
+
+    /* Blue theme override */
+    :root {
+      --primary: #3b82f6;
+      --secondary: #60a5fa;
+    }
+
+    .bg-primary { background-color: #3b82f6 !important; }
+    .text-primary { color: #3b82f6 !important; }
+    .input-primary { 
+      border-color: #3b82f6 !important; 
+      color: #3b82f6 !important;
+    }
+    .input-primary:focus { 
+      border-color: #3b82f6 !important; 
+      outline-color: #3b82f6 !important;
+    }
+    .input-bordered:focus { 
+      border-color: #3b82f6 !important; 
+    }
+  </style>
+</head>
+ 
+<body class="p-4 md:p-8">
+ 
+  <div class="max-w-4xl mx-auto mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary/10 p-3 rounded-2xl">
+          <i class="fa-solid fa-cogs text-3xl text-primary"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+            ระบบบันทึก Pump REDV
+          </h1>
+          <p class="text-sm text-slate-500 mt-0.5">Technical Data Management System</p>
+        </div>
+      </div>
+      <a href="101_pumpredv.html"
+        class="btn btn-primary gap-2 text-white hover:text-white hover:bg-green-500 hover:border-green-500 transition-all">
+        <i class="fa-solid fa-house"></i>
+        <span class="hidden sm:inline">Return to Home</span>
+      </a>
+    </div>
+  </div>
+ 
+  <div class="max-w-4xl mx-auto form-card rounded-3xl shadow-xl border border-white/60 overflow-hidden">
+ 
+    <div class="bg-gradient-to-r from-green-400 to-blue-500 px-6 py-4 flex items-center gap-3">
+      <i class="fa-solid fa-circle-plus text-white text-xl"></i>
+      <h2 class="text-lg md:text-xl font-bold text-white">เพิ่ม / แก้ไขข้อมูล Pump REDV</h2>
+    </div>
+ 
+    <form id="data-form" class="p-6 md:p-8 space-y-6">
+      <input type="hidden" id="record-id">
+ 
+      <!-- Basic Information -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Basic Information</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="material_code">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-barcode field-icon"></i> Tag Number
+            </span>
+          </label>
+          <input type="text" id="material_code" name="material_code" required placeholder="เช่น ADU1-PUMP001"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="plant">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-warehouse field-icon"></i> Plant / Unit Area
+            </span>
+          </label>
+          <input type="text" id="plant" name="plant" required placeholder="เช่น ADU1"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Pump Details -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Pump Details</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="pumpmanufacturer">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-industry field-icon"></i> Pump Manufacturer
+            </span>
+          </label>
+          <input type="text" id="pumpmanufacturer" name="pumpmanufacturer" required placeholder="เช่น Sulzer, KSB"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="pumpsize">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-ruler field-icon"></i> Pump Size
+            </span>
+          </label>
+          <input type="text" id="pumpsize" name="pumpsize" placeholder="เช่น 3x2x10"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="pumptype">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Pump Type
+            </span>
+          </label>
+          <input type="text" id="pumptype" name="pumptype" placeholder="เช่น Centrifugal, Positive Displacement"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="pumpmodel">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tag field-icon"></i> Pump Model
+            </span>
+          </label>
+          <input type="text" id="pumpmodel" name="pumpmodel" placeholder="เช่น CPX-50"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="pumplubricant">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-oil-can field-icon"></i> Pump Lubricant
+            </span>
+          </label>
+          <input type="text" id="pumplubricant" name="pumplubricant" placeholder="เช่น Oil, Grease"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="pumpquantity">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-hashtag field-icon"></i> Pump Quantity
+            </span>
+          </label>
+          <input type="number" id="pumpquantity" name="pumpquantity" placeholder="เช่น 1"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="drawingnumber">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-contract field-icon"></i> Drawing Number
+            </span>
+          </label>
+          <input type="text" id="drawingnumber" name="drawingnumber" placeholder="เช่น DWG-12345"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="serialnumber">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-hashtag field-icon"></i> Serial Number
+            </span>
+          </label>
+          <input type="text" id="serialnumber" name="serialnumber" placeholder="เช่น SN-67890"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="material">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-atom field-icon"></i> Material
+            </span>
+          </label>
+          <input type="text" id="material" name="material" placeholder="เช่น SS316, Cast Iron"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="eqclass">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-layer-group field-icon"></i> Equipment Class
+            </span>
+          </label>
+          <input type="text" id="eqclass" name="eqclass" placeholder="เช่น Class I, Division 1"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+
+      <!-- Fluid Properties -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Fluid Properties</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="fluidservice">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-water field-icon"></i> Fluid Service
+            </span>
+          </label>
+          <input type="text" id="fluidservice" name="fluidservice" placeholder="เช่น Water, Oil, Chemical"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="fluidpressure">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-gauge field-icon"></i> Fluid Pressure
+            </span>
+          </label>
+          <input type="text" id="fluidpressure" name="fluidpressure" placeholder="เช่น 10 bar"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="fluidtemperature">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-thermometer-half field-icon"></i> Fluid Temperature
+            </span>
+          </label>
+          <input type="text" id="fluidtemperature" name="fluidtemperature" placeholder="เช่น 80°C"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="fluidspecificgravity">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-balance-scale field-icon"></i> Fluid Specific Gravity
+            </span>
+          </label>
+          <input type="number" step="0.01" id="fluidspecificgravity" name="fluidspecificgravity" placeholder="เช่น 1.0"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="fluidvaporpressure">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cloud field-icon"></i> Fluid Vapor Pressure
+            </span>
+          </label>
+          <input type="text" id="fluidvaporpressure" name="fluidvaporpressure" placeholder="เช่น 2.3 bar"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="fluidviscosity">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tint field-icon"></i> Fluid Viscosity
+            </span>
+          </label>
+          <input type="text" id="fluidviscosity" name="fluidviscosity" placeholder="เช่น 1 cP"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Mechanical Seal -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Mechanical Seal</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="mechsealmanufacturer">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-industry field-icon"></i> Mech Seal Manufacturer
+            </span>
+          </label>
+          <input type="text" id="mechsealmanufacturer" name="mechsealmanufacturer" placeholder="เช่น John Crane"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="mechsealsize">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-ruler field-icon"></i> Mech Seal Size
+            </span>
+          </label>
+          <input type="text" id="mechsealsize" name="mechsealsize" placeholder="เช่น 50mm"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="mechsealtype">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Mech Seal Type
+            </span>
+          </label>
+          <input type="text" id="mechsealtype" name="mechsealtype" placeholder="เช่น Single, Double"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="mechsealapicode">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-code field-icon"></i> Mech Seal API Code
+            </span>
+          </label>
+          <input type="text" id="mechsealapicode" name="mechsealapicode" placeholder="เช่น API 682"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="mechsealbarrierfluid">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tint field-icon"></i> Mech Seal Barrier Fluid
+            </span>
+          </label>
+          <input type="text" id="mechsealbarrierfluid" name="mechsealbarrierfluid" placeholder="เช่น Water, Oil"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="mechsealpressure">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-gauge field-icon"></i> Mech Seal Pressure
+            </span>
+          </label>
+          <input type="text" id="mechsealpressure" name="mechsealpressure" placeholder="เช่น 5 bar"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Other Specifications -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Other Specifications</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="apiplan">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-code field-icon"></i> API Plan
+            </span>
+          </label>
+          <input type="text" id="apiplan" name="apiplan" placeholder="เช่น Plan 52"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="temperaturecooler">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-thermometer-half field-icon"></i> Temperature Cooler
+            </span>
+          </label>
+          <input type="text" id="temperaturecooler" name="temperaturecooler" placeholder="เช่น Yes/No"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="temperatureplantoperate">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-thermometer-half field-icon"></i> Temperature Operate
+            </span>
+          </label>
+          <input type="text" id="temperatureplantoperate" name="temperatureplantoperate" placeholder="เช่น 60°C"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="pumpbearingde">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Pump Bearing DE
+            </span>
+          </label>
+          <input type="text" id="pumpbearingde" name="pumpbearingde" placeholder="เช่น SKF 6205"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="pumpbearingnde">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Pump Bearing NDE
+            </span>
+          </label>
+          <input type="text" id="pumpbearingnde" name="pumpbearingnde" placeholder="เช่น SKF 6206"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="coupling">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-link field-icon"></i> Coupling
+            </span>
+          </label>
+          <input type="text" id="coupling" name="coupling" placeholder="เช่น Flexible"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="motorbearingde">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Motor Bearing DE
+            </span>
+          </label>
+          <input type="text" id="motorbearingde" name="motorbearingde" placeholder="เช่น NSK 6203"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="motorbearingnde">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Motor Bearing NDE
+            </span>
+          </label>
+          <input type="text" id="motorbearingnde" name="motorbearingnde" placeholder="เช่น NSK 6204"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="rpm">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tachometer-alt field-icon"></i> RPM
+            </span>
+          </label>
+          <input type="number" id="rpm" name="rpm" placeholder="เช่น 1450"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="gearbox">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Gearbox
+            </span>
+          </label>
+          <input type="text" id="gearbox" name="gearbox" placeholder="เช่น Yes/No"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- <div class="divider before:bg-primary/20 after:bg-primary/20"></div> -->
+
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <button type="submit" id="submit-btn"
+          class="bg-gradient-to-r from-green-400 to-blue-500 btn btn-wide gap-2 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-white text-xl">
+          <i class="fa-solid fa-floppy-disk text-white text-xl"></i>
+          บันทึกข้อมูล
+        </button>
+        <button type="button" id="cancel-btn" class="btn btn-ghost gap-2 hidden">
+          <i class="fa-solid fa-xmark"></i>
+          ยกเลิกการแก้ไข
+        </button>
+        <button type="reset"
+          class="bg-gradient-to-r from-red-400 to-yellow-500 btn btn-wide gap-2 shadow-lg shadow-primary/30 sm:ml-auto text-white text-xl">
+          <i class="fa-solid fa-rotate-left text-white text-xl"></i>
+          ล้างฟอร์ม
+        </button>
+      </div>
+    </form>
+  </div>
+ 
+  <div class="max-w-4xl mx-auto mt-6 text-center">
+    <p class="text-xs text-slate-400">
+      <i class="fa-solid fa-lock text-[10px]"></i>
+      ข้อมูลถูกจัดเก็บอย่างปลอดภัยผ่าน Google Sheets
+    </p>
+  </div>
+ 
+  <script src="scriptpumpredv.js"></script>
+</body>
+ 
+</html>

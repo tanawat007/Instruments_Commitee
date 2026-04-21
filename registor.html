@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Instrument Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5c00ff;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-radius: 12px;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(at 0% 0%, rgba(92, 0, 255, 0.05) 0px, transparent 50%), 
+                              radial-gradient(at 100% 100%, rgba(92, 0, 255, 0.05) 0px, transparent 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .register-card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #a855f7, var(--primary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .logo-icon svg { fill: white; width: 22px; }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        h2 { margin-bottom: 8px; font-size: 20px; color: var(--text-color); }
+        p.subtitle { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(92, 0, 255, 0.1);
+        }
+
+        .hint { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        button:hover { background-color: #4a00cc; }
+
+        .message {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error { background-color: #fee2e2; color: var(--error-color); border: 1px solid #fecaca; }
+        .success { background-color: #d1fae5; color: var(--success-color); border: 1px solid #a7f3d0; }
+
+        .login-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+    <div class="logo-area">
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm6 16H6v-9l6-4.5 6 4.5v9zM8 15h8v2H8v-2z"/></svg>
+        </div>
+        <div class="brand-name">Instrument DB</div>
+    </div>
+
+    <h2>สร้างบัญชีใหม่</h2>
+    <p class="subtitle">สมัครสมาชิกเพื่อเข้าจัดการฐานข้อมูล</p>
+
+    <div id="msgBox" class="message"></div>
+
+    <form id="registerForm">
+        <div class="form-group">
+            <label>ชื่อผู้ใช้ (Username)</label>
+            <input type="text" id="regUser" placeholder="อย่างน้อย 6 ตัวอักษร" required>
+            <div class="hint">ต้องมีความยาวอย่างน้อย 6 ตัวอักษร</div>
+        </div>
+        
+        <div class="form-group">
+            <label>รหัสผ่าน (Password)</label>
+            <input type="password" id="regPass" placeholder="อย่างน้อย 6 ตัวอักษร" required>
+            <div class="hint">ต้องมีความยาวอย่างน้อย 6 ตัวอักษร</div>
+        </div>
+
+        <div class="form-group">
+            <label>ยืนยันรหัสผ่าน</label>
+            <input type="password" id="confirmPass" placeholder="กรอกรหัสผ่านอีกครั้ง" required>
+        </div>
+
+        <button type="submit">ลงทะเบียน</button>
+    </form>
+
+    <div class="login-link">
+        มีบัญชีอยู่แล้ว? <a href="index.html">เข้าสู่ระบบ</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const user = document.getElementById('regUser').value;
+        const pass = document.getElementById('regPass').value;
+        const confirm = document.getElementById('confirmPass').value;
+        const msgBox = document.getElementById('msgBox');
+
+        // ล้างสถานะข้อความเดิม
+        msgBox.style.display = 'none';
+        msgBox.className = 'message';
+
+        // 1. ตรวจสอบความยาว Username
+        if (user.length < 6) {
+            showMessage('ชื่อผู้ใช้ต้องมีอย่างน้อย 6 ตัวอักษร', 'error');
+            return;
+        }
+
+        // 2. ตรวจสอบความยาว Password
+        if (pass.length < 6) {
+            showMessage('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร', 'error');
+            return;
+        }
+
+        // 3. ตรวจสอบการยืนยันรหัสผ่าน
+        if (pass !== confirm) {
+            showMessage('รหัสผ่านไม่ตรงกัน!', 'error');
+            return;
+        }
+
+        // หากผ่านทุกเงื่อนไข
+        showMessage('ลงทะเบียนสำเร็จ! กำลังพาท่านไปหน้าเข้าสู่ระบบ...', 'success');
+        
+        // จำลองการบันทึกข้อมูลและย้ายหน้าหลังจาก 2 วินาที
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 2000);
+    });
+
+    function showMessage(text, type) {
+        const msgBox = document.getElementById('msgBox');
+        msgBox.innerText = text;
+        msgBox.classList.add(type);
+        msgBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

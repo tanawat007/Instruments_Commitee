@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เพิ่มข้อมูล Local Gauge — Instrument Refinery</title>
+ 
+  <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+ 
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+  <style>
+    body {
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 50%, #fdf4ff 100%);
+      min-height: 100vh;
+    }
+ 
+    .form-card {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.85);
+    }
+ 
+    .field-icon {
+      @apply text-primary text-lg;
+    }
+  </style>
+</head>
+ 
+<body class="p-4 md:p-8">
+ 
+  <div class="max-w-4xl mx-auto mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary/10 p-3 rounded-2xl">
+          <i class="fa-solid fa-gauge-high text-3xl text-primary"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+            ระบบบันทึก Local Gauge
+          </h1>
+          <p class="text-sm text-slate-500 mt-0.5">Technical Data Management System</p>
+        </div>
+      </div>
+      <a href="03_localgauge.html"
+        class="btn btn-primary gap-2 text-white hover:text-white hover:bg-green-500 hover:border-green-500 transition-all">
+        <i class="fa-solid fa-house"></i>
+        <span class="hidden sm:inline">Return to Home</span>
+      </a>
+    </div>
+  </div>
+ 
+  <div class="max-w-4xl mx-auto form-card rounded-3xl shadow-xl border border-white/60 overflow-hidden">
+ 
+    <div class="bg-gradient-to-r from-green-400 to-blue-500 px-6 py-4 flex items-center gap-3">
+      <i class="fa-solid fa-circle-plus text-white text-xl"></i>
+      <h2 class="text-lg md:text-xl font-bold text-white">เพิ่ม / แก้ไขข้อมูล Local Gauge</h2>
+    </div>
+ 
+    <form id="data-form" class="p-6 md:p-8 space-y-6">
+      <input type="hidden" id="record-id">
+ 
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="material_code">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-barcode field-icon"></i> Tag Number
+            </span>
+          </label>
+          <input type="text" id="material_code" name="material_code" required placeholder="เช่น ADU1-LG010101"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="description">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Description
+            </span>
+          </label>
+          <input type="text" id="description" name="description" required placeholder="Service Location, Description"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+ 
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="keepingArea">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-warehouse field-icon"></i> Plant / Unit Area
+            </span>
+          </label>
+          <input type="text" id="keepingArea" name="keepingArea" required placeholder="เช่น ADU1"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="objecttype">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Object Type
+            </span>
+          </label>
+          <input type="text" id="objecttype" name="objecttype" required placeholder="เช่น PRESSURE"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+ 
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="classtype">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Class Type
+            </span>
+          </label>
+          <input type="text" id="classtype" name="classtype" placeholder="เช่น D/P-TRANSMITTER"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="subtype">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Subtype
+            </span>
+          </label>
+          <input type="text" id="subtype" name="subtype" placeholder="เช่น 1/2" 
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+ 
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="scalerange">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Scale Range
+            </span>
+          </label>
+          <input type="text" id="scalerange" name="scalerange" required placeholder="เช่น 0-10 MPa"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="processconnection">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Process Connection
+            </span>
+          </label>
+          <input type="text" id="processconnection" name="processconnection" placeholder="เช่น 1/2 NPT"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+ 
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="equipmentclass">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Equipment Class
+            </span>
+          </label>
+          <input type="text" id="equipmentclass" name="equipmentclass" placeholder="เช่น S, A, B, C"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="layerofprotection">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines field-icon"></i> Layer Of Protection
+            </span>
+          </label>
+          <input type="text" id="layerofprotection" name="layerofprotection" required placeholder="เช่น ESD, CRITICAL CONTROL"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+ 
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="dateOfUse">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-calendar-check field-icon text-success"></i> Last activity
+            </span>
+          </label>
+          <input type="date" id="dateOfUse" name="dateOfUse"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="expiredDate">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-calendar-xmark field-icon text-error"></i> Next due date
+            </span>
+          </label>
+          <input type="date" id="expiredDate" name="expiredDate"
+            class="input input-bordered input-error w-full focus:input-error transition-all" />
+        </div>
+      </div>
+ 
+      <div class="form-control w-full">
+        <label class="label" for="specification">
+          <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved field-icon text-warning"></i> Specification sheet
+          </span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" id="specification" name="specification"
+            placeholder="ลิงก์เอกสารหรือพิมพ์ NA"
+            class="input input-bordered input-warning w-full focus:input-warning transition-all" />
+          <button type="button" onclick="document.getElementById('specification').value = 'NA';"
+            class="btn btn-warning btn-outline btn-sm whitespace-nowrap self-center tooltip"
+            data-tip="ใส่ NA หากไม่มีเอกสาร">
+            <i class="fa-solid fa-ban text-xs"></i> NA
+          </button>
+        </div>
+        <label class="label">
+          <span class="label-text-alt text-slate-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-info text-xs"></i>
+            วาง URL ของเอกสาร หรือกดปุ่ม NA หากไม่มีเอกสาร
+          </span>
+        </label>
+      </div>
+ 
+      <div class="divider before:bg-primary/20 after:bg-primary/20"></div>
+ 
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <button type="submit" id="submit-btn"
+          class="bg-gradient-to-r from-green-400 to-blue-500 btn btn-wide gap-2 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-white text-xl">
+          <i class="fa-solid fa-floppy-disk text-white text-xl"></i>
+          บันทึกข้อมูล
+        </button>
+        <button type="button" id="cancel-btn" class="btn btn-ghost gap-2 hidden">
+          <i class="fa-solid fa-xmark"></i>
+          ยกเลิกการแก้ไข
+        </button>
+        <button type="reset"
+          class="bg-gradient-to-r from-red-400 to-yellow-500 btn btn-wide gap-2 shadow-lg shadow-primary/30 sm:ml-auto text-white text-xl">
+          <i class="fa-solid fa-rotate-left text-white text-xl"></i>
+          ล้างฟอร์ม
+        </button>
+      </div>
+    </form>
+  </div>
+ 
+  <div class="max-w-4xl mx-auto mt-6 text-center">
+    <p class="text-xs text-slate-400">
+      <i class="fa-solid fa-lock text-[10px]"></i>
+      ข้อมูลถูกจัดเก็บอย่างปลอดภัยผ่าน Google Sheets
+    </p>
+  </div>
+ 
+  <script src="scriptslocalgauge.js"></script>
+</body>
+ 
+</html>

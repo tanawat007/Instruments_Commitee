@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เพิ่มข้อมูล Heat Exchanger — Instrument Refinery</title>
+ 
+  <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+ 
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+  <style>
+    body {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 40%, #93c5fd 100%);
+      min-height: 100vh;
+    }
+
+    .form-card {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .field-icon {
+      @apply text-primary text-lg;
+    }
+
+    /* Blue theme override */
+    :root {
+      --primary: #3b82f6;
+      --secondary: #60a5fa;
+    }
+
+    .bg-primary { background-color: #3b82f6 !important; }
+    .text-primary { color: #3b82f6 !important; }
+    .input-primary { 
+      border-color: #3b82f6 !important; 
+      color: #3b82f6 !important;
+    }
+    .input-primary:focus { 
+      border-color: #3b82f6 !important; 
+      outline-color: #3b82f6 !important;
+    }
+    .input-bordered:focus { 
+      border-color: #3b82f6 !important; 
+    }
+  </style>
+</head>
+ 
+<body class="p-4 md:p-8">
+ 
+  <div class="max-w-4xl mx-auto mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary/10 p-3 rounded-2xl">
+          <i class="fa-solid fa-exchange-alt text-3xl text-primary"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+            ระบบบันทึก Heat Exchanger
+          </h1>
+          <p class="text-sm text-slate-500 mt-0.5">Technical Data Management System</p>
+        </div>
+      </div>
+      <a href="102_heatexchanger.html"
+        class="btn btn-primary gap-2 text-white hover:text-white hover:bg-green-500 hover:border-green-500 transition-all">
+        <i class="fa-solid fa-house"></i>
+        <span class="hidden sm:inline">Return to Home</span>
+      </a>
+    </div>
+  </div>
+ 
+  <div class="max-w-4xl mx-auto form-card rounded-3xl shadow-xl border border-white/60 overflow-hidden">
+ 
+    <div class="bg-gradient-to-r from-green-400 to-blue-500 px-6 py-4 flex items-center gap-3">
+      <i class="fa-solid fa-circle-plus text-white text-xl"></i>
+      <h2 class="text-lg md:text-xl font-bold text-white">เพิ่ม / แก้ไขข้อมูล Heat Exchanger</h2>
+    </div>
+ 
+    <form id="data-form" class="p-6 md:p-8 space-y-6">
+      <input type="hidden" id="record-id">
+ 
+      <!-- Basic Information -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Basic Information</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="equipmentnumber">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-barcode field-icon"></i> Equipment Number
+            </span>
+          </label>
+          <input type="text" id="equipmentnumber" name="equipmentnumber" required placeholder="เช่น E-101"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="plant">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-warehouse field-icon"></i> Plant / Unit Area
+            </span>
+          </label>
+          <input type="text" id="plant" name="plant" required placeholder="เช่น ADU1"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="typedirection">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-exchange-alt field-icon"></i> Type Direction
+            </span>
+          </label>
+          <input type="text" id="typedirection" name="typedirection" placeholder="เช่น Horizontal, Vertical"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="typeshell">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-cogs field-icon"></i> Type Shell
+            </span>
+          </label>
+          <input type="text" id="typeshell" name="typeshell" placeholder="เช่น Fixed Tube Sheet, U-Tube"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Weight Information -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Weight Information</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="weightallkg">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-weight-hanging field-icon"></i> Weight All (kg)
+            </span>
+          </label>
+          <input type="number" step="0.01" id="weightallkg" name="weightallkg" placeholder="เช่น 5000"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="weightbundlekg">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-weight-hanging field-icon"></i> Weight Bundle (kg)
+            </span>
+          </label>
+          <input type="number" step="0.01" id="weightbundlekg" name="weightbundlekg" placeholder="เช่น 2000"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Insulation -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Insulation</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="insulationshellside">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-shield-alt field-icon"></i> Insulation Shell Side
+            </span>
+          </label>
+          <input type="text" id="insulationshellside" name="insulationshellside" placeholder="เช่น Yes/No"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="insylationtubeside">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-shield-alt field-icon"></i> Insulation Tube Side
+            </span>
+          </label>
+          <input type="text" id="insylationtubeside" name="insylationtubeside" placeholder="เช่น Yes/No"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Bundle/Tube Description -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Bundle/Tube Description</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="bundledescriptiondiameter">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-circle field-icon"></i> Bundle Diameter
+            </span>
+          </label>
+          <input type="text" id="bundledescriptiondiameter" name="bundledescriptiondiameter" placeholder="เช่น 1000mm"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="bundledescriptionlength">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-ruler field-icon"></i> Bundle Length
+            </span>
+          </label>
+          <input type="text" id="bundledescriptionlength" name="bundledescriptionlength" placeholder="เช่น 3000mm"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="tubedescriptionoutsidediameter">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-circle field-icon"></i> Tube Outside Diameter
+            </span>
+          </label>
+          <input type="text" id="tubedescriptionoutsidediameter" name="tubedescriptionoutsidediameter" placeholder="เช่น 19mm"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="tubedescriptionquantity">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-hashtag field-icon"></i> Tube Quantity
+            </span>
+          </label>
+          <input type="number" id="tubedescriptionquantity" name="tubedescriptionquantity" placeholder="เช่น 500"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="tubedescriptionthickness">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-ruler-combined field-icon"></i> Tube Thickness
+            </span>
+          </label>
+          <input type="text" id="tubedescriptionthickness" name="tubedescriptionthickness" placeholder="เช่น 2.11mm"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="tubedescriptionlength">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-ruler field-icon"></i> Tube Length
+            </span>
+          </label>
+          <input type="text" id="tubedescriptionlength" name="tubedescriptionlength" placeholder="เช่น 6000mm"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Nozzle -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Nozzle</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="nozzleshellsideinletsize">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tachometer-alt field-icon"></i> Nozzle Shell Side Inlet Size
+            </span>
+          </label>
+          <input type="text" id="nozzleshellsideinletsize" name="nozzleshellsideinletsize" placeholder="เช่น 4" class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="nozzleshellsideinletpsi">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-gauge field-icon"></i> Nozzle Shell Side Inlet (psi)
+            </span>
+          </label>
+          <input type="number" step="0.01" id="nozzleshellsideinletpsi" name="nozzleshellsideinletpsi" placeholder="เช่น 150"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="nozzleshellsideoutletsize">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tachometer-alt field-icon"></i> Nozzle Shell Side Outlet Size
+            </span>
+          </label>
+          <input type="text" id="nozzleshellsideoutletsize" name="nozzleshellsideoutletsize" placeholder="เช่น 4" class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="nozzleshellsideoutletpsi">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-gauge field-icon"></i> Nozzle Shell Side Outlet (psi)
+            </span>
+          </label>
+          <input type="number" step="0.01" id="nozzleshellsideoutletpsi" name="nozzleshellsideoutletpsi" placeholder="เช่น 150"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="nozzletubesideinletsize">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tachometer-alt field-icon"></i> Nozzle Tube Side Inlet Size
+            </span>
+          </label>
+          <input type="text" id="nozzletubesideinletsize" name="nozzletubesideinletsize" placeholder="เช่น 2" class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="nozzletubesideinletpsi">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-gauge field-icon"></i> Nozzle Tube Side Inlet (psi)
+            </span>
+          </label>
+          <input type="number" step="0.01" id="nozzletubesideinletpsi" name="nozzletubesideinletpsi" placeholder="เช่น 150"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="nozzletubesideoutletsize">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tachometer-alt field-icon"></i> Nozzle Tube Side Outlet Size
+            </span>
+          </label>
+          <input type="text" id="nozzletubesideoutletsize" name="nozzletubesideoutletsize" placeholder="เช่น 2" class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="nozzletubesideoutletpsi">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-gauge field-icon"></i> Nozzle Tube Side Outlet (psi)
+            </span>
+          </label>
+          <input type="number" step="0.01" id="nozzletubesideoutletpsi" name="nozzletubesideoutletpsi" placeholder="เช่น 150"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Crane -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Crane</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="craneton">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-weight-hanging field-icon"></i> Crane Ton
+            </span>
+          </label>
+          <input type="number" step="0.01" id="craneton" name="craneton" placeholder="เช่น 10"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="craneday">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-calendar field-icon"></i> Crane Day
+            </span>
+          </label>
+          <input type="number" id="craneday" name="craneday" placeholder="เช่น 2"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- Neutralize -->
+      <div class="divider before:bg-primary/20 after:bg-primary/20 text-primary font-semibold">Neutralize</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="neutralizeshellside">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-shield-alt field-icon"></i> Neutralize Shell Side
+            </span>
+          </label>
+          <input type="text" id="neutralizeshellside" name="neutralizeshellside" placeholder="เช่น Yes/No"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+        <div class="form-control w-full">
+          <label class="label" for="neutralizetubeside">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-shield-alt field-icon"></i> Neutralize Tube Side
+            </span>
+          </label>
+          <input type="text" id="neutralizetubeside" name="neutralizetubeside" placeholder="เช่น Yes/No"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+        </div>
+      </div>
+
+      <!-- <div class="divider before:bg-primary/20 after:bg-primary/20"></div> -->
+
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <button type="submit" id="submit-btn"
+          class="bg-gradient-to-r from-green-400 to-blue-500 btn btn-wide gap-2 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-white text-xl">
+          <i class="fa-solid fa-floppy-disk text-white text-xl"></i>
+          บันทึกข้อมูล
+        </button>
+        <button type="button" id="cancel-btn" class="btn btn-ghost gap-2 hidden">
+          <i class="fa-solid fa-xmark"></i>
+          ยกเลิกการแก้ไข
+        </button>
+        <button type="reset"
+          class="bg-gradient-to-r from-red-400 to-yellow-500 btn btn-wide gap-2 shadow-lg shadow-primary/30 sm:ml-auto text-white text-xl">
+          <i class="fa-solid fa-rotate-left text-white text-xl"></i>
+          ล้างฟอร์ม
+        </button>
+      </div>
+    </form>
+  </div>
+ 
+  <div class="max-w-4xl mx-auto mt-6 text-center">
+    <p class="text-xs text-slate-400">
+      <i class="fa-solid fa-lock text-[10px]"></i>
+      ข้อมูลถูกจัดเก็บอย่างปลอดภัยผ่าน Google Sheets
+    </p>
+  </div>
+ 
+  <script src="scriptheatexchanger.js"></script>
+</body>
+ 
+</html>

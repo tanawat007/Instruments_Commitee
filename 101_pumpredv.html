@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pump REDV — Mechanical Refinery</title>
+
+  <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'Noto Sans Thai', 'sans-serif'] },
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#60a5fa'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 40%, #93c5fd 100%);
+      min-height: 100vh;
+    }
+
+    .glass-card {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.80);
+    }
+
+    .stat-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .table-row-hover:hover {
+      background: rgba(59, 130, 246, 0.04);
+    }
+
+    .badge-expired {
+      animation: pulse-red 2s infinite;
+    }
+
+    @keyframes pulse-red {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #60a5fa;
+      border-radius: 999px;
+    }
+
+    .sticky-first-col tbody td:first-child,
+    .sticky-first-col thead th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background-color: white;
+    }
+
+    .sticky-first-col tbody tr.table-row-hover:hover td:first-child {
+      background-color: rgba(59, 130, 246, 0.04);
+    }
+
+    .sticky-first-col tbody tr:nth-child(odd) td:first-child {
+      background-color: #f8fafc;
+    }
+
+    .sticky-first-col tbody tr:nth-child(even) td:first-child {
+      background-color: #ffffff;
+    }
+
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      z-index: 20;
+    }
+
+    /* Blue theme override */
+    :root {
+      --primary: #3b82f6;
+      --secondary: #60a5fa;
+    }
+
+    .bg-primary { background-color: #3b82f6 !important; }
+    .text-primary { color: #3b82f6 !important; }
+    .btn-primary { 
+      background-color: #3b82f6 !important; 
+      border-color: #3b82f6 !important;
+      color: white !important;
+    }
+    .btn-primary:hover { background-color: #1d4ed8 !important; }
+    .badge-primary { 
+      background-color: #3b82f6 !important; 
+      color: white !important;
+      border-color: #3b82f6 !important;
+    }
+    .from-primary { background-image: linear-gradient(to right, #3b82f6, #60a5fa) !important; }
+    .to-secondary { background-image: linear-gradient(to right, #3b82f6, #60a5fa) !important; }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar glass-card sticky top-0 z-50 border-b border-white/40 shadow-sm px-4 lg:px-8">
+    <div class="flex-1 gap-3">
+      <div class="bg-gradient-to-br from-primary to-secondary p-2.5 rounded-xl shadow-md">
+        <i class="fa-solid fa-gauge-high text-white text-xl"></i>
+      </div>
+      <div>
+        <h1 class="text-lg md:text-xl font-extrabold text-slate-800 leading-tight tracking-tight">Pump REDV</h1>
+        <p class="text-[11px] text-slate-400 -mt-0.5 hidden sm:block">Mechanical Refinery</p>
+      </div>
+    </div>
+    <div class="flex-none gap-2">
+      <div class="form-control hidden md:flex">
+        <div class="join">
+          <input id="search-input" type="text" placeholder="ค้นหา Pump REDV..."
+            class="input input-bordered input-sm w-56 focus:w-72 transition-all duration-300 join-item" />
+          <button class="btn btn-sm btn-primary join-item" onclick="handleSearch()">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </button>
+        </div>
+      </div>
+      <a href="createform_localgauge.html" class="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/25">
+        <i class="fa-solid fa-plus"></i>
+        <span class="hidden sm:inline">เพิ่มข้อมูล Pump REDV</span>
+      </a>
+      <a href="main.html" class="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/25">
+        <span class="hidden sm:inline">Back to Home</span>
+      </a>
+      <button onclick="fetchData()" class="btn btn-ghost btn-sm btn-circle tooltip tooltip-bottom" data-tip="รีเฟรช">
+        <i class="fa-solid fa-arrows-rotate text-slate-500"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- <div class="container mx-auto px-4 lg:px-8 py-6 space-y-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="stat-card glass-card rounded-2xl border border-white/50 shadow-md p-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-primary/10 p-3 rounded-xl">
+            <i class="fa-solid fa-boxes-stacked text-primary text-xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Total Pump REDV</p>
+            <p id="stat-total" class="text-2xl font-extrabold text-slate-800">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card glass-card rounded-2xl border border-white/50 shadow-md p-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-warning/10 p-3 rounded-xl">
+            <i class="fa-solid fa-triangle-exclamation text-warning text-xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">ใกล้หมดอายุ</p>
+            <p id="stat-expiring" class="text-2xl font-extrabold text-amber-600">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card glass-card rounded-2xl border border-white/50 shadow-md p-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-error/10 p-3 rounded-xl">
+            <i class="fa-solid fa-circle-xmark text-error text-xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">หมดอายุแล้ว</p>
+            <p id="stat-expired" class="text-2xl font-extrabold text-red-600">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card glass-card rounded-2xl border border-white/50 shadow-md p-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-success/10 p-3 rounded-xl">
+            <i class="fa-solid fa-warehouse text-success text-xl"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-medium">Plant area</p>
+            <p id="stat-areas" class="text-2xl font-extrabold text-emerald-600">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="md:hidden">
+      <div class="join w-full">
+        <input id="search-input-mobile" type="text" placeholder="ค้นหา Pump REDV..."
+          class="input input-bordered w-full join-item" />
+        <button class="btn btn-primary join-item" onclick="handleSearch()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="flex flex-wrap items-center justify-between gap-3 px-4 lg:px-8 mb-4">
+    <div class="flex items-center gap-2">
+      <h2 class="text-lg font-bold text-slate-700 flex items-center gap-2">
+        <i class="fa-solid fa-list text-primary"></i> รายการ Pump REDV
+      </h2>
+      <div class="badge badge-primary badge-outline gap-1" id="count-badge">
+        <i class="fa-solid fa-database text-[10px]"></i> <span id="badge-count">0</span> Item
+      </div>
+    </div>
+    <div class="flex items-center gap-2 px-4 lg:px-0">
+      <select id="filter-area" class="select select-bordered select-sm" onchange="handleFilter()">
+        <option value="">ทุกพื้นที่</option>
+      </select>
+      <select id="filter-status" class="select select-bordered select-sm" onchange="handleFilter()">
+        <option value="">ทุกสถานะ</option>
+        <option value="active">ยังไม่หมดอายุ</option>
+        <option value="expiring">ใกล้หมดอายุ (≤30 วัน)</option>
+        <option value="expired">หมดอายุแล้ว</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="glass-card rounded-2xl border border-white/50 shadow-lg overflow-hidden mx-4 lg:mx-8">
+    <div class="overflow-x-auto">
+      <table id="data-table" class="table table-zebra w-full sticky-first-col">
+        <thead>
+          <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
+            <!-- <th class="sticky-col text-xs text-slate-500 font-semibold uppercase bg-gradient-to-r from-slate-50 to-slate-100">
+              <i class="fa-solid fa-barcode mr-1 text-primary/60"></i> ID
+            </th> -->
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-tag mr-1 text-primary/60"></i> Material Code
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-warehouse mr-1 text-primary/60"></i> Plant Area
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-industry mr-1 text-primary/60"></i> Class
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-industry mr-1 text-primary/60"></i> Fluid Service
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-industry mr-1 text-primary/60"></i> Manufacturer
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-ruler mr-1 text-primary/60"></i> Size
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-cogs mr-1 text-primary/60"></i> Type
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-cube mr-1 text-primary/60"></i> Model
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-hashtag mr-1 text-primary/60"></i> Serial Number
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <i class="fa-solid fa-atom mr-1 text-primary/60"></i> Material
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase text-center">
+              <i class="fa-solid fa-gear mr-1 text-slate-400"></i> จัดการ
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+      <div class="bg-slate-100 p-6 rounded-full mb-4">
+        <i class="fa-solid fa-gauge-high text-4xl text-slate-300"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-500">ยังไม่มีข้อมูล Pump REDV</h3>
+      <p class="text-sm text-slate-400 mt-1">เริ่มต้นเพิ่ม Pump REDV ตัวแรกของคุณ</p>
+      <a href="createform_pumpredv.html" class="btn btn-primary btn-sm mt-4 gap-2">
+        <i class="fa-solid fa-plus"></i> เพิ่ม Pump REDV
+      </a>
+    </div>
+  </div>
+
+  <div id="pagination" class="glass-card rounded-2xl border border-white/50 shadow-md px-5 py-3 hidden mx-4 lg:mx-8 mt-4">
+    <div class="flex justify-between items-center sm:hidden">
+      <button id="prev-mobile" class="btn btn-outline btn-sm gap-1">
+        <i class="fa-solid fa-chevron-left text-xs"></i> ก่อนหน้า
+      </button>
+      <span class="text-sm font-semibold text-slate-600" id="page-indicator-mobile">1 / 1</span>
+      <button id="next-mobile" class="btn btn-outline btn-sm gap-1">
+        ถัดไป <i class="fa-solid fa-chevron-right text-xs"></i>
+      </button>
+    </div>
+    <div class="hidden sm:flex sm:items-center sm:justify-between">
+      <p class="text-sm text-slate-500">
+        แสดง <span class="font-bold text-slate-700" id="showing-start">1</span>
+        ถึง <span class="font-bold text-slate-700" id="showing-end">10</span>
+        จาก <span class="font-bold text-primary" id="total-items">0</span> รายการ
+      </p>
+      <div class="join">
+        <button id="prev-btn" class="join-item btn btn-sm">
+          <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+        <div id="page-numbers" class="flex"></div>
+        <button id="next-btn" class="join-item btn btn-sm">
+          <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center py-6 text-xs text-slate-400 space-y-1 mx-4 lg:mx-8">
+    <p><i class="fas fa-warehouse text-[10px]"></i>
+      สำหรับบริหารจัดการ PREM Digital Transform - Data Management</p>
+    <p>&copy; 2026 Mechanical Refinery Data Management System</p>
+    <p>Develop by <a href="#" class="font-semibold hover:underline">Tanawat V.</a> | Training by <a href="#" class="font-semibold hover:underline">Pathompong CH.</a>
+    </p>
+  </footer>
+
+    <!-- ===== VIEW DETAIL MODAL ===== -->
+  <dialog id="detail-modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box max-w-2xl p-0 overflow-y-auto max-h-[90vh] bg-gradient-to-br from-white to-slate-50">
+
+      <div class="bg-gradient-to-r from-primary to-secondary px-6 py-4 flex items-center justify-between flex-shrink-0">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-gauge-high"></i> รายละเอียด Pump REDV
+        </h3>
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost text-white hover:bg-white/20">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </form>
+      </div>
+      <div class="bg-white border-b border-slate-100 px-6 py-4 flex-shrink-0">
+        <div class="flex flex-col sm:flex-row gap-5">
+          <div class="flex-shrink-0">
+            <div class="w-32 h-32 rounded-2xl ring-2 ring-slate-200 bg-slate-50 flex items-center justify-center">
+              <i class="fa-solid fa-gauge-high text-5xl text-slate-300"></i>
+            </div>
+          </div>
+          <div class="flex-1 space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="badge badge-primary badge-lg font-mono font-bold" id="detail-code">-</span>
+              <span id="detail-expiry-badge"></span>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800" id="detail-description">-</h2>
+          </div>
+        </div>
+      </div>
+      <div class="overflow-y-auto flex-1 px-6 py-5">
+        <div class="space-y-6 pb-6">
+
+          <!-- Basic Information -->
+          <div>
+            <h4 class="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-info-circle text-primary"></i> Basic Information
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-primary/10 text-primary p-2.5 rounded-lg">
+                  <i class="fa-solid fa-barcode text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">ID</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-id">-</p>
+                </div>
+              </div> -->
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-info/10 text-info p-2.5 rounded-lg">
+                  <i class="fa-solid fa-tag text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Material Code</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-materialcode">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-success/10 text-success p-2.5 rounded-lg">
+                  <i class="fa-solid fa-warehouse text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Plant Area</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-plant">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+                  <i class="fa-solid fa-layer-group text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Equipment Class</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-eqclass">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pump Details -->
+          <div>
+            <h4 class="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-cogs text-primary"></i> Pump Details
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-info/10 text-info p-2.5 rounded-lg">
+                  <i class="fa-solid fa-industry text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Manufacturer</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-pumpmanufacturer">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-success/10 text-success p-2.5 rounded-lg">
+                  <i class="fa-solid fa-ruler text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Size</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-pumpsize">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cogs text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Type</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-pumptype">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-error/10 text-error p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cube text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Model</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-pumpmodel">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-primary/10 text-primary p-2.5 rounded-lg">
+                  <i class="fa-solid fa-hashtag text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Serial Number</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-serialnumber">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-info/10 text-info p-2.5 rounded-lg">
+                  <i class="fa-solid fa-atom text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Material</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-material">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fluid Properties -->
+          <div>
+            <h4 class="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-water text-primary"></i> Fluid Properties
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-success/10 text-success p-2.5 rounded-lg">
+                  <i class="fa-solid fa-water text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Fluid Service</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-fluidservice">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+                  <i class="fa-solid fa-gauge text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Fluid Pressure</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-fluidpressure">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-error/10 text-error p-2.5 rounded-lg">
+                  <i class="fa-solid fa-thermometer-half text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Fluid Temperature</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-fluidtemperature">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-primary/10 text-primary p-2.5 rounded-lg">
+                  <i class="fa-solid fa-balance-scale text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Specific Gravity</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-fluidspecificgravity">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mechanical Seal -->
+          <div>
+            <h4 class="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-industry text-primary"></i> Mechanical Seal
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-info/10 text-info p-2.5 rounded-lg">
+                  <i class="fa-solid fa-industry text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Mech Seal Manufacturer</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-mechsealmanufacturer">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-success/10 text-success p-2.5 rounded-lg">
+                  <i class="fa-solid fa-ruler text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Mech Seal Size</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-mechsealsize">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cogs text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Mech Seal Type</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-mechsealtype">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-error/10 text-error p-2.5 rounded-lg">
+                  <i class="fa-solid fa-code text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Mech Seal API Code</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-mechsealapicode">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-primary/10 text-primary p-2.5 rounded-lg">
+                  <i class="fa-solid fa-tint text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Mech Seal Barrier Fluid</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-mechsealbarrierfluid">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+                  <i class="fa-solid fa-gauge text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Mech Seal Pressure</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-mechsealpressure">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Other Specifications -->
+          <div>
+            <h4 class="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-file-contract text-primary"></i> Other Specifications
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-info/10 text-info p-2.5 rounded-lg">
+                  <i class="fa-solid fa-code text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">API Plan</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-apiplan">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-success/10 text-success p-2.5 rounded-lg">
+                  <i class="fa-solid fa-thermometer-half text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Temperature Cooler</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-temperaturecooler">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+                  <i class="fa-solid fa-thermometer-half text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Temperature Plant Operate</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-temperatureplantoperate">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-error/10 text-error p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cogs text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Pump Bearing DE</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-pumpbearingde">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-primary/10 text-primary p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cogs text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Pump Bearing NDE</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-pumpbearingnde">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-info/10 text-info p-2.5 rounded-lg">
+                  <i class="fa-solid fa-link text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Coupling</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-coupling">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-success/10 text-success p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cogs text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Motor Bearing DE</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-motorbearingde">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cogs text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Motor Bearing NDE</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-motorbearingnde">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-error/10 text-error p-2.5 rounded-lg">
+                  <i class="fa-solid fa-tachometer-alt text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">RPM</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-rpm">-</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+                <div class="bg-primary/10 text-primary p-2.5 rounded-lg">
+                  <i class="fa-solid fa-cogs text-lg"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-slate-400 font-medium">Gearbox</p>
+                  <p class="text-sm font-semibold text-slate-700" id="detail-gearbox">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end flex-shrink-0">
+        <form method="dialog">
+          <button class="btn btn-sm btn-ghost gap-1.5">
+            <i class="fa-solid fa-xmark"></i> ปิด
+          </button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+  </dialog>
+
+  <script src="scriptpumpredv.js"></script>
+  <script src="permissions.js"></script>
+</body>
+</html>
