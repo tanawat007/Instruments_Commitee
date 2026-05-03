@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instrument Refinery-APP</title>
+    <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'Noto Sans Thai', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+ 
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap%22
+    rel="stylesheet">
+ 
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 40%, #fdf4ff 100%);
+      min-height: 100vh;
+    }
+ 
+    .glass-card {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.80);
+    }
+ 
+    .stat-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+ 
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+ 
+    .table-row-hover:hover {
+      background: rgba(99, 102, 241, 0.04);
+    }
+ 
+    .badge-expired {
+      animation: pulse-red 2s infinite;
+    }
+ 
+    @keyframes pulse-red {
+ 
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+ 
+      50% {
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+      }
+    }
+ 
+    /* custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+ 
+    ::-webkit-scrollbar-thumb {
+      background: #c7d2fe;
+      border-radius: 999px;
+    }
+
+    /* Sticky first column styles */
+    .sticky-first-col tbody td:first-child,
+    .sticky-first-col thead th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background-color: white;
+    }
+
+    .sticky-first-col tbody tr.table-row-hover:hover td:first-child {
+      background-color: rgba(99, 102, 241, 0.04);
+    }
+
+    .sticky-first-col tbody tr:nth-child(odd) td:first-child {
+      background-color: #f8fafc;
+    }
+
+    .sticky-first-col tbody tr:nth-child(even) td:first-child {
+      background-color: #ffffff;
+    }
+
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      z-index: 20;
+    }
+  </style>
+</head>
+
+
+<body>
+<!-- ===== ช่วง Header ===== -->
+<!-- ===== NAVBAR ===== -->
+  <nav class="navbar glass-card sticky top-0 z-50 border-b border-white/40 shadow-sm px-4 lg:px-8">
+    <div class="flex-1 gap-3">
+      <div class="bg-gradient-to-br from-primary to-secondary p-2.5 rounded-xl shadow-md">
+        <i class="fa-solid fa-warehouse text-white text-xl"></i>
+      </div>
+      <div>
+        <h1 class="text-lg md:text-xl font-extrabold text-slate-800 leading-tight tracking-tight">Control Valve Leakage Calculator</h1>
+        <p class="text-[11px] text-slate-400 -mt-0.5 hidden sm:block">เครื่องมือคำนวณค่าการรั่วไหลตามมาตรฐาน ANSI/FCI 70-2 / IEC 60534-4</p>
+      </div>
+    </div>
+    <div class="flex-none gap-2">
+      <!-- Search -->
+      <div class="form-control hidden md:flex">
+        <!-- <div class="join">
+          <input id="search-input" type="text" placeholder="ค้นหา Field Instrument..."
+            class="input input-bordered input-sm w-56 focus:w-72 transition-all duration-300 join-item" />
+          <button class="btn btn-sm btn-primary join-item" onclick="handleSearch()">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </button>
+        </div> -->
+      </div>
+      <!-- <a href="createform_filedinstrument.html" class="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/25">
+        <i class="fa-solid fa-plus"></i>
+        <span class="hidden sm:inline">เพิ่มข้อมูล Field Instrument</span>
+      </a> -->
+        <a href="main.html" class="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/25">
+        <span class="hidden sm:inline">Back to Home</span>
+        </a>
+      <button onclick="fetchData()" class="btn btn-ghost btn-sm btn-circle tooltip tooltip-bottom" data-tip="รีเฟรช">
+        <i class="fa-solid fa-arrows-rotate text-slate-500"></i>
+      </button>
+    </div>
+  </nav>
+
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <!-- <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">Control Valve Leakage Calculator</h1>
+            <p class="text-slate-600">เครื่องมือคำนวณค่าการรั่วไหลตามมาตรฐาน ANSI/FCI 70-2 / IEC 60534-4</p>
+
+            <a href="main.html" class="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/25">
+            <span class="hidden sm:inline">Back to Home</span>
+            </a>
+
+
+        </header> -->
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Input Section -->
+            <div class="md:col-span-2 space-y-6">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4 text-blue-700 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        กำหนดค่าพารามิเตอร์
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Leakage Class</label>
+                            <select id="leakageClass" onchange="toggleInputs()">
+                                <option value="2">Class II (0.5% of Rated Cv)</option>
+                                <option value="3">Class III (0.1% of Rated Cv)</option>
+                                <option value="4">Class IV (0.01% of Rated Cv)</option>
+                                <option value="5">Class V (Water Test)</option>
+                                <option value="6" selected>Class VI (Bubble Test)</option>
+                            </select>
+                        </div>
+
+                        <div id="divSize">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Valve Size (NPS / DN)</label>
+                            <select id="valveSize">
+                                <option value="1">1" (DN 25)</option>
+                                <option value="1.5">1.5" (DN 40)</option>
+                                <option value="2">2" (DN 50)</option>
+                                <option value="2.5">2.5" (DN 65)</option>
+                                <option value="3">3" (DN 80)</option>
+                                <option value="4">4" (DN 100)</option>
+                                <option value="6">6" (DN 150)</option>
+                                <option value="8">8" (DN 200)</option>
+                                <option value="10">10" (DN 250)</option>
+                                <option value="12">12" (DN 300)</option>
+                            </select>
+                        </div>
+
+                        <div id="divCv" class="hidden">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Rated Flow Coefficient (Cv)</label>
+                            <input type="number" id="ratedCv" placeholder="เช่น 50" step="0.1">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Test Pressure Differential (ΔP)</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="testPressure" value="50" step="1">
+                                <select id="pressureUnit" class="w-32">
+                                    <option value="psi">psi</option>
+                                    <option value="bar">bar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="divMedium">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Test Medium</label>
+                            <select id="testMedium">
+                                <option value="air">Air / Nitrogen (Gas)</option>
+                                <option value="water">Water (Liquid)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="calculateLeakage()" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                        </svg>
+                        คำนวณค่าพิกัดการรั่วไหล
+                    </button>
+                </div>
+
+                <!-- Result Display -->
+                <div id="resultCard" class="card p-6 border-t-4 border-blue-500 hidden">
+                    <h2 class="text-xl font-semibold mb-2 text-slate-800">ผลการคำนวณ (Maximum Allowable Leakage)</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="text-sm text-blue-600 font-medium">อัตราการรั่วไหลสูงสุด</p>
+                            <p id="mainResult" class="text-3xl font-bold text-blue-900">0.00</p>
+                            <p id="unitResult" class="text-sm text-blue-700 mt-1">ml / min</p>
+                        </div>
+                        <div id="bubbleResultDiv" class="bg-green-50 p-4 rounded-lg hidden">
+                            <p class="text-sm text-green-600 font-medium">เทียบเป็นฟองอากาศ (Bubble Test)</p>
+                            <p id="bubbleResult" class="text-3xl font-bold text-green-900">0</p>
+                            <p class="text-sm text-green-700 mt-1">bubbles / min</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-100 rounded text-sm text-slate-600 italic">
+                        * อ้างอิงตามมาตรฐาน ANSI/FCI 70-2 สภาวะการทดสอบมาตรฐาน
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reference Section -->
+            <div class="space-y-6">
+                <div class="card p-6">
+                    <h3 class="font-bold text-slate-800 mb-3 border-b pb-2">เกณฑ์มาตรฐานสากล</h3>
+                    <ul class="text-xs space-y-3 text-slate-600">
+                        <li><strong class="text-slate-800">Class II:</strong> 0.5% ของ Rated Capacity</li>
+                        <li><strong class="text-slate-800">Class III:</strong> 0.1% ของ Rated Capacity</li>
+                        <li><strong class="text-slate-800">Class IV:</strong> 0.01% ของ Rated Capacity</li>
+                        <li><strong class="text-slate-800">Class V:</strong> 5 x 10<sup>-4</sup> ml ต่อนาที ต่อความกว้างบ่าวาล์ว (นิ้ว) ต่อความดัน (psi)</li>
+                        <li><strong class="text-slate-800">Class VI:</strong> การรั่วไหลที่ยอมรับได้ต่ำสุด (Bubble Test) ขึ้นกับขนาดวาล์ว</li>
+                    </ul>
+                </div>
+                
+                <div class="card p-6 bg-yellow-50 border-l-4 border-yellow-400">
+                    <h3 class="font-bold text-yellow-800 mb-2">คำแนะนำ</h3>
+                    <p class="text-xs text-yellow-700 leading-relaxed">
+                        การทดสอบควรทำที่ความดันใช้งานจริง หรือตามที่มาตรฐานกำหนด (เช่น 50 psi สำหรับ Class VI) หากใช้ของเหลวทดสอบ ต้องไล่อากาศออกให้หมดก่อนเริ่มการตรวจวัด
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footnote -->
+        <footer class="mt-12 text-center text-slate-400 text-sm">
+            &copy; 2024 Valve Engineering Tools - ANSI/FCI 70-2 Compliance
+        </footer>
+    </div>
+
+    <script>
+        function toggleInputs() {
+            const lClass = document.getElementById('leakageClass').value;
+            const divSize = document.getElementById('divSize');
+            const divCv = document.getElementById('divCv');
+            const divMedium = document.getElementById('divMedium');
+
+            // Reset visibility
+            divSize.classList.add('hidden');
+            divCv.classList.add('hidden');
+            divMedium.classList.remove('hidden');
+
+            if (lClass === '2' || lClass === '3' || lClass === '4') {
+                divCv.classList.remove('hidden');
+            } else if (lClass === '5') {
+                divSize.classList.remove('hidden');
+                // Class V is typically Water
+                document.getElementById('testMedium').value = 'water';
+            } else if (lClass === '6') {
+                divSize.classList.remove('hidden');
+                // Class VI is typically Air/N2
+                document.getElementById('testMedium').value = 'air';
+            }
+        }
+
+        function calculateLeakage() {
+            const lClass = document.getElementById('leakageClass').value;
+            const size = parseFloat(document.getElementById('valveSize').value);
+            const cv = parseFloat(document.getElementById('ratedCv').value);
+            let pressure = parseFloat(document.getElementById('testPressure').value);
+            const unit = document.getElementById('pressureUnit').value;
+            const medium = document.getElementById('testMedium').value;
+
+            // Normalize pressure to PSI for calculation
+            const pressureInPsi = unit === 'bar' ? pressure * 14.5038 : pressure;
+
+            let result = 0;
+            let unitText = "ml / min";
+            let showBubbles = false;
+            let bubbles = 0;
+
+            if (lClass === '2' || lClass === '3' || lClass === '4') {
+                if (isNaN(cv)) {
+                    showMessage("กรุณาระบุค่า Rated Cv");
+                    return;
+                }
+                
+                let percentage = 0;
+                if (lClass === '2') percentage = 0.005;
+                if (lClass === '3') percentage = 0.001;
+                if (lClass === '4') percentage = 0.0001;
+
+                // Flow Q = Cv * sqrt(deltaP / G)
+                // Assuming water (G=1) for liquid capacity or standard air conversion
+                // Standard test is often done with water at 45-60 psi
+                const ratedFlowLiquid = cv * Math.sqrt(pressureInPsi); // gpm
+                result = ratedFlowLiquid * percentage * 3785.41; // Convert gpm to ml/min
+                unitText = "ml / min (Water)";
+                
+                if (medium === 'air') {
+                    // Simple air conversion for class IV (Standard air at deltaP)
+                    // This is a simplified estimation for the tool
+                    result = result * 50; // Approximated multiplier for Air vs Water volume at same deltaP
+                    unitText = "scfm (Air/Gas) *Estimated";
+                    result = (ratedFlowLiquid * percentage * 0.1337).toFixed(6); // cubic feet per min
+                }
+
+            } else if (lClass === '5') {
+                // Class V: 0.0005 ml/min per inch of orifice diameter per psi
+                // We use NPS as a proxy for seat diameter
+                result = 0.0005 * size * pressureInPsi;
+                unitText = "ml / min (Water)";
+            } else if (lClass === '6') {
+                // Class VI: Data lookup based on ANSI/FCI 70-2 Table
+                const classVITable = {
+                    "1": { ml: 0.15, bubbles: 1 },
+                    "1.5": { ml: 0.30, bubbles: 2 },
+                    "2": { ml: 0.45, bubbles: 3 },
+                    "2.5": { ml: 0.60, bubbles: 4 },
+                    "3": { ml: 0.90, bubbles: 6 },
+                    "4": { ml: 1.70, bubbles: 11 },
+                    "6": { ml: 4.00, bubbles: 27 },
+                    "8": { ml: 6.75, bubbles: 45 },
+                    "10": { ml: 11.1, bubbles: 75 },
+                    "12": { ml: 16.0, bubbles: 108 }
+                };
+
+                const data = classVITable[size.toString()];
+                result = data.ml;
+                bubbles = data.bubbles;
+                showBubbles = true;
+                unitText = "ml / min (Air/Nitrogen)";
+                
+                // Adjustment for pressure if not 50 psi (Class VI is strictly defined at 50 psi or service deltaP)
+                if (Math.abs(pressureInPsi - 50) > 5) {
+                    const ratio = pressureInPsi / 50;
+                    result = result * ratio;
+                    bubbles = Math.ceil(bubbles * ratio);
+                }
+            }
+
+            // Show results
+            document.getElementById('resultCard').classList.remove('hidden');
+            document.getElementById('mainResult').innerText = result.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 4});
+            document.getElementById('unitResult').innerText = unitText;
+
+            const bubbleDiv = document.getElementById('bubbleResultDiv');
+            if (showBubbles) {
+                bubbleDiv.classList.remove('hidden');
+                document.getElementById('bubbleResult').innerText = bubbles;
+            } else {
+                bubbleDiv.classList.add('hidden');
+            }
+            
+            // Scroll to result
+            document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showMessage(msg) {
+            const msgBox = document.createElement('div');
+            msgBox.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-xl z-50 transition-opacity duration-500';
+            msgBox.innerText = msg;
+            document.body.appendChild(msgBox);
+            setTimeout(() => {
+                msgBox.style.opacity = '0';
+                setTimeout(() => msgBox.remove(), 500);
+            }, 3000);
+        }
+
+        // Init
+        window.onload = toggleInputs;
+    </script>
+</body>
+</html>

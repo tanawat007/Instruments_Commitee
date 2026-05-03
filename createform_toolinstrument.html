@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เพิ่มข้อมูล Tool of Instrument — Technical Data Management</title>
+ 
+  <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+ 
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <scriptfiledfiled src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></scriptfiledfiled>
+ 
+  <style>
+    body {
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 50%, #fdf4ff 100%);
+      min-height: 100vh;
+    }
+ 
+    .form-card {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.85);
+    }
+ 
+    .field-icon {
+      @apply text-primary text-lg;
+    }
+  </style>
+</head>
+
+<body class="p-4 md:p-8 bg-slate-50">
+
+  <div class="max-w-4xl mx-auto mb-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary/10 p-3 rounded-2xl">
+          <i class="fa-solid fa-screwdriver-wrench text-3xl text-primary"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+            ระบบจัดการงาน Calibration
+          </h1>
+          <p class="text-sm text-slate-500 mt-0.5">Instrument Maintenance Management System</p>
+        </div>
+      </div>
+      <a href="071_toolinstrument.html"
+        class="btn btn-primary gap-2 text-white hover:text-white hover:bg-green-600 transition-all shadow-md">
+        <i class="fa-solid fa-house"></i>
+        <span class="hidden sm:inline">หน้าหลัก</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto form-card rounded-3xl shadow-xl border border-white/60 bg-white overflow-hidden">
+
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center gap-3">
+      <i class="fa-solid fa-pen-to-square text-white text-xl"></i>
+      <h2 class="text-lg md:text-xl font-bold text-white">บันทึกข้อมูลเครื่องมือวัดและผลการสอบเทียบ</h2>
+    </div>
+
+    <form id="data-form" class="p-6 md:p-8 space-y-6">
+      <input type="hidden" id="record-id">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="identification_number">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-tag text-primary"></i> Identification Number / Tag
+            </span>
+          </label>
+          <input type="text" id="identification_number" name="identification_number" required placeholder="เช่น ADU1-PT-101"
+            class="input input-bordered input-primary w-full focus:ring-2 focus:ring-primary/20 transition-all" />
+        </div>
+
+        <div class="form-control w-full">
+          <label class="label" for="equipment_name">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-circle-info text-primary"></i> Equipment Name
+            </span>
+          </label>
+          <input type="text" id="equipment_name" name="equipment_name" required placeholder="เช่น Pressure Transmitter"
+            class="input input-bordered input-primary w-full" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="manufacturer">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-industry text-primary"></i> Manufacturer
+            </span>
+          </label>
+          <input type="text" id="manufacturer" name="manufacturer" required placeholder="เช่น Rosemount, Yokogawa"
+            class="input input-bordered input-primary w-full" />
+        </div>
+
+        <div class="form-control w-full">
+          <label class="label" for="model">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-gears text-primary"></i> Model
+            </span>
+          </label>
+          <input type="text" id="model" name="model" placeholder="เช่น 3051S, EJX110A"
+            class="input input-bordered input-primary w-full" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="serial_number">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-barcode text-primary"></i> Serial Number
+            </span>
+          </label>
+          <input type="text" id="serial_number" name="serial_number" required placeholder="S/N ของตัวเครื่อง"
+            class="input input-bordered input-primary w-full font-mono" />
+        </div>
+
+        <div class="form-control w-full">
+          <label class="label" for="interval">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-primary"></i> Calibration Interval (Months)
+            </span>
+          </label>
+          <input type="text" id="interval" name="interval" required placeholder="เช่น 12, 24"
+            class="input input-bordered input-primary w-full" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="form-control w-full">
+          <label class="label" for="date_of_last_calibration">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-calendar-check text-success"></i> Date of Last Calibration
+            </span>
+          </label>
+          <input type="date" id="date_of_last_calibration" name="date_of_last_calibration" required
+            class="input input-bordered input-success w-full" />
+        </div>
+
+        <div class="form-control w-full">
+          <label class="label" for="expired_date">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-calendar-xmark text-error"></i> Expired Date (Next Due)
+            </span>
+          </label>
+          <input type="date" id="expired_date" name="expired_date" required
+            class="input input-bordered input-error w-full" />
+        </div>
+      </div>
+
+      <div class="form-control w-full">
+        <label class="label" for="specification">
+          <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-file-pdf text-warning"></i> Specification / Calibration Certificate URL
+          </span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" id="specification" name="specification"
+            placeholder="ลิงก์ไฟล์ PDF เช่น Google Drive หรือ SharePoint"
+            class="input input-bordered input-warning w-full" />
+          <button type="button" onclick="document.getElementById('specification').value = 'NA';"
+            class="btn btn-warning btn-outline btn-sm h-auto tooltip" data-tip="ไม่มีเอกสาร">
+            NA
+          </button>
+        </div>
+        <label class="label">
+          <span class="label-text-alt text-slate-400">กรุณาใส่ URL ของเอกสารเพื่อใช้อ้างอิงผลการสอบเทียบ</span>
+        </label>
+      </div>
+
+      <div class="divider before:bg-slate-200 after:bg-slate-200"></div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <button type="submit" id="submit-btn"
+          class="bg-gradient-to-r from-blue-600 to-indigo-600 btn btn-wide gap-2 shadow-lg hover:opacity-90 transition-all text-white border-none text-lg">
+          <i class="fa-solid fa-floppy-disk text-white"></i>
+          บันทึกข้อมูล
+        </button>
+        
+        <button type="button" id="cancel-btn" class="btn btn-ghost gap-2 hidden">
+          <i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข
+        </button>
+
+        <button type="reset"
+          class="bg-gradient-to-r from-slate-400 to-slate-500 btn btn-wide gap-2 shadow-md sm:ml-auto text-white border-none text-lg">
+          <i class="fa-solid fa-rotate-left"></i>
+          ล้างฟอร์ม
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div class="max-w-4xl mx-auto mt-6 text-center">
+    <p class="text-xs text-slate-400">
+      <i class="fa-solid fa-lock text-[10px]"></i>
+      ข้อมูลถูกจัดเก็บอย่างปลอดภัยผ่าน Google Sheets
+    </p>
+  </div>
+ 
+  <script src="scripttoolinstrument.js"></script>
+</body>
+ 
+</html>
