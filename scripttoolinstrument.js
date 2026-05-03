@@ -335,7 +335,7 @@ function renderTable() {
                   data-model="${escapeAttr(row.model || '')}"
                   data-serialnumber="${escapeAttr(row.serialnumber || '')}"
                   data-interval="${escapeAttr(row.interval || '')}"
-                  data-date-of-use="${escapeAttr(toInputDate(row.DateOfUse))}"
+                  data-date-of-use="${escapeAttr(toInputDate(row.dateOfUse))}"
                   data-expired-date="${escapeAttr(toInputDate(row.ExpiredDate))}"
                   data-msds="${escapeAttr(row.MSDS || '')}"
                   data-timestamp="${escapeAttr(row.Timestamp || '')}">
@@ -351,7 +351,7 @@ function renderTable() {
                   data-model="${escapeAttr(row.model || '')}"
                   data-serialnumber="${escapeAttr(row.serialnumber || '')}"
                   data-interval="${escapeAttr(row.interval || '')}"
-                  data-date-of-use="${escapeAttr(toInputDate(row.DateOfUse))}"
+                  data-date-of-use="${escapeAttr(toInputDate(row.dateOfUse))}"
                   data-expired-date="${escapeAttr(toInputDate(row.ExpiredDate))}"
                   data-msds="${escapeAttr(row.MSDS || '')}">
             <i class="fa-solid fa-pen-to-square"></i>
