@@ -156,7 +156,7 @@
  
     <!-- ===== STATS CARDS ===== -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <!-- Total  Tool of Instrument ทั้งหมด -->
+      <!-- Total สารเคมีทั้งหมด -->
       <div class="stat-card glass-card rounded-2xl border border-white/50 shadow-md p-4">
         <div class="flex items-center gap-3">
           <div class="bg-primary/10 p-3 rounded-xl">
@@ -199,7 +199,7 @@
             <i class="fa-solid fa-warehouse text-success text-xl"></i>
           </div>
           <div>
-            <p class="text-xs text-slate-400 font-medium">Plant area</p>
+            <p class="text-xs text-slate-400 font-medium">All Equipment</p>
             <p id="stat-areas" class="text-2xl font-extrabold text-emerald-600">0</p>
           </div>
         </div>
@@ -233,7 +233,7 @@
       <div class="flex items-center gap-2">
         <!-- Filter by area -->
         <select id="filter-area" class="select select-bordered select-sm" onchange="handleFilter()">
-          <option value="">ทุกพื้นที่</option>
+          <option value="">All Equipment</option>
         </select>
         <!-- Filter by status -->
         <select id="filter-status" class="select select-bordered select-sm" onchange="handleFilter()">
@@ -262,13 +262,16 @@
           <thead>
             <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
               <th class="sticky-col text-xs text-slate-500 font-semibold uppercase bg-gradient-to-r from-slate-50 to-slate-100">
-                <i class="fa-solid fa-barcode mr-1 text-primary/60"></i> Identification Number
+                <i class="fa-solid fa-barcode mr-1 text-primary/60"></i> Indentification Number
               </th>
               <th class="text-xs text-slate-500 font-semibold uppercase">
-                <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Equipment Name
+                <i class="fa-solid fa-image mr-1 text-primary/60"></i> รูปภาพ
               </th>
               <th class="text-xs text-slate-500 font-semibold uppercase">
-                <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Manufacturer
+                <i class="fa-solid fa-warehouse mr-1 text-primary/60"></i> Equipment Name
+              </th>
+              <th class="text-xs text-slate-500 font-semibold uppercase">
+                <i class="fa-solid fa-warehouse mr-1 text-primary/60"></i> Manufacturer
               </th>
               <th class="text-xs text-slate-500 font-semibold uppercase">
                 <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Model
@@ -280,10 +283,10 @@
                 <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Interval
               </th>
               <th class="text-xs text-slate-500 font-semibold uppercase">
-                <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Date of Last Calibration
+                <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Last Calibration Date
               </th>
               <th class="text-xs text-slate-500 font-semibold uppercase">
-                <i class="fa-solid fa-calendar-xmark mr-1 text-error/60"></i> Expired Date
+                <i class="fa-solid fa-calendar-xmark mr-1 text-error/60"></i> Due date
               </th>
               <th class="text-xs text-slate-500 font-semibold uppercase">
                 <i class="fa-solid fa-shield-halved mr-1 text-warning/60"></i> Specification sheet
@@ -297,8 +300,7 @@
           </tbody>
         </table>
       </div>
-      </div>
-
+ 
       <!-- Empty State -->
       <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
         <div class="bg-slate-100 p-6 rounded-full mb-4">
@@ -309,7 +311,8 @@
         <a href="createform_toolinstrument.html" class="btn btn-primary btn-sm mt-4 gap-2">
           <i class="fa-solid fa-plus"></i> เพิ่ม Tool of Instrument
         </a>
-
+      </div>
+    </div>
  
     <!-- ===== PAGINATION ===== -->
     <div id="pagination" class="glass-card rounded-2xl border border-white/50 shadow-md px-5 py-3 hidden">
@@ -374,13 +377,13 @@
           <div class="flex-shrink-0">
             <div
               class="w-32 h-32 rounded-2xl ring-2 ring-slate-200 bg-slate-50 flex items-center justify-center">
-              <img id="detail-image" src="Image\noimage.svg" alt="Chemical" class="w-full h-full object-cover"
+              <img id="detail-image" src="images/noimage.svg" alt="Chemical" class="w-full h-full object-cover"
                 onerror="this.src='images/noimage.svg'" />
             </div>
           </div>
           <div class="flex-1 space-y-2">
             <div class="flex items-center gap-2">
-              <span class="badge badge-primary badge-lg font-mono font-bold" id="detail-code">-</span>
+              <span class="badge badge-primary badge-lg font-mono font-bold" id="detail-identificationnumber">-</span>
               <span id="detail-expiry-badge"></span>
             </div>
             <h2 class="text-xl font-bold text-slate-800" id="detail-description">-</h2>
@@ -402,85 +405,52 @@
               <i class="fa-solid fa-warehouse text-lg"></i>
             </div>
             <div>
-              <p class="text-xs text-slate-400 font-medium">Plant area</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-area">-</p>
+              <p class="text-xs text-slate-400 font-medium">Equipment Name</p>
+              <p class="text-sm font-semibold text-slate-700" id="detail-equipmentname">-</p>
             </div>
           </div>
  
-<!-- Object Type -->
+          <!-- Quantity -->
           <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
             <div class="bg-success/10 text-success p-2.5 rounded-lg">
               <i class="fa-solid fa-cubes-stacked text-lg"></i>
             </div>
             <div>
-              <p class="text-xs text-slate-400 font-medium">Object Type</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-objecttype">-</p>
+              <p class="text-xs text-slate-400 font-medium">Manufacturer</p>
+              <p class="text-sm font-semibold text-slate-700" id="detail-manufacturer">-</p>
             </div>
           </div>
-
-          <!-- Class Type -->
+ 
+          <!-- Lifttime -->
           <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
             <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
               <i class="fa-solid fa-hourglass-half text-lg"></i>
             </div>
             <div>
-              <p class="text-xs text-slate-400 font-medium">Class Type</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-classtype">-</p>
+              <p class="text-xs text-slate-400 font-medium">Model</p>
+              <p class="text-sm font-semibold text-slate-700" id="detail-model">-</p>
             </div>
           </div>
-
-          <!-- Scale Range -->
+ 
+          <!-- Leakage Class -->
           <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
             <div class="bg-success/10 text-success p-2.5 rounded-lg">
               <i class="fa-solid fa-file-lines text-lg"></i>
             </div>
             <div>
-              <p class="text-xs text-slate-400 font-medium">Scale Range</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-scalerange">-</p>
+              <p class="text-xs text-slate-400 font-medium">Serial Number</p>
+              <p class="text-sm font-semibold text-slate-700" id="detail-serialnumber">-</p>
             </div>
           </div>
-
-          <!-- Calibration Range -->
+ 
+          <!-- Fail Action -->
           <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
             <div class="bg-success/10 text-success p-2.5 rounded-lg">
               <i class="fa-solid fa-file-lines text-lg"></i>
             </div>
             <div>
-              <p class="text-xs text-slate-400 font-medium">Calibration Range</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-calibrationrange">-</p>
-            </div>
-          </div>
-
-          <!-- Output Range -->
-          <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
-            <div class="bg-success/10 text-success p-2.5 rounded-lg">
-              <i class="fa-solid fa-file-lines text-lg"></i>
-            </div>
-            <div>
-              <p class="text-xs text-slate-400 font-medium">Output Range</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-outputrange">-</p>
-            </div>
-          </div>
-
-          <!-- Equipment Class -->
-          <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
-            <div class="bg-success/10 text-success p-2.5 rounded-lg">
-              <i class="fa-solid fa-file-lines text-lg"></i>
-            </div>
-            <div>
-              <p class="text-xs text-slate-400 font-medium">Equipment Class</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-equipmentclass">-</p>
-            </div>
-          </div>
-
-          <!-- Layer Of Protection -->
-          <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
-            <div class="bg-success/10 text-success p-2.5 rounded-lg">
-              <i class="fa-solid fa-file-lines text-lg"></i>
-            </div>
-            <div>
-              <p class="text-xs text-slate-400 font-medium">Layer Of Protection</p>
-              <p class="text-sm font-semibold text-slate-700" id="detail-layerofprotection">-</p>
+              <p class="text-xs text-slate-400 font-medium">Interval Time</p>
+              <p class="text-sm font-semibold text-slate-700" id="detail-interval">-</p>
             </div>
           </div>
  
@@ -536,7 +506,7 @@
     <div class="modal-box max-w-3xl p-4">
       <div class="flex justify-between items-center mb-3">
         <h3 id="modal-title" class="font-bold text-lg flex items-center gap-2">
-          <i class="fa-solid fa-image text-primary"></i> รูปภาพ Tool of Instrument
+          <i class="fa-solid fa-image text-primary"></i> รูปภาพสารเคมี
         </h3>
         <form method="dialog">
           <button class="btn btn-sm btn-circle btn-ghost"><i class="fa-solid fa-xmark"></i></button>
