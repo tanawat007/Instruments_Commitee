@@ -107,17 +107,17 @@ function toInputDate(val) {
 function getExpiryBadge(dateStr) {
   const days = daysUntil(dateStr);
   if (days === null) return '<span class="badge badge-ghost badge-sm">ไม่ระบุ</span>';
-  if (days < 0) return `<span class="badge badge-error badge-sm gap-1 badge-expired"><i class="fa-solid fa-circle-xmark text-[10px]"></i> หมดอายุแล้ว</span>`;
-  if (days <= 30) return `<span class="badge badge-warning badge-sm gap-1"><i class="fa-solid fa-triangle-exclamation text-[10px]"></i> อีก ${days} วัน</span>`;
-  return `<span class="badge badge-success badge-sm gap-1"><i class="fa-solid fa-circle-check text-[10px]"></i> ${formatDate(dateStr)}</span>`;
+  if (days < 0) return `<span class="badge badge-error badge-sm gap-1 badge-expired"><i class="fa-solid fa-circle-xmark text-[12px]"></i> หมดอายุแล้ว</span>`;
+  if (days <= 30) return `<span class="badge badge-warning badge-sm gap-1"><i class="fa-solid fa-triangle-exclamation text-[12px]"></i> อีก ${days} วัน</span>`;
+  return `<span class="badge badge-success badge-sm gap-1"><i class="fa-solid fa-circle-check text-[12px]"></i> ${formatDate(dateStr)}</span>`;
 }
 
 function getCalibrateBadge(dateStr) {
   const days = daysUntil(dateStr) + 365; // สมมติให้ calibration มีอายุ 1 ปี (365 วัน) นับจาก dateOfUse
   if (days === null) return '<span class="badge badge-ghost badge-sm">ไม่ระบุ</span>';
-  if (days < 0) return `<span class="badge badge-error badge-sm gap-1 badge-expired"><i class="fa-solid fa-circle-xmark text-[10px]"></i> ${formatDate(dateStr)}</span>`;
-  if (days <= 30) return `<span class="badge badge-warning badge-sm gap-1"><i class="fa-solid fa-triangle-exclamation text-[10px]"></i> ${formatDate(dateStr)}</span>`;
-  return `<span class="badge badge-success badge-sm gap-1"><i class="fa-solid fa-circle-check text-[10px]"></i> ${formatDate(dateStr)}</span>`;
+  if (days < 0) return `<span class="badge badge-error badge-sm gap-1 badge-expired"><i class="fa-solid fa-circle-xmark text-[12px]"></i> ${formatDate(dateStr)}</span>`;
+  if (days <= 30) return `<span class="badge badge-warning badge-sm gap-1"><i class="fa-solid fa-triangle-exclamation text-[12px]"></i> ${formatDate(dateStr)}</span>`;
+  return `<span class="badge badge-success badge-sm gap-1"><i class="fa-solid fa-circle-check text-[12px]"></i> ${formatDate(dateStr)}</span>`;
 }
  
 // --- Stats ---
@@ -291,7 +291,7 @@ function renderTable() {
     let msdsLink;
     if (msdsVal && msdsVal.toLowerCase() !== 'na') {
       msdsLink = `<a href="${escapeHtml(msdsVal)}" target="_blank" class="btn btn-xs btn-outline btn-warning gap-1">
-           <i class="fa-solid fa-file-shield text-[10px]"></i> ดู Specification
+           <i class="fa-solid fa-file-shield text-[12px]"></i> ดู Specification
          </a>`;
     } else if (msdsVal.toLowerCase() === 'na') {
       msdsLink = '<span class="badge badge-ghost badge-sm">NA</span>';
@@ -833,7 +833,7 @@ function viewRecord(data) {
   if (msdsVal && msdsVal.toLowerCase() !== 'na') {
     setHtml('detail-msds',
       `<a href="${escapeAttr(msdsVal)}" target="_blank" class="link link-primary text-sm gap-1">
-         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> เปิดเอกสาร
+         <i class="fa-solid fa-arrow-up-right-from-square text-[12px]"></i> เปิดเอกสาร
        </a>`);
   } else if (msdsVal.toLowerCase() === 'na') {
     setEl('detail-msds', 'NA');
