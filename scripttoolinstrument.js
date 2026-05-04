@@ -291,7 +291,7 @@ function renderTable() {
     let msdsLink;
     if (msdsVal && msdsVal.toLowerCase() !== 'na') {
       msdsLink = `<a href="${escapeHtml(msdsVal)}" target="_blank" class="btn btn-xs btn-outline btn-warning gap-1">
-           <i class="fa-solid fa-file-shield text-[12px]"></i> ดู Specification
+           <i class="fa-solid fa-file-shield text-[12px]"></i> ดู Certificate report
          </a>`;
     } else if (msdsVal.toLowerCase() === 'na') {
       msdsLink = '<span class="badge badge-ghost badge-sm">NA</span>';
