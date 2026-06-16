@@ -2,7 +2,7 @@
  
 // ⚠️ สำคัญมาก: นำ URL ที่ได้จากการ Deploy ในขั้นตอนที่ 2 มาวางที่นี่
 // คำแนะนำ: Deploy Google Apps Script แบบ "Anyone can access" แล้วนำ URL มาใส่ตรงนี้
-const ORIGINAL_URL = 'https://script.google.com/macros/s/AKfycbyoTNGP1n6RSpDyO_ydtzllbOscbz_hVBl0wotI02qhUAXN6_pwiK5htdtCWtwLVn8j/exec';
+const ORIGINAL_URL = 'https://script.google.com/macros/s/AKfycbwy6aQpHGWHFFPO6iJZDGzOI3CPdO3m91hyvHWxN6yjX_hIq6IkzUWsRT59ksjSIg_x6w/exec';
  
  
 // ใช้ URL โดยตรงจาก Google Apps Script
@@ -19,17 +19,9 @@ const quantityInput = document.getElementById('quantity');
 const lifttimeInput = document.getElementById('lifttime');
 const leakageInput = document.getElementById('leakage');
 const failactionInput = document.getElementById('failaction');
-const objecttypeInput = document.getElementById('objecttype');
-const classtypeInput = document.getElementById('classtype');
-const scalerangeInput = document.getElementById('scalerange');
-const calibrationrangeInput = document.getElementById('calibrationrange');
-const outputrangeInput = document.getElementById('outputrange');
-const equipmentclassInput = document.getElementById('equipmentclass');
-const layerofprotectionInput = document.getElementById('layerofprotection');
 const dateOfUseInput = document.getElementById('dateOfUse');
 const expiredDateInput = document.getElementById('expiredDate');
 const msdsInput = document.getElementById('MSDS');
-const loopdiagramInput = document.getElementById('loopdiagram');
 const submitBtn = document.getElementById('submit-btn');
 const cancelBtn = document.getElementById('cancel-btn');
 const tableBody = document.getElementById('table-body');
@@ -148,7 +140,7 @@ function updateStats() {
   const filterArea = document.getElementById('filter-area');
   if (filterArea) {
     const current = filterArea.value;
-    filterArea.innerHTML = '<option value="">ทุก Plant Area</option>';
+    filterArea.innerHTML = '<option value="">ทุกพื้นที่</option>';
     [...areasSet].sort().forEach(area => {
       const opt = document.createElement('option');
       opt.value = area;
@@ -157,83 +149,6 @@ function updateStats() {
     });
     filterArea.value = current;
   }
-
-  // Populate object type filter
-  const filterObjectType = document.getElementById('filter-objecttype');
-  if (filterObjectType) {
-    const current = filterObjectType.value;
-    const objectTypeSet = new Set();
-    allData.forEach(row => {
-      const objecttype = (row.objecttype || '').trim();
-      if (objecttype) objectTypeSet.add(objecttype);
-    });
-    filterObjectType.innerHTML = '<option value="">ทุก Object Type</option>';
-    [...objectTypeSet].sort().forEach(objecttype => {
-      const opt = document.createElement('option');
-      opt.value = objecttype;
-      opt.textContent = objecttype;
-      filterObjectType.appendChild(opt);
-    });
-    filterObjectType.value = current;
-  }
-
-  // Populate class type filter
-  const filterclasstype = document.getElementById('filter-classtype');
-  if (filterclasstype) {
-    const current = filterclasstype.value;
-    const classtypesSet = new Set();
-    allData.forEach(row => {
-      const classtype = (row.classtype || '').trim();
-      if (classtype) classtypesSet.add(classtype);
-    });
-    filterclasstype.innerHTML = '<option value="">ทุก Class Type</option>';
-    [...classtypesSet].sort().forEach(classtype => {
-      const opt = document.createElement('option');
-      opt.value = classtype;
-      opt.textContent = classtype;
-      filterclasstype.appendChild(opt);
-    });
-    filterclasstype.value = current;
-  }
-
-  // Populate equipment class filter
-  const filterequipmentclass = document.getElementById('filter-equipmentclass');
-  if (filterequipmentclass) {
-    const current = filterequipmentclass.value;
-    const equipmentclassesSet = new Set();
-    allData.forEach(row => {
-      const equipmentclass = (row.equipmentclass || '').trim();
-      if (equipmentclass) equipmentclassesSet.add(equipmentclass);
-    });
-    filterequipmentclass.innerHTML = '<option value="">ทุก Equipment Class</option>';
-    [...equipmentclassesSet].sort().forEach(equipmentclass => {
-      const opt = document.createElement('option');
-      opt.value = equipmentclass;
-      opt.textContent = equipmentclass;
-      filterequipmentclass.appendChild(opt);
-    });
-    filterequipmentclass.value = current;
-  }
-
-  // Populate layer of protection filter
-  const filterlayerofprotection = document.getElementById('filter-layerofprotection');
-  if (filterlayerofprotection) {
-    const current = filterlayerofprotection.value;
-    const layerofprotectionSet = new Set();
-    allData.forEach(row => {
-      const layerofprotection = (row.layerofprotection || '').trim();
-      if (layerofprotection) layerofprotectionSet.add(layerofprotection);
-    });
-    filterlayerofprotection.innerHTML = '<option value="">ทุก Layer of Protection</option>';
-    [...layerofprotectionSet].sort().forEach(layerofprotection => {
-      const opt = document.createElement('option');
-      opt.value = layerofprotection;
-      opt.textContent = layerofprotection;
-      filterlayerofprotection.appendChild(opt);
-    });
-    filterlayerofprotection.value = current;
-  }
-
 }
  
 // --- Search & Filter ---
@@ -252,28 +167,16 @@ function applyFilters() {
   const searchMobile = document.getElementById('search-input-mobile');
   const query = (searchDesktop?.value || searchMobile?.value || '').trim().toLowerCase();
   const areaFilter = document.getElementById('filter-area')?.value || '';
-  const objecttypeFilter = document.getElementById('filter-objecttype')?.value || '';
-  const classtypeFilter = document.getElementById('filter-classtype')?.value || '';
-  const equipmentclassFilter = document.getElementById('filter-equipmentclass')?.value || '';
-  const layerofprotectionFilter = document.getElementById('filter-layerofprotection')?.value || '';
   const statusFilter = document.getElementById('filter-status')?.value || '';
  
   filteredData = allData.filter(row => {
     // Search
     if (query) {
-      const searchFields = [row.MaterialCode, row.Description, row.KeepingArea, row.objecttype, row.classtype, row.scalerange, row.calibrationrange, row.outputrange, row.equipmentclass, row.layerofprotection, row.MSDS].map(v => String(v || '').toLowerCase());
+      const searchFields = [row.MaterialCode, row.Description, row.KeepingArea, row.Quantity, row.Lifttime, row.LeakageClass, row.FailAction, row.MSDS].map(v => String(v || '').toLowerCase());
       if (!searchFields.some(f => f.includes(query))) return false;
     }
     // Area filter
     if (areaFilter && (row.KeepingArea || '').trim() !== areaFilter) return false;
-    // Object Type filter
-    if (objecttypeFilter && (row.objecttype || '').trim() !== objecttypeFilter) return false;
-    // Class Type filter
-    if (classtypeFilter && (row.classtype || '').trim() !== classtypeFilter) return false;
-    // Equipment Class filter
-    if (equipmentclassFilter && (row.equipmentclass || '').trim() !== equipmentclassFilter) return false;
-    // Layer of Protection filter
-    if (layerofprotectionFilter && (row.layerofprotection || '').trim() !== layerofprotectionFilter) return false;
     // Status filter
     if (statusFilter) {
       const days = daysUntil(row.ExpiredDate);
@@ -387,19 +290,7 @@ function renderTable() {
     } else {
       msdsLink = '<span class="text-slate-300 text-xs">-</span>';
     }
-    
-    const loopdiagramVal = (row.loopdiagram || '').trim();
-    let loopdiagramLink;
-    if (loopdiagramVal && loopdiagramVal.toLowerCase() !== 'na') {
-      loopdiagramLink = `<a href="${escapeHtml(loopdiagramVal)}" target="_blank" class="btn btn-xs btn-outline btn-info gap-1">
-           <i class="fa-solid fa-diagram-project text-[10px]"></i> ดู Loop Diagram
-         </a>`;
-    } else if (loopdiagramVal.toLowerCase() === 'na') {
-      loopdiagramLink = '<span class="badge badge-ghost badge-sm">NA</span>';
-    } else {
-      loopdiagramLink = '<span class="text-slate-300 text-xs">-</span>';
-    }
-    
+ 
     tr.innerHTML = `
       <td class="font-mono font-semibold text-primary text-sm">${escapeHtml(row.MaterialCode || '-')}</td>
       <td>
@@ -417,16 +308,12 @@ function renderTable() {
       </td>
 
       <td class="font-semibold text-sm">${escapeHtml(row.Description || '-')}</td>
-      <td class="font-semibold text-sm">${escapeHtml(row.objecttype || '-')}</td>
-      <td class="font-semibold text-sm">${escapeHtml(row.classtype || '-')}</td>
-      <td class="font-semibold text-sm">${escapeHtml(row.scalerange || '-')}</td>
-      <td class="font-semibold text-sm">${escapeHtml(row.calibrationrange || '-')}</td>
-      <td class="font-semibold text-sm">${escapeHtml(row.outputrange || '-')}</td>
-      <td class="font-semibold text-sm">${escapeHtml(row.equipmentclass || '-')}</td>
-      <td class="font-semibold text-sm">${escapeHtml(row.layerofprotection || '-')}</td>
+      <td class="font-semibold text-sm">${escapeHtml(row.Quantity || '-')}</td>
+      <td class="font-semibold text-sm">${escapeHtml(row.Lifttime || '-')}</td>
+      <td class="font-semibold text-sm">${escapeHtml(row.LeakageClass || '-')}</td>
+      <td class="font-semibold text-sm">${escapeHtml(row.FailAction || '-')}</td>
       <td>${getExpiryBadge(row.ExpiredDate)}</td>
       <td>${msdsLink}</td>
-      <td>${loopdiagramLink}</td>
       <td class="text-right">
         <div class="flex justify-end gap-1">
           <button class="view-btn btn btn-xs btn-ghost text-info tooltip tooltip-left" data-tip="ดูรายละเอียด"
@@ -435,47 +322,35 @@ function renderTable() {
                   data-description="${escapeAttr(row.Description || '')}"
                   data-image-before="${escapeAttr(row.ImageBefore || row['ImageBefore '] || '')}"
                   data-keeping-area="${escapeAttr(row.KeepingArea || '')}"
-                  data-objecttype="${escapeAttr(row.objecttype || '')}"
-                  data-classtype="${escapeAttr(row.classtype || '')}"
-                  data-scalerange="${escapeAttr(row.scalerange || '')}"
-                  data-calibrationrange="${escapeAttr(row.calibrationrange || '')}"
-                  data-outputrange="${escapeAttr(row.outputrange || '')}"
-                  data-equipmentclass="${escapeAttr(row.equipmentclass || '')}"
-                  data-layerofprotection="${escapeAttr(row.layerofprotection || '')}"
+                  data-quantity="${escapeAttr(row.Quantity || '')}"
+                  data-lifttime="${escapeAttr(row.Lifttime || '')}"
+                  data-leakage="${escapeAttr(row.LeakageClass || '')}"
+                  data-failaction="${escapeAttr(row.FailAction || '')}"
                   data-date-of-use="${escapeAttr(toInputDate(row.DateOfUse))}"
                   data-expired-date="${escapeAttr(toInputDate(row.ExpiredDate))}"
                   data-msds="${escapeAttr(row.MSDS || '')}"
-                  data-loopdiagram="${escapeAttr(row.loopdiagram || '')}"
                   data-timestamp="${escapeAttr(row.Timestamp || '')}">
             <i class="fa-solid fa-eye"></i>
           </button>
-          ${canEdit() ? `
-          <button class="edit-btn btn btn-xs btn-ghost text-primary tooltip tooltip-left" data-tip="แก้ไข"
+          ${canEdit() ? `<button class="edit-btn btn btn-xs btn-ghost text-primary tooltip tooltip-left" data-tip="แก้ไข"
                   data-id="${escapeAttr(row.ID)}"
                   data-material-code="${escapeAttr(row.MaterialCode || '')}"
                   data-description="${escapeAttr(row.Description || '')}"
                   data-image-before="${escapeAttr(row.ImageBefore || row['ImageBefore '] || '')}"
                   data-keeping-area="${escapeAttr(row.KeepingArea || '')}"
-                  data-objecttype="${escapeAttr(row.objecttype || '')}"
-                  data-classtype="${escapeAttr(row.classtype || '')}"
-                  data-scalerange="${escapeAttr(row.scalerange || '')}"
-                  data-calibrationrange="${escapeAttr(row.calibrationrange || '')}"
-                  data-outputrange="${escapeAttr(row.outputrange || '')}"
-                  data-equipmentclass="${escapeAttr(row.equipmentclass || '')}"
-                  data-layerofprotection="${escapeAttr(row.layerofprotection || '')}"
+                  data-quantity="${escapeAttr(row.Quantity || '')}"
+                  data-lifttime="${escapeAttr(row.Lifttime || '')}"
+                  data-leakage="${escapeAttr(row.LeakageClass || '')}"
+                  data-failaction="${escapeAttr(row.FailAction || '')}"
                   data-date-of-use="${escapeAttr(toInputDate(row.DateOfUse))}"
                   data-expired-date="${escapeAttr(toInputDate(row.ExpiredDate))}"
-                  data-msds="${escapeAttr(row.MSDS || '')}"
-                  data-loopdiagram="${escapeAttr(row.loopdiagram || '')}">
+                  data-msds="${escapeAttr(row.MSDS || '')}">
             <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-          ` : ''}
-          ${canDelete() ? `
-          <button class="delete-btn btn btn-xs btn-ghost text-error tooltip tooltip-left" data-tip="ลบ"
-            data-id="${escapeAttr(row.ID)}">
+          </button>` : ''}
+          ${canDelete() ? `<button class="delete-btn btn btn-xs btn-ghost text-error tooltip tooltip-left" data-tip="ลบ"
+                  data-id="${escapeAttr(row.ID)}">
             <i class="fa-solid fa-trash-can"></i>
-          </button>
-          ` : ''}
+          </button>` : ''}
         </div>
       </td>
     `;
@@ -495,17 +370,13 @@ function renderTable() {
         this.dataset.description,
         this.dataset.imageBefore,
         this.dataset.keepingArea,
-        this.dataset.objecttype,
-        this.dataset.classtype,
-        this.dataset.scalerange,
-        this.dataset.calibrationrange,
-        this.dataset.outputrange,
-        this.dataset.equipmentclass,
-        this.dataset.layerofprotection,
+        this.dataset.quantity,
+        this.dataset.lifttime,
+        this.dataset.leakage,
+        this.dataset.failaction,
         this.dataset.dateOfUse,
         this.dataset.expiredDate,
-        this.dataset.msds,
-        this.dataset.loopdiagram,
+        this.dataset.msds
       );
     });
   });
@@ -553,17 +424,13 @@ if (form) {
       description: descriptionInput?.value.trim() || '',
       imageBefore: imageBeforeInput?.value.trim() || '',
       keepingArea: keepingAreaInput?.value.trim() || '',
-      objecttype: objecttypeInput?.value.trim() || '',
-      classtype: classtypeInput?.value.trim() || '',
-      scalerange: scalerangeInput?.value.trim() || '',
-      calibrationrange: calibrationrangeInput?.value.trim() || '',
-      outputrange: outputrangeInput?.value.trim() || '',
-      equipmentclass: equipmentclassInput?.value.trim() || '',
-      layerofprotection: layerofprotectionInput?.value.trim() || '',
+      quantity: quantityInput?.value.trim() || '',
+      lifttime: lifttimeInput?.value.trim() || '',
+      leakage: leakageInput?.value.trim() || '',
+      failaction: failactionInput?.value.trim() || '',
       dateOfUse: dateOfUseInput?.value || '',
       expiredDate: expiredDateInput?.value || '',
-      msds: msdsInput?.value.trim() || '',
-      loopdiagram: loopdiagramInput?.value.trim() || ''
+      msds: msdsInput?.value.trim() || ''
     };
  
     if (isUpdating) {
@@ -623,7 +490,7 @@ if (form) {
         resetForm();
  
         // Redirect กลับไปหน้าหลัก
-        window.location.href = '01_fieldinstrument.html';
+        window.location.href = '02_controlvalve.html';
  
       } else {
         const errorMsg = result.message || 'ไม่สามารถบันทึกข้อมูลได้';
@@ -671,14 +538,14 @@ if (form) {
 }
  
 // 4. เตรียมฟอร์มสำหรับแก้ไข
-function editRecord(id, materialCode, description, imageBefore, keepingArea, objecttype, classtype, scalerange, calibrationrange, outputrange, equipmentclass, layerofprotection, dateOfUse, expiredDate, msds, loopdiagram) {
+function editRecord(id, materialCode, description, imageBefore, keepingArea, quantity, lifttime, leakage, failaction, dateOfUse, expiredDate, msds) {
   // ถ้าอยู่หน้า index ให้ redirect ไปหน้า createForm โดยเก็บข้อมูลใน sessionStorage
   // (ไม่ใช้ query params เพราะข้อมูลเช่น base64 image ทำให้ URL ยาวเกินไป → 431 error)
   if (!form) {
     sessionStorage.setItem('editRecord', JSON.stringify({
-      id, materialCode, description, imageBefore, keepingArea, objecttype, classtype, scalerange, calibrationrange, outputrange, equipmentclass, layerofprotection, dateOfUse, expiredDate, msds, loopdiagram
+      id, materialCode, description, imageBefore, keepingArea, quantity, lifttime, leakage, failaction, dateOfUse, expiredDate, msds
     }));
-    window.location.href = 'createform_filedinstrument.html?edit=1';
+    window.location.href = 'createform_valve.html?edit=1';
     return;
   }
  
@@ -687,17 +554,13 @@ function editRecord(id, materialCode, description, imageBefore, keepingArea, obj
   if (descriptionInput) descriptionInput.value = description || '';
   if (imageBeforeInput) imageBeforeInput.value = imageBefore || '';
   if (keepingAreaInput) keepingAreaInput.value = keepingArea || '';
-  if (objecttypeInput) objecttypeInput.value = objecttype || '';
-  if (classtypeInput) classtypeInput.value = classtype || '';
-  if (scalerangeInput) scalerangeInput.value = scalerange || '';
-  if (calibrationrangeInput) calibrationrangeInput.value = calibrationrange || '';
-  if (outputrangeInput) outputrangeInput.value = outputrange || '';
-  if (equipmentclassInput) equipmentclassInput.value = equipmentclass || '';
-  if (layerofprotectionInput) layerofprotectionInput.value = layerofprotection || '';
+  if (quantityInput) quantityInput.value = quantity || '';
+  if (lifttimeInput) lifttimeInput.value = lifttime || '';
+  if (leakageInput) leakageInput.value = leakage || '';
+  if (failactionInput) failactionInput.value = failaction || '';
   if (dateOfUseInput) dateOfUseInput.value = toInputDate(dateOfUse) || dateOfUse || '';
   if (expiredDateInput) expiredDateInput.value = toInputDate(expiredDate) || expiredDate || '';
   if (msdsInput) msdsInput.value = msds || '';
-  if (loopdiagramInput) loopdiagramInput.value = loopdiagram || '';
  
   if (imageBefore) previewImage(imageBefore, 'preview-before', 'img-before');
  
@@ -720,17 +583,13 @@ if (form) {
           data.description,
           data.imageBefore,
           data.keepingArea,
-          data.objecttype,
-          data.classtype,
-          data.scalerange,
-          data.calibrationrange,
-          data.outputrange,
-          data.equipmentclass,
-          data.layerofprotection,
+          data.quantity,
+          data.lifttime,
+          data.leakage,
+          data.failaction,
           data.dateOfUse,
           data.expiredDate,
-          data.msds,
-          data.loopdiagram
+          data.msds
         );
         sessionStorage.removeItem('editRecord');
       } catch (e) {
@@ -744,7 +603,7 @@ if (form) {
 async function deleteRecord(id) {
   const result = await Swal.fire({
     title: 'ยืนยันการลบ',
-    html: '<p class="text-slate-500">คุณต้องการลบข้อมูล Field Instrumentนี้ใช่หรือไม่?</p><p class="text-xs text-red-400 mt-2">การดำเนินการนี้ไม่สามารถย้อนกลับได้</p>',
+    html: '<p class="text-slate-500">คุณต้องการลบข้อมูลสารเคมีนี้ใช่หรือไม่?</p><p class="text-xs text-red-400 mt-2">การดำเนินการนี้ไม่สามารถย้อนกลับได้</p>',
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#ef4444',
@@ -921,14 +780,13 @@ prevMobile?.addEventListener('click', prevPage);
 nextMobile?.addEventListener('click', nextPage);
  
 // --- Initial Load ---
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!checkUserPermissions()) return;
-
   hideButtonsBasedOnPermissions();
-  fetchData();
+  await fetchData();
 });
  
-// ฟังก์ชันแสดงรายละเอียด Field Instrument
+// ฟังก์ชันแสดงรายละเอียดสารเคมี
 function viewRecord(data) {
   const modal = document.getElementById('detail-modal');
   if (!modal) return;
@@ -948,17 +806,10 @@ function viewRecord(data) {
   setEl('detail-code', data.materialCode || '-');
   setEl('detail-description', data.description || '-');
   setEl('detail-area', data.keepingArea || '-');
-  // setEl('detail-quantity', data.quantity || '-'); // Commented out in HTML
-  // setEl('detail-lifttime', data.lifttime || '-'); // Commented out in HTML
-  // setEl('detail-leakage', data.leakage || '-'); // Commented out in HTML
-  // setEl('detail-failaction', data.failaction || '-'); // Commented out in HTML
-  setEl('detail-objecttype', data.objecttype || '-');
-  setEl('detail-classtype', data.classtype || '-');
-  setEl('detail-scalerange', data.scalerange || '-');
-  setEl('detail-calibrationrange', data.calibrationrange || '-');
-  setEl('detail-outputrange', data.outputrange || '-');
-  setEl('detail-equipmentclass', data.equipmentclass || '-');
-  setEl('detail-layerofprotection', data.layerofprotection || '-');
+  setEl('detail-quantity', data.quantity || '-');
+  setEl('detail-lifttime', data.lifttime || '-');
+  setEl('detail-leakage', data.leakage || '-');
+  setEl('detail-failaction', data.failaction || '-');
   setEl('detail-dateOfUse', formatDate(data.dateOfUse));
   setEl('detail-expiredDate', formatDate(data.expiredDate));
   setEl('detail-timestamp', data.timestamp ? formatDate(data.timestamp) : '-');
@@ -977,18 +828,6 @@ function viewRecord(data) {
     setEl('detail-msds', 'NA');
   } else {
     setEl('detail-msds', 'ไม่มี');
-  }
-
-  const loopdiagramVal = (data.loopdiagram || '').trim();
-  if (loopdiagramVal && loopdiagramVal.toLowerCase() !== 'na') {
-    setHtml('detail-loopdiagram',
-      `<a href="${escapeAttr(loopdiagramVal)}" target="_blank" class="link link-primary text-sm gap-1">
-         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> เปิดเอกสาร
-       </a>`);
-  } else if (loopdiagramVal.toLowerCase() === 'na') {
-    setEl('detail-loopdiagram', 'NA');
-  } else {
-    setEl('detail-loopdiagram', 'ไม่มี');
   }
  
   modal.showModal();

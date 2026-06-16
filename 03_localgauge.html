@@ -211,9 +211,6 @@
       </div>
     </div>
     <div class="flex items-center gap-2 px-4 lg:px-0">
-      <select id="filter-area" class="select select-bordered select-sm" onchange="handleFilter()">
-        <option value="">ทุกพื้นที่</option>
-      </select>
       <select id="filter-status" class="select select-bordered select-sm" onchange="handleFilter()">
         <option value="">ทุกสถานะ</option>
         <option value="active">ยังไม่หมดอายุ</option>
@@ -222,6 +219,18 @@
       </select>
     </div>
   </div>
+
+
+  <!-- ===== LOADING กำลังโหลดข้อมูล ===== -->
+    <div id="loading" class="flex flex-col items-center justify-center py-20">
+      <div class="relative">
+        <div class="w-16 h-16 border-4 border-primary/20 rounded-full animate-spin border-t-primary"></div>
+        <i
+          class="fa-solid fa-flask absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary text-lg"></i>
+      </div>
+      <p class="mt-4 text-slate-500 font-medium animate-pulse">กำลังโหลดข้อมูล Local Gauge...</p>
+    </div>
+
 
   <div class="glass-card rounded-2xl border border-white/50 shadow-lg overflow-hidden mx-4 lg:mx-8">
     <div class="overflow-x-auto">
@@ -244,7 +253,7 @@
               <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Class Type
             </th>
             <th class="text-xs text-slate-500 font-semibold uppercase">
-              <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Subtype
+              <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Sub Type
             </th>
             <th class="text-xs text-slate-500 font-semibold uppercase">
               <i class="fa-solid fa-file-lines mr-1 text-primary/60"></i> Scale Range
@@ -261,6 +270,43 @@
             <th class="text-xs text-slate-500 font-semibold uppercase text-center">
               <i class="fa-solid fa-gear mr-1 text-slate-400"></i> จัดการ
             </th>
+          </tr>
+          <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
+            <th class="sticky-col text-xs text-slate-500 font-semibold uppercase bg-gradient-to-r from-slate-50 to-slate-100"></th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <select id="filter-area" class="select select-bordered select-xs" onchange="handleFilter()">
+                <option value="">ทุก Plant Area</option>
+              </select>
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <select id="filter-objecttype" class="select select-bordered select-xs" onchange="handleFilter()">
+                <option value="">ทุก Object Type</option>
+              </select>
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <select id="filter-classtype" class="select select-bordered select-xs" onchange="handleFilter()">
+                <option value="">ทุก Class Type</option>
+              </select>
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <select id="filter-subtype" class="select select-bordered select-xs" onchange="handleFilter()">
+                <option value="">ทุก Sub Type</option>
+              </select>
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <select id="filter-scalerange" class="select select-bordered select-xs" onchange="handleFilter()">
+                <option value="">ทุก Scale Range</option>
+              </select>
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase">
+              <select id="filter-processconnection" class="select select-bordered select-xs" onchange="handleFilter()">
+                <option value="">ทุก Process Connection</option>
+              </select>
+            </th>
+            <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+            <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+            <th class="text-xs text-slate-500 font-semibold uppercase text-center"></th>
           </tr>
         </thead>
         <tbody id="table-body"></tbody>

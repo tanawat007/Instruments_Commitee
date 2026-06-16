@@ -125,7 +125,7 @@ function updateStats() {
   const filterArea = document.getElementById('filter-area');
   if (filterArea) {
     const current = filterArea.value;
-    filterArea.innerHTML = '<option value="">ทุกพื้นที่</option>';
+    filterArea.innerHTML = '<option value="">ทุก Plant Area</option>';
     [...areasSet].sort().forEach(area => {
       const opt = document.createElement('option');
       opt.value = area;
@@ -133,6 +133,101 @@ function updateStats() {
       filterArea.appendChild(opt);
     });
     filterArea.value = current;
+  }
+
+  // Populate object type filter
+  const filterObjectType = document.getElementById('filter-objecttype');
+  if (filterObjectType) {
+    const current = filterObjectType.value;
+    const objectTypesSet = new Set();
+    allData.forEach(row => {
+      const objecttype = (row.objecttype || '').trim();
+      if (objecttype) objectTypesSet.add(objecttype);
+    });
+    filterObjectType.innerHTML = '<option value="">ทุก Object Type</option>';
+    [...objectTypesSet].sort().forEach(objecttype => {
+      const opt = document.createElement('option');
+      opt.value = objecttype;
+      opt.textContent = objecttype;
+      filterObjectType.appendChild(opt);
+    });
+    filterObjectType.value = current;
+  }
+
+  // Populate class type filter
+  const filterClasstype = document.getElementById('filter-classtype');
+  if (filterClasstype) {
+    const current = filterClasstype.value;
+    const classtypesSet = new Set();
+    allData.forEach(row => {
+      const classtype = (row.classtype || '').trim();
+      if (classtype) classtypesSet.add(classtype);
+    });
+    filterClasstype.innerHTML = '<option value="">ทุก Class Type</option>';
+    [...classtypesSet].sort().forEach(classtype => {
+      const opt = document.createElement('option');
+      opt.value = classtype;
+      opt.textContent = classtype;
+      filterClasstype.appendChild(opt);
+    });
+    filterClasstype.value = current;
+  }
+
+  // Populate subtype filter
+  const filterSubtype = document.getElementById('filter-subtype');
+  if (filterSubtype) {
+    const current = filterSubtype.value;
+    const subtypeSet = new Set();
+    allData.forEach(row => {
+      const subtype = (row.subtype || '').trim();
+      if (subtype) subtypeSet.add(subtype);
+    });
+    filterSubtype.innerHTML = '<option value="">ทุก Sub Type</option>';
+    [...subtypeSet].sort().forEach(subtype => {
+      const opt = document.createElement('option');
+      opt.value = subtype;
+      opt.textContent = subtype;
+      filterSubtype.appendChild(opt);
+    });
+    filterSubtype.value = current;
+  }
+
+  // Populate scale range filter
+  const filterScaleRange = document.getElementById('filter-scalerange');
+  if (filterScaleRange) {
+    const current = filterScaleRange.value;
+    const scalerangeSet = new Set();
+    allData.forEach(row => {
+      const scalerange = (row.scalerange || '').trim();
+      if (scalerange) scalerangeSet.add(scalerange);
+    });
+    filterScaleRange.innerHTML = '<option value="">ทุก Scale Range</option>';
+    [...scalerangeSet].sort().forEach(scalerange => {
+      const opt = document.createElement('option');
+      opt.value = scalerange;
+      opt.textContent = scalerange;
+      filterScaleRange.appendChild(opt);
+    });
+    filterScaleRange.value = current;
+  }
+
+  // Populate process connection filter
+  const filterProcessConnection = document.getElementById('filter-processconnection');
+  if (filterProcessConnection) {
+    const current = filterProcessConnection.value;
+    const processConnectionSet = new Set();
+    allData.forEach(row => {
+      const processconnection = (row.processconnection || '').trim();
+      if (processconnection) processConnectionSet.add(processconnection);
+    });
+    filterProcessConnection.innerHTML = '<option value="">ทุก Process Connection</option>';
+    [...processConnectionSet].sort().forEach(processconnection => {
+      const opt = document.createElement('option');
+      opt.value = processconnection;
+      opt.textContent = processconnection;
+      filterProcessConnection.appendChild(opt);
+    });
+    filterProcessConnection.value = current;
   }
 }
  
@@ -152,6 +247,11 @@ function applyFilters() {
   const searchMobile = document.getElementById('search-input-mobile');
   const query = (searchDesktop?.value || searchMobile?.value || '').trim().toLowerCase();
   const areaFilter = document.getElementById('filter-area')?.value || '';
+  const objectTypeFilter = document.getElementById('filter-objecttype')?.value || '';
+  const classtypeFilter = document.getElementById('filter-classtype')?.value || '';
+  const subtypeFilter = document.getElementById('filter-subtype')?.value || '';
+  const scalerangeFilter = document.getElementById('filter-scalerange')?.value || '';
+  const processConnectionFilter = document.getElementById('filter-processconnection')?.value || '';
   const statusFilter = document.getElementById('filter-status')?.value || '';
  
   filteredData = allData.filter(row => {
@@ -174,6 +274,16 @@ function applyFilters() {
     }
     // Area filter
     if (areaFilter && (row.KeepingArea || '').trim() !== areaFilter) return false;
+    // Object Type filter
+    if (objectTypeFilter && (row.objecttype || '').trim() !== objectTypeFilter) return false;
+    // Class Type filter
+    if (classtypeFilter && (row.classtype || '').trim() !== classtypeFilter) return false;
+    // Sub Type filter
+    if (subtypeFilter && (row.subtype || '').trim() !== subtypeFilter) return false;
+    // Scale Range filter
+    if (scalerangeFilter && (row.scalerange || '').trim() !== scalerangeFilter) return false;
+    // Process Connection filter
+    if (processConnectionFilter && (row.processconnection || '').trim() !== processConnectionFilter) return false;
     // Status filter
     if (statusFilter) {
       const days = daysUntil(row.ExpiredDate);

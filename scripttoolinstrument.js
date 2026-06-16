@@ -13,7 +13,7 @@ const form = document.getElementById('data-form');
 const recordIdInput = document.getElementById('record-id');
 const identificationnumberInput = document.getElementById('identificationnumber');
 // const descriptionInput = document.getElementById('description');
-const imageBeforeInput = document.getElementById('image-before');
+const imageBeforeInput = document.getElementById('imageBefore');
 const equipmentnameInput = document.getElementById('equipmentname');
 const manufacturerInput = document.getElementById('manufacturer');
 const modelInput = document.getElementById('model');
@@ -286,7 +286,7 @@ function renderTable() {
     const tr = document.createElement('tr');
     tr.className = 'table-row-hover transition-colors';
  
-    const imgSrc = row.ImageBefore || row['ImageBefore '] || noImageUrl;
+    const imgSrc = row.imageBefore || row['imageBefore '] || noImageUrl;
     const msdsVal = (row.MSDS || '').trim();
     let msdsLink;
     if (msdsVal && msdsVal.toLowerCase() !== 'na') {
@@ -329,7 +329,7 @@ function renderTable() {
                   data-id="${escapeAttr(row.ID)}"
                   data-identificationnumber="${escapeAttr(row.identificationnumber || '')}"
                   data-description="${escapeAttr(row.Description || '')}"
-                  data-image-before="${escapeAttr(row.ImageBefore || '')}"
+                  data-image-before="${escapeAttr(row.imageBefore || '')}"
                   data-equipmentname="${escapeAttr(row.equipmentname || '')}"
                   data-manufacturer="${escapeAttr(row.manufacturer || '')}"
                   data-model="${escapeAttr(row.model || '')}"
@@ -345,7 +345,7 @@ function renderTable() {
                   data-id="${escapeAttr(row.ID)}"
                   data-identificationnumber="${escapeAttr(row.identificationnumber || '')}"
                   data-description="${escapeAttr(row.Description || '')}"
-                  data-image-before="${escapeAttr(row.ImageBefore || row['ImageBefore '] || '')}"
+                  data-image-before="${escapeAttr(row.imageBefore || row['imageBefore '] || '')}"
                   data-equipmentname="${escapeAttr(row.equipmentname || '')}"
                   data-manufacturer="${escapeAttr(row.manufacturer || '')}"
                   data-model="${escapeAttr(row.model || '')}"

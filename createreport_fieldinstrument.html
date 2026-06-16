@@ -87,13 +87,27 @@
             class="input input-bordered input-primary w-full focus:input-primary transition-all" />
         </div>
         <div class="form-control w-full">
+          <!-- <label class="label" for="instrumenttype">
+            <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-warehouse field-icon"></i> Instrument Type
+            </span>
+          </label> -->
           <label class="label" for="instrumenttype">
             <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
               <i class="fa-solid fa-warehouse field-icon"></i> Instrument Type
             </span>
-          </label>
-          <input type="text" id="instrumenttype" name="instrumenttype" required placeholder="เช่น ADU1"
-            class="input input-bordered input-primary w-full focus:input-primary transition-all" />
+            </label>
+            <select id="instrumenttype" name="instrumenttype" required placeholder="เช่น ADU1"
+              class="input input-bordered input-primary w-full focus:input-primary transition-all" >
+              <option value="">-- กรุณาเลือก --</option>
+              <option value="Flow transmitter">Flow transmitter</option>
+              <option value="Level transmitter">Level transmitter</option>
+              <option value="Pressure transmitter">Pressure transmitter</option>
+              <option value="Temperature transmitter">Temperature transmitter</option>
+            </select>
+
+          <!-- <input type="text" id="instrumenttype" name="instrumenttype" required placeholder="เช่น ADU1"
+            class="input input-bordered input-primary w-full focus:input-primary transition-all" /> -->
         </div>
       </div>
  

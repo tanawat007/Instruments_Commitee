@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instrument Refinery-APP</title>
+    <!-- Tailwind CSS + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'Noto Sans Thai', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+ 
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap%22
+    rel="stylesheet">
+ 
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+  <!-- SweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 40%, #fdf4ff 100%);
+      min-height: 100vh;
+    }
+ 
+    .glass-card {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.80);
+    }
+ 
+    .stat-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+ 
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+ 
+    .table-row-hover:hover {
+      background: rgba(99, 102, 241, 0.04);
+    }
+ 
+    .badge-expired {
+      animation: pulse-red 2s infinite;
+    }
+ 
+    @keyframes pulse-red {
+ 
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+ 
+      50% {
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+      }
+    }
+ 
+    /* custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+ 
+    ::-webkit-scrollbar-thumb {
+      background: #c7d2fe;
+      border-radius: 999px;
+    }
+
+    /* Sticky first column styles */
+    .sticky-first-col tbody td:first-child,
+    .sticky-first-col thead th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background-color: white;
+    }
+
+    .sticky-first-col tbody tr.table-row-hover:hover td:first-child {
+      background-color: rgba(99, 102, 241, 0.04);
+    }
+
+    .sticky-first-col tbody tr:nth-child(odd) td:first-child {
+      background-color: #f8fafc;
+    }
+
+    .sticky-first-col tbody tr:nth-child(even) td:first-child {
+      background-color: #ffffff;
+    }
+
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      z-index: 20;
+    }
+  </style>
+</head>
+
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+
+    
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Bolting Torque Calculator</h1>
+            <p class="text-gray-600 mt-2">ระบบคำนวณค่าแรงขันและเลือกขนาดอุปกรณ์สำหรับหน้าแปลน</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Inputs -->
+            <div class="md:col-span-1 space-y-4">
+                <div class="card p-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Flange Size (IPS)</label>
+                    <select id="flangeSize" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4">
+                        <option value="">เลือกขนาดหน้าแปลน</option>
+                    </select>
+
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Rating (Class)</label>
+                    <select id="rating" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="">เลือก Rating</option>
+                        <option value="150#">150#</option>
+                        <option value="300#">300#</option>
+                        <option value="400#">400#</option>
+                        <option value="600#">600#</option>
+                        <option value="900#">900#</option>
+                        <option value="1500#">1500#</option>
+                        <option value="2500#">2500#</option>
+                    </select>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                    <p class="text-xs text-blue-800 font-medium">หมายเหตุ:</p>
+                    <p class="text-[11px] text-blue-700 leading-relaxed">
+                        * ค่า Torque สำหรับ B7 & B16 studbolts (Nm)<br>
+                        * ความยาวโบลต์อ้างอิงตามตาราง Stud Bolt Length (mm)<br>
+                        * ข้อมูลบางส่วนอาจไม่มีในตารางมาตรฐานที่แนบมา
+                    </p>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="md:col-span-2">
+                <div id="resultCard" class="card p-6 hidden">
+                    <h2 class="text-xl font-bold text-gray-800 border-b pb-3 mb-4">ข้อมูลการติดตั้ง (Installation Info)</h2>
+                    
+                    <!-- Updated Info Grid: 3 Items as requested -->
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div class="bg-blue-50 p-3 rounded-lg text-center border border-blue-100">
+                            <span class="block text-[10px] text-blue-600 uppercase font-bold mb-1">จำนวนโบลต์</span>
+                            <span id="resNoBolts" class="text-xl font-bold text-blue-800">-</span>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg text-center border border-blue-100">
+                            <span class="block text-[10px] text-blue-600 uppercase font-bold mb-1">ขนาดโบลต์ (นิ้ว)</span>
+                            <span id="resDia" class="text-xl font-bold text-blue-800">-</span>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg text-center border border-blue-100">
+                            <span class="block text-[10px] text-blue-600 uppercase font-bold mb-1">ความยาว (mm)</span>
+                            <span id="resLen" class="text-xl font-bold text-blue-800">-</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-gray-600 uppercase border-l-4 border-green-500 pl-2">Torque Values (Nm)</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="border rounded p-2 text-center bg-gray-50">
+                                <span class="text-[10px] text-gray-500 block">1st Pass (25%)</span>
+                                <span id="pass1" class="font-bold">-</span>
+                            </div>
+                            <div class="border rounded p-2 text-center bg-gray-50">
+                                <span class="text-[10px] text-gray-500 block">2nd Pass (50%)</span>
+                                <span id="pass2" class="font-bold">-</span>
+                            </div>
+                            <div class="bg-blue-600 text-white rounded p-2 text-center">
+                                <span class="text-[10px] opacity-80 block">Final Pass (100%)</span>
+                                <span id="passFinal" class="font-bold text-lg">-</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-600 uppercase mb-2">Wrench Table</h3>
+                                <div class="bg-gray-100 p-3 rounded-lg">
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>AF Metric:</span>
+                                        <span id="resMetric" class="font-bold text-blue-700">-</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>AF Inch:</span>
+                                        <span id="resInch" class="font-bold text-blue-700">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-600 uppercase mb-2">Tightening Method</h3>
+                                <div id="methodLabel" class="p-3 rounded-lg text-center text-sm font-bold h-full flex items-center justify-center">
+                                    -
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-base-100 w-full shadow-sm">
+                    <figure>
+                    <img
+                        src="images\torque.png"
+                        alt="Shoes" />
+                    </figure>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="card p-12 text-center text-gray-400 flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-200 bg-transparent shadow-none">
+                    <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <p>กรุณาเลือกขนาดหน้าแปลนและ Rating เพื่อดูข้อมูล</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลจำนวนโบลต์และขนาดโบลต์ตาม Rating
+        const flangeData = {
+            "1/2":   { "150#": [4, "1/2"], "300#": [4, "1/2"], "400#": [4, "1/2"], "600#": [4, "1/2"], "900#": [4, "3/4"], "1500#": [4, "3/4"], "2500#": [4, "3/4"] },
+            "3/4":   { "150#": [4, "1/2"], "300#": [4, "5/8"], "400#": [4, "5/8"], "600#": [4, "5/8"], "900#": [4, "3/4"], "1500#": [4, "3/4"], "2500#": [4, "3/4"] },
+            "1":     { "150#": [4, "1/2"], "300#": [4, "5/8"], "400#": [4, "5/8"], "600#": [4, "5/8"], "900#": [4, "7/8"], "1500#": [4, "7/8"], "2500#": [4, "7/8"] },
+            "1 1/2": { "150#": [4, "1/2"], "300#": [4, "3/4"], "400#": [4, "3/4"], "600#": [4, "3/4"], "900#": [4, "1"],   "1500#": [4, "1 1/8"], "2500#": [4, "1 1/4"] },
+            "2":     { "150#": [4, "5/8"], "300#": [8, "5/8"], "400#": [8, "5/8"], "600#": [8, "5/8"], "900#": [8, "7/8"], "1500#": [8, "7/8"], "2500#": [8, "1"] },
+            "3":     { "150#": [4, "5/8"], "300#": [8, "3/4"], "400#": [8, "3/4"], "600#": [8, "3/4"], "900#": [8, "7/8"], "1500#": [8, "1 1/8"], "2500#": [8, "1 1/4"] },
+            "4":     { "150#": [8, "5/8"], "300#": [8, "3/4"], "400#": [8, "3/4"], "600#": [8, "7/8"], "900#": [8, "1 1/8"], "1500#": [8, "1 1/4"], "2500#": [8, "1 1/2"] },
+            "6":     { "150#": [8, "3/4"], "300#": [12, "3/4"], "400#": [12, "3/4"], "600#": [12, "1"], "900#": [12, "1 1/8"], "1500#": [12, "1 3/8"], "2500#": [12, "2"] },
+            "8":     { "150#": [8, "3/4"], "300#": [12, "7/8"], "400#": [12, "1"], "600#": [12, "1 1/8"], "900#": [12, "1 3/8"], "1500#": [12, "1 5/8"], "2500#": [12, "2"] },
+            "10":    { "150#": [12, "7/8"], "300#": [16, "1"], "400#": [16, "1 1/8"], "600#": [16, "1 1/4"], "900#": [16, "1 3/8"], "1500#": [12, "1 7/8"], "2500#": [12, "2 1/2"] },
+            "12":    { "150#": [12, "7/8"], "300#": [16, "1 1/8"], "400#": [16, "1 1/4"], "600#": [20, "1 1/4"], "900#": [20, "1 3/8"], "1500#": [16, "2"], "2500#": [12, "2 3/4"] },
+            "14":    { "150#": [12, "1"], "300#": [20, "1 1/8"], "400#": [20, "1 1/4"], "600#": [20, "1 3/8"], "900#": [20, "1 1/2"], "1500#": [16, "2 1/4"], "2500#": [12, "3"] },
+            "16":    { "150#": [16, "1"], "300#": [20, "1 1/4"], "400#": [20, "1 3/8"], "600#": [20, "1 1/2"], "900#": [20, "1 5/8"], "1500#": [16, "2 1/2"], "2500#": [16, "3 1/4"] },
+            "24":    { "150#": [20, "1 1/4"], "300#": [24, "1 1/2"], "400#": [24, "1 3/4"], "600#": [24, "1 7/8"], "900#": [20, "2 1/2"], "1500#": [16, "3 1/2"], "2500#": [16, "3 1/4"] }
+        };
+
+        // ตารางความยาวโบลต์ (Stud Bolt Length Table - mm)
+        const lengthTable = {
+            "150#": { "1/2": 60, "3/4": 60, "1": 65, "1 1/2": 70, "2": 75, "3": 90, "4": 90, "6": 95, "8": 100, "10": 115, "12": 115, "14": 125, "16": 135, "18": 145, "20": 150, "22": 170, "24": 185 },
+            "300#": { "1/2": 65, "3/4": 70, "1": 75, "1 1/2": 90, "2": 85, "3": 100, "4": 110, "6": 120, "8": 135, "10": 150, "12": 165, "14": 170, "16": 185, "18": 195, "20": 200, "24": 225 },
+            "600#": { "1/2": 75, "3/4": 85, "1": 90, "1 1/2": 100, "2": 100, "3": 120, "4": 140, "6": 165, "8": 190, "10": 205, "12": 215, "14": 225, "16": 245, "18": 265, "20": 285, "22": 320 }
+        };
+
+        const torqueTable = {
+            "1/2":   { p1: 25, p2: 50, final: 70, method: "Manual" },
+            "5/8":   { p1: 50, p2: 100, final: 145, method: "Manual" },
+            "3/4":   { p1: 60, p2: 120, final: 200, method: "Manual" },
+            "7/8":   { p1: 100, p2: 195, final: 325, method: "Manual" },
+            "1":     { p1: 150, p2: 300, final: 495, method: "Manual" },
+            "1 1/8": { p1: 215, p2: 430, final: 720, method: "Hydraulic" },
+            "1 1/4": { p1: 305, p2: 610, final: 1020, method: "Hydraulic" },
+            "1 3/8": { p1: 415, p2: 830, final: 1380, method: "Hydraulic" },
+            "1 1/2": { p1: 490, p2: 980, final: 1630, method: "Hydraulic" },
+            "1 5/8": { p1: 670, p2: 1340, final: 2240, method: "Hydraulic" },
+            "1 3/4": { p1: 915, p2: 1830, final: 3050, method: "Hydraulic" },
+            "1 7/8": { p1: 1220, p2: 2440, final: 4070, method: "Hydraulic" },
+            "2":     { p1: "BOL", p2: "BOL", final: "BOL", method: "Tensioner" },
+            "2 1/4": { p1: "BOL", p2: "BOL", final: "BOL", method: "Tensioner" },
+            "2 1/2": { p1: "BOL", p2: "BOL", final: "BOL", method: "Tensioner" },
+            "3":     { p1: "BOL", p2: "BOL", final: "BOL", method: "Tensioner" },
+            "3 1/2": { p1: "BOL", p2: "BOL", final: "BOL", method: "Tensioner" }
+        };
+
+        const wrenchTable = {
+            "1/2":   { metric: "22", inch: "7/8" },
+            "5/8":   { metric: "27", inch: "1 1/16" },
+            "3/4":   { metric: "32", inch: "1 1/4" },
+            "7/8":   { metric: "36", inch: "1 7/16" },
+            "1":     { metric: "41", inch: "1 5/8" },
+            "1 1/8": { metric: "46", inch: "1 13/16" },
+            "1 1/4": { metric: "50", inch: "2" },
+            "1 3/8": { metric: "55", inch: "2 3/16" },
+            "1 1/2": { metric: "60", inch: "2 3/8" },
+            "1 5/8": { metric: "65", inch: "2 9/16" },
+            "1 3/4": { metric: "70", inch: "2 3/4" },
+            "1 7/8": { metric: "75", inch: "2 15/16" },
+            "2":     { metric: "80", inch: "3 1/8" },
+            "2 1/4": { metric: "90", inch: "3 1/2" },
+            "2 1/2": { metric: "95", inch: "3 7/8" },
+            "3":     { metric: "115", inch: "4 5/8" },
+            "3 1/2": { metric: "130", inch: "5 3/8" }
+        };
+
+        // Initialize Dropdown
+        const flangeSelect = document.getElementById('flangeSize');
+        Object.keys(flangeData).sort((a,b) => {
+            const getVal = (s) => {
+                const parts = s.split(' ');
+                if(parts.length === 1) return eval(parts[0]);
+                return parseInt(parts[0]) + eval(parts[1]);
+            };
+            return getVal(a) - getVal(b);
+        }).forEach(size => {
+            let opt = document.createElement('option');
+            opt.value = size;
+            opt.textContent = size + '"';
+            flangeSelect.appendChild(opt);
+        });
+
+        function calculate() {
+            const size = document.getElementById('flangeSize').value;
+            const rating = document.getElementById('rating').value;
+            const resultCard = document.getElementById('resultCard');
+            const emptyState = document.getElementById('emptyState');
+
+            if (size && rating) {
+                const data = flangeData[size] ? flangeData[size][rating] : null;
+                if (data) {
+                    const noBolts = data[0];
+                    const boltDia = data[1];
+                    
+                    // ดึงค่าความยาวโบลต์ (mm)
+                    let boltLen = "N/A";
+                    if (lengthTable[rating] && lengthTable[rating][size]) {
+                        boltLen = lengthTable[rating][size];
+                    }
+
+                    const torque = torqueTable[boltDia] || { p1: "N/A", p2: "N/A", final: "N/A", method: "Unknown" };
+                    const wrench = wrenchTable[boltDia] || { metric: "N/A", inch: "N/A" };
+
+                    // Update UI
+                    document.getElementById('resNoBolts').textContent = noBolts;
+                    document.getElementById('resDia').textContent = boltDia + '"';
+                    document.getElementById('resLen').textContent = boltLen + (boltLen !== "N/A" ? " mm" : "");
+                    
+                    document.getElementById('pass1').textContent = torque.p1;
+                    document.getElementById('pass2').textContent = torque.p2;
+                    document.getElementById('passFinal').textContent = torque.final;
+                    document.getElementById('resMetric').textContent = wrench.metric + " mm";
+                    document.getElementById('resInch').textContent = wrench.inch + '"';
+
+                    const methodLabel = document.getElementById('methodLabel');
+                    methodLabel.textContent = torque.method;
+                    
+                    // Style Method Label
+                    if (torque.method === "Manual") {
+                        methodLabel.className = "p-3 rounded-lg text-center text-sm font-bold h-full flex items-center justify-center bg-yellow-100 text-yellow-800";
+                    } else if (torque.method === "Hydraulic") {
+                        methodLabel.className = "p-3 rounded-lg text-center text-sm font-bold h-full flex items-center justify-center bg-green-100 text-green-800";
+                    } else if (torque.method === "Tensioner") {
+                        methodLabel.className = "p-3 rounded-lg text-center text-sm font-bold h-full flex items-center justify-center bg-purple-600 text-white";
+                    } else {
+                        methodLabel.className = "p-3 rounded-lg text-center text-sm font-bold h-full flex items-center justify-center bg-gray-200 text-gray-600";
+                    }
+
+                    resultCard.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+                } else {
+                    alert("ขออภัย ข้อมูล Rating " + rating + " สำหรับหน้าแปลนขนาด " + size + "\" ยังไม่มีในระบบ");
+                    resultCard.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                }
+            } else {
+                resultCard.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('flangeSize').addEventListener('change', calculate);
+        document.getElementById('rating').addEventListener('change', calculate);
+
+    </script>
+</body>
+</html>

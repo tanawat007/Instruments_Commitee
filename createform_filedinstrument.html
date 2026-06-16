@@ -326,6 +326,32 @@
           </span>
         </label>
       </div>
+
+      <!-- Row 6: Loop Diagram -->
+      <div class="form-control w-full">
+        <label class="label" for="loopdiagram">
+          <span class="label-text font-semibold text-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-diagram-project field-icon text-info"></i> Loop Diagram
+          </span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" id="loopdiagram" name="loopdiagram"
+            placeholder="ลิงก์ Loop Diagram เช่น https://drive.google.com/... หรือพิมพ์ NA"
+            class="input input-bordered input-info w-full focus:input-info transition-all" />
+          <button type="button" onclick="document.getElementById('loopdiagram').value = 'NA';"
+            class="btn btn-info btn-outline btn-sm whitespace-nowrap self-center tooltip"
+            data-tip="ใส่ NA หากไม่มีเอกสาร">
+            <i class="fa-solid fa-ban text-xs"></i> NA
+          </button>
+        </div>
+        <label class="label">
+          <span class="label-text-alt text-slate-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-info text-xs"></i>
+            วาง URL ของเอกสาร Loop Diagram หรือกดปุ่ม NA หากไม่มีเอกสาร
+          </span>
+        </label>
+      </div>
+      </div>
  
       <!-- Divider -->
       <div class="divider before:bg-primary/20 after:bg-primary/20"></div>

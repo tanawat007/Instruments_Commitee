@@ -231,11 +231,7 @@
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <!-- Filter by area -->
-        <select id="filter-area" class="select select-bordered select-sm" onchange="handleFilter()">
-          <option value="">ทุกพื้นที่</option>
-        </select>
-        <!-- Filter by status -->
+        <!-- Status filter in toolbar; other filters live in the table header -->
         <select id="filter-status" class="select select-bordered select-sm" onchange="handleFilter()">
           <option value="">ทุกสถานะ</option>
           <option value="active">ยังไม่หมดอายุ</option>
@@ -300,10 +296,53 @@
               <th class="text-xs text-slate-500 font-semibold uppercase">
                 <i class="fa-solid fa-shield-halved mr-1 text-warning/60"></i> Specification sheet
               </th>
+              <th class="text-xs text-slate-500 font-semibold uppercase">
+                <i class="fa-solid fa-shield-halved mr-1 text-warning/60"></i> Loop Diagram
+              </th>
               <th class="text-xs text-slate-500 font-semibold uppercase text-center">
                 <i class="fa-solid fa-gear mr-1 text-slate-400"></i> จัดการ
               </th>
             </tr>
+
+            <tr class="bg-gradient-to-r from-slate-50 to-slate-100">
+              <th class="sticky-col text-xs text-slate-500 font-semibold uppercase bg-gradient-to-r from-slate-50 to-slate-100"></th>
+              <th class="sticky-col text-xs text-slate-500 font-semibold uppercase bg-gradient-to-r from-slate-50 to-slate-100"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase">
+                <select id="filter-area" class="select select-bordered select-xs" onchange="handleFilter()">
+                  <option value="">ทุก Plant Area</option>
+                </select>
+              </th>
+              <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase">
+                <select id="filter-objecttype" class="select select-bordered select-xs" onchange="handleFilter()">
+                  <option value="">ทุก Object Type</option>
+                </select>
+              </th>
+              <th class="text-xs text-slate-500 font-semibold uppercase">
+                <select id="filter-classtype" class="select select-bordered select-xs" onchange="handleFilter()">
+                  <option value="">ทุก Class Type</option>
+                </select>
+              </th>
+              <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase">
+                <select id="filter-equipmentclass" class="select select-bordered select-xs" onchange="handleFilter()">
+                  <option value="">ทุก Equipment Class</option>
+                </select>
+              </th>
+              <th class="text-xs text-slate-500 font-semibold uppercase">
+                <select id="filter-layerofprotection" class="select select-bordered select-xs" onchange="handleFilter()">
+                  <option value="">ทุก Layer of Protection</option>
+                </select>
+              </th>
+              <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase"></th>
+              <th class="text-xs text-slate-500 font-semibold uppercase text-center"></th>
+            </tr>
+
+
           </thead>
           <tbody id="table-body">
           </tbody>
@@ -526,6 +565,17 @@
             <div>
               <p class="text-xs text-slate-400 font-medium">เอกสาร Specification Sheet</p>
               <p class="text-sm font-semibold text-slate-700" id="detail-msds">-</p>
+            </div>
+          </div>
+
+          <!-- Loop Diagram -->
+          <div class="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+            <div class="bg-warning/10 text-warning p-2.5 rounded-lg">
+              <i class="fa-solid fa-file-shield text-lg"></i>
+            </div>
+            <div>
+              <p class="text-xs text-slate-400 font-medium">เอกสาร Loop Diagram</p>
+              <p class="text-sm font-semibold text-slate-700" id="detail-loopdiagram">-</p>
             </div>
           </div>
         </div>
