@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instrument Refinery-APP</title>
+    
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM (via CDN) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for in-browser JSX compilation (Pinned to stable version) -->
+    <script src="https://unpkg.com/@babel/standalone@7.23.9/babel.min.js"></script>
+
+    <style>
+        /* Custom fonts for better UI */
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- Added data-presets="react" to prevent Babel from generating invalid import statements -->
+    <script type="text/babel" data-presets="react">
+        const { useState, useEffect } = React;
+
+        // --- Inline SVG Icons (Replacing lucide-react) ---
+        const IconShieldCheck = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/>
+            </svg>
+        );
+        const IconSettings = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        );
+        const IconInfo = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path>
+            </svg>
+        );
+        const IconDroplet = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
+            </svg>
+        );
+        const IconWind = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"></path><path d="M9.6 4.6A2 2 0 1 1 11 8H2"></path><path d="M12.6 19.4A2 2 0 1 0 14 16H2"></path>
+            </svg>
+        );
+        const IconFileText = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line>
+            </svg>
+        );
+        const IconAlertCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        );
+
+        // --- Main Application ---
+        const API598App = () => {
+          // State variables for inputs
+          const [valveType, setValveType] = useState('Gate');
+          const [valveSize, setValveSize] = useState('2'); // Default 2 inches
+          const [pressureClass, setPressureClass] = useState('150');
+          const [seatType, setSeatType] = useState('Metal');
+          const [material, setMaterial] = useState('CarbonSteel');
+
+          // State for calculated results
+          const [results, setResults] = useState(null);
+
+          // Constants based on ASME B16.34 for standard CWP (in psig, will convert to bar)
+          const cwpTables = {
+            'CarbonSteel': { // Group 1.1 (e.g., A216 WCB)
+              name: 'Carbon Steel (A216 WCB / Group 1.1)',
+              data: { '150': 285, '300': 740, '600': 1480, '800': 1975, '900': 2220, '1500': 3705, '2500': 6170 }
+            },
+            'StainlessSteel': { // Group 2.2 (e.g., A351 CF8M)
+              name: 'Stainless Steel (A351 CF8M / Group 2.2)',
+              data: { '150': 275, '300': 720, '600': 1440, '800': 1920, '900': 2160, '1500': 3600, '2500': 6000 }
+            }
+          };
+
+          // Helper function to convert psig to bar (1 psig = 0.0689476 bar)
+          const psiToBar = (psi) => {
+            return (psi * 0.0689476).toFixed(1);
+          };
+
+          const calculateAPI598 = () => {
+            const size = parseFloat(valveSize);
+            
+            // Get CWP in psig and calculate test pressures in psig first (API standard is based on psi)
+            const cwp_psig = cwpTables[material].data[pressureClass];
+            
+            // --- 1. Test Pressures ---
+            // Shell test is min 1.5x CWP
+            const shellPressure_psig = Math.ceil(cwp_psig * 1.5);
+            // High pressure closure and backseat is min 1.1x CWP
+            const hpPressure_psig = Math.ceil(cwp_psig * 1.1);
+
+            // Convert to Bar
+            const cwp_bar = psiToBar(cwp_psig);
+            const shellPressure_bar = psiToBar(shellPressure_psig);
+            const hpPressure_bar = psiToBar(hpPressure_psig);
+            
+            // Low pressure is typically 60-100 psig -> ~4.1 to 6.9 bar
+            const lpPressure_bar = '4.1 - 6.9';
+
+            // --- 2. Test Durations (API 598 Table 2) ---
+            let shellDur, backseatDur, closureDur;
+            if (size <= 2) {
+              shellDur = 15; backseatDur = 15; closureDur = 15;
+            } else if (size > 2 && size <= 6) {
+              shellDur = 60; backseatDur = 60; closureDur = 60;
+            } else if (size > 6 && size <= 12) {
+              shellDur = 120; backseatDur = 60; closureDur = 120;
+            } else {
+              shellDur = 300; backseatDur = 60; closureDur = 120;
+            }
+
+            // --- 3. Acceptance Criteria / Leakage Rates (API 598 Table 5) ---
+            // Shell and Backseat: No visually detectable leakage
+            const shellAcceptance = 'ไม่มีการรั่วซึมที่มองเห็นได้ด้วยตาเปล่า (No visually detectable leakage)';
+            
+            let liquidClosureAcceptance = '';
+            let gasClosureAcceptance = '';
+
+            if (seatType === 'Resilient') {
+              liquidClosureAcceptance = '0 หยด (ไม่มีการรั่วซึม)';
+              gasClosureAcceptance = '0 ฟองอากาศ (ไม่มีการรั่วซึม)';
+            } else if (valveType === 'Check') {
+              // Check valves have specific rates
+              const liquidRate = 3 * size; // 3 cc/in/min
+              liquidClosureAcceptance = `${liquidRate} cc/min (3 cc/min/NPS)`;
+              gasClosureAcceptance = `1.5 SCFH/NPS (0.042 m³/h/NPS)`;
+            } else {
+              // Gate, Globe, Plug, Ball, Butterfly (Metal seat)
+              if (size <= 2) {
+                liquidClosureAcceptance = '0 หยด/นาที (0 drops/min)';
+                gasClosureAcceptance = '0 ฟองอากาศ/นาที (0 bubbles/min)';
+              } else if (size <= 6) {
+                liquidClosureAcceptance = '12 หยด/นาที (12 drops/min)';
+                gasClosureAcceptance = '24 ฟองอากาศ/นาที (24 bubbles/min)';
+              } else if (size <= 12) {
+                liquidClosureAcceptance = '20 หยด/นาที (20 drops/min)';
+                gasClosureAcceptance = '40 ฟองอากาศ/นาที (40 bubbles/min)';
+              } else {
+                liquidClosureAcceptance = `${2 * size} หยด/นาที`;
+                gasClosureAcceptance = `${4 * size} ฟองอากาศ/นาที`;
+              }
+            }
+
+            // --- 4. Required Tests Matrix (Table 1 simplification) ---
+            const tests = {
+              shell: {
+                required: true,
+                desc: 'ทดสอบความแข็งแรงของตัวเรือนวาล์ว',
+                media: 'น้ำ (Water)'
+              },
+              backseat: {
+                required: (valveType === 'Gate' || valveType === 'Globe'),
+                desc: 'ทดสอบซีลก้านวาล์วด้านหลัง (สำหรับวาล์วที่มี Backseat)',
+                media: 'น้ำ (Water)'
+              },
+              lpClosure: {
+                required: true,
+                desc: 'ทดสอบการรั่วซึมของบ่าวาล์วที่ความดันต่ำ',
+                media: 'อากาศ หรือ ไนโตรเจน (Air / Nitrogen)'
+              },
+              hpClosure: {
+                required: false, // Generally optional for standard classes unless agreed
+                desc: 'ทดสอบการรั่วซึมของบ่าวาล์วที่ความดันสูง',
+                media: 'น้ำ (Water)'
+              }
+            };
+
+            setResults({
+              cwp_bar,
+              shellPressure: shellPressure_bar, 
+              hpPressure: hpPressure_bar, 
+              lpPressure: lpPressure_bar,
+              shellDur, backseatDur, closureDur,
+              shellAcceptance, liquidClosureAcceptance, gasClosureAcceptance,
+              tests,
+              materialName: cwpTables[material].name
+            });
+          };
+
+          // Re-calculate whenever inputs change
+          useEffect(() => {
+            if (valveSize && parseFloat(valveSize) > 0) {
+              calculateAPI598();
+            }
+          }, [valveType, valveSize, pressureClass, seatType, material]);
+
+          return (
+            <div className="min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800">
+              <div className="max-w-5xl mx-auto space-y-6">
+                
+                {/* Header */}
+                <header className="bg-blue-800 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="bg-white/20 p-3 rounded-lg">
+                      <IconShieldCheck size={32} />
+                    </div>
+                    <div>
+                      <h1 className="text-2xl font-bold">API 598 Valve Testing Requirements</h1>
+                      <p className="text-blue-200 text-sm mt-1">โปรแกรมคำนวณข้อกำหนดการทดสอบวาล์วตามมาตรฐาน API 598 (หน่วย Bar)</p>
+                    </div>
+                  </div>
+                  <a href="main.html" className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">
+                    Back to Home
+                  </a>
+                </header>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  
+                  {/* Input Panel */}
+                  <div className="bg-white p-6 rounded-2xl shadow border border-slate-200 h-fit">
+                    <div className="flex items-center space-x-2 mb-6 text-blue-800 border-b pb-3">
+                      <IconSettings size={20} />
+                      <h2 className="text-lg font-bold">ข้อมูลจำเพาะวาล์ว (Valve Spec)</h2>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-600 mb-1">ชนิดวาล์ว (Valve Type)</label>
+                        <select 
+                          value={valveType} 
+                          onChange={(e) => setValveType(e.target.value)}
+                          className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        >
+                          <option value="Gate">Gate Valve</option>
+                          <option value="Globe">Globe Valve</option>
+                          <option value="Check">Check Valve</option>
+                          <option value="Ball">Ball Valve</option>
+                          <option value="Butterfly">Butterfly Valve</option>
+                          <option value="Plug">Plug Valve</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-600 mb-1">ขนาดวาล์ว / NPS (นิ้ว)</label>
+                        <select 
+                          value={valveSize} 
+                          onChange={(e) => setValveSize(e.target.value)}
+                          className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        >
+                          <option value="0.5">1/2"</option>
+                          <option value="0.75">3/4"</option>
+                          <option value="1">1"</option>
+                          <option value="1.25">1 1/4"</option>
+                          <option value="1.5">1 1/2"</option>
+                          <option value="2">2"</option>
+                          <option value="2.5">2 1/2"</option>
+                          <option value="3">3"</option>
+                          <option value="4">4"</option>
+                          <option value="5">5"</option>
+                          <option value="6">6"</option>
+                          <option value="8">8"</option>
+                          <option value="10">10"</option>
+                          <option value="12">12"</option>
+                          <option value="14">14"</option>
+                          <option value="16">16"</option>
+                          <option value="18">18"</option>
+                          <option value="20">20"</option>
+                          <option value="24">24"</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-600 mb-1">วัสดุตัวเรือน (Material)</label>
+                        <select 
+                          value={material} 
+                          onChange={(e) => setMaterial(e.target.value)}
+                          className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        >
+                          <option value="CarbonSteel">Carbon Steel (e.g. WCB)</option>
+                          <option value="StainlessSteel">Stainless Steel (e.g. CF8M)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-600 mb-1">ระดับความดัน (ASME Class)</label>
+                        <select 
+                          value={pressureClass} 
+                          onChange={(e) => setPressureClass(e.target.value)}
+                          className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        >
+                          <option value="150">Class 150</option>
+                          <option value="300">Class 300</option>
+                          <option value="600">Class 600</option>
+                          <option value="800">Class 800</option>
+                          <option value="900">Class 900</option>
+                          <option value="1500">Class 1500</option>
+                          <option value="2500">Class 2500</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-600 mb-1">ชนิดบ่าวาล์ว (Seat Type)</label>
+                        <select 
+                          value={seatType} 
+                          onChange={(e) => setSeatType(e.target.value)}
+                          className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        >
+                          <option value="Metal">Metal Seat (บ่าโลหะ)</option>
+                          <option value="Resilient">Resilient Seat (บ่ายาง/เทฟลอน)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {results && (
+                      <div className="mt-6 bg-blue-50 p-4 rounded-xl flex items-start space-x-3 text-sm text-blue-800">
+                        <IconInfo size={20} className="shrink-0 mt-0.5" />
+                        <p>
+                          แรงดันอ้างอิง CWP คำนวณจากวัสดุ <strong>{results.materialName}</strong> 
+                          ที่อุณหภูมิ 100°F (38°C) ตามมาตรฐาน ASME B16.34 ซึ่งมีค่าเท่ากับ <strong>{results.cwp_bar} bar</strong>
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Results Panel */}
+                  <div className="lg:col-span-2 space-y-4">
+                    
+                    {results && (
+                      <>
+                        {/* 1. Shell Test */}
+                        <div className="bg-white p-6 rounded-2xl shadow border border-slate-200 hover:border-blue-300 transition-colors">
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex items-center space-x-3 text-blue-800">
+                              <div className="bg-blue-100 p-2 rounded-lg"><IconDroplet size={24} /></div>
+                              <div>
+                                <h3 className="text-lg font-bold">1. Shell Test (การทดสอบเปลือก)</h3>
+                                <p className="text-sm text-slate-500">{results.tests.shell.desc}</p>
+                              </div>
+                            </div>
+                            {results.tests.shell.required ? 
+                              <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">บังคับ (Required)</span> : 
+                              <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">ทางเลือก (Optional)</span>
+                            }
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ความดันทดสอบ (Test Pressure)</div>
+                              <div className="font-bold text-xl text-blue-700">{results.shellPressure} <span className="text-sm font-normal text-slate-600">bar</span></div>
+                              <div className="text-xs text-slate-400 mt-1">(&ge; 1.5 x CWP)</div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ระยะเวลาขั้นต่ำ (Min. Duration)</div>
+                              <div className="font-bold text-lg">{results.shellDur} <span className="text-sm font-normal text-slate-600">วินาที (sec)</span></div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ตัวกลางการทดสอบ (Test Media)</div>
+                              <div className="font-semibold text-sm">{results.tests.shell.media}</div>
+                            </div>
+                          </div>
+                          <div className="bg-green-50 p-3 rounded-xl border border-green-100 flex items-start space-x-2 text-sm text-green-800">
+                            <IconShieldCheck size={18} className="shrink-0 mt-0.5" />
+                            <div><strong>เกณฑ์การยอมรับ:</strong> {results.shellAcceptance}</div>
+                          </div>
+                        </div>
+
+                        {/* 2. Backseat Test */}
+                        <div className={`p-6 rounded-2xl shadow border transition-colors ${results.tests.backseat.required ? 'bg-white border-slate-200 hover:border-blue-300' : 'bg-slate-50 border-slate-200 opacity-75'}`}>
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex items-center space-x-3 text-indigo-800">
+                              <div className="bg-indigo-100 p-2 rounded-lg"><IconFileText size={24} /></div>
+                              <div>
+                                <h3 className="text-lg font-bold">2. Backseat Test</h3>
+                                <p className="text-sm text-slate-500">{results.tests.backseat.desc}</p>
+                              </div>
+                            </div>
+                            {results.tests.backseat.required ? 
+                              <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">บังคับ (Required)</span> : 
+                              <span className="px-3 py-1 bg-slate-200 text-slate-500 text-xs font-bold rounded-full">ไม่บังคับสำหรับวาล์วชนิดนี้</span>
+                            }
+                          </div>
+                          
+                          {results.tests.backseat.required && (
+                            <>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div className="bg-white p-3 rounded-xl border border-slate-100">
+                                  <div className="text-xs text-slate-500 mb-1">ความดันทดสอบ (Test Pressure)</div>
+                                  <div className="font-bold text-xl text-blue-700">{results.hpPressure} <span className="text-sm font-normal text-slate-600">bar</span></div>
+                                  <div className="text-xs text-slate-400 mt-1">(&ge; 1.1 x CWP)</div>
+                                </div>
+                                <div className="bg-white p-3 rounded-xl border border-slate-100">
+                                  <div className="text-xs text-slate-500 mb-1">ระยะเวลาขั้นต่ำ (Min. Duration)</div>
+                                  <div className="font-bold text-lg">{results.backseatDur} <span className="text-sm font-normal text-slate-600">วินาที (sec)</span></div>
+                                </div>
+                                <div className="bg-white p-3 rounded-xl border border-slate-100">
+                                  <div className="text-xs text-slate-500 mb-1">ตัวกลางการทดสอบ (Test Media)</div>
+                                  <div className="font-semibold text-sm">{results.tests.backseat.media}</div>
+                                </div>
+                              </div>
+                              <div className="bg-green-50 p-3 rounded-xl border border-green-100 flex items-start space-x-2 text-sm text-green-800">
+                                <IconShieldCheck size={18} className="shrink-0 mt-0.5" />
+                                <div><strong>เกณฑ์การยอมรับ:</strong> {results.shellAcceptance}</div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        {/* 3. Low-Pressure Closure */}
+                        <div className="bg-white p-6 rounded-2xl shadow border border-slate-200 hover:border-blue-300 transition-colors">
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex items-center space-x-3 text-cyan-800">
+                              <div className="bg-cyan-100 p-2 rounded-lg"><IconWind size={24} /></div>
+                              <div>
+                                <h3 className="text-lg font-bold">3. Low-Pressure Closure Test</h3>
+                                <p className="text-sm text-slate-500">{results.tests.lpClosure.desc}</p>
+                              </div>
+                            </div>
+                            {results.tests.lpClosure.required ? 
+                              <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">บังคับ (Required)</span> : 
+                              <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">อาจเป็นทางเลือก</span>
+                            }
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ความดันทดสอบ (Test Pressure)</div>
+                              <div className="font-bold text-xl text-blue-700">{results.lpPressure} <span className="text-sm font-normal text-slate-600">bar</span></div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ระยะเวลาขั้นต่ำ (Min. Duration)</div>
+                              <div className="font-bold text-lg">{results.closureDur} <span className="text-sm font-normal text-slate-600">วินาที (sec)</span></div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ตัวกลางการทดสอบ</div>
+                              <div className="font-semibold text-sm">{results.tests.lpClosure.media}</div>
+                            </div>
+                          </div>
+                          <div className={`${seatType === 'Resilient' ? 'bg-green-50 border-green-100 text-green-800' : 'bg-orange-50 border-orange-100 text-orange-800'} p-3 rounded-xl border flex items-start space-x-2 text-sm`}>
+                            <IconShieldCheck size={18} className="shrink-0 mt-0.5" />
+                            <div><strong>อัตราการรั่วซึมสูงสุดที่ยอมรับได้ (Gas):</strong> {results.gasClosureAcceptance}</div>
+                          </div>
+                        </div>
+
+                        {/* 4. High-Pressure Closure */}
+                        <div className="bg-white p-6 rounded-2xl shadow border border-slate-200 hover:border-blue-300 transition-colors relative overflow-hidden">
+                          <div className="absolute top-0 left-0 w-1 h-full bg-slate-300"></div>
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex items-center space-x-3 text-slate-700">
+                              <div className="bg-slate-100 p-2 rounded-lg"><IconAlertCircle size={24} /></div>
+                              <div>
+                                <h3 className="text-lg font-bold">4. High-Pressure Closure Test</h3>
+                                <p className="text-sm text-slate-500">{results.tests.hpClosure.desc}</p>
+                              </div>
+                            </div>
+                            <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">ทางเลือก / ตามตกลง (Optional)</span>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ความดันทดสอบ (Test Pressure)</div>
+                              <div className="font-bold text-xl text-blue-700">{results.hpPressure} <span className="text-sm font-normal text-slate-600">bar</span></div>
+                              <div className="text-xs text-slate-400 mt-1">(&ge; 1.1 x CWP)</div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ระยะเวลาขั้นต่ำ (Min. Duration)</div>
+                              <div className="font-bold text-lg">{results.closureDur} <span className="text-sm font-normal text-slate-600">วินาที (sec)</span></div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                              <div className="text-xs text-slate-500 mb-1">ตัวกลางการทดสอบ</div>
+                              <div className="font-semibold text-sm">{results.tests.hpClosure.media}</div>
+                            </div>
+                          </div>
+                          <div className={`${seatType === 'Resilient' ? 'bg-green-50 border-green-100 text-green-800' : 'bg-orange-50 border-orange-100 text-orange-800'} p-3 rounded-xl border flex items-start space-x-2 text-sm`}>
+                            <IconShieldCheck size={18} className="shrink-0 mt-0.5" />
+                            <div><strong>อัตราการรั่วซึมสูงสุดที่ยอมรับได้ (Liquid):</strong> {results.liquidClosureAcceptance}</div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<API598App />);
+    </script>
+</body>
+</html>
