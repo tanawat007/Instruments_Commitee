@@ -354,7 +354,7 @@ function renderTable() {
                   data-timestamp="${escapeAttr(row.Timestamp || '')}">
             <i class="fa-solid fa-eye"></i>
           </button>
-          <button class="edit-btn btn btn-xs btn-ghost text-primary tooltip tooltip-left" data-tip="แก้ไข"
+          ${canEdit() ? `<button class="edit-btn btn btn-xs btn-ghost text-primary tooltip tooltip-left" data-tip="แก้ไข"
                   data-id="${escapeAttr(row.ID)}"
                   data-material-code="${escapeAttr(row.MaterialCode || '')}"
                   data-description="${escapeAttr(row.Description || '')}"
@@ -375,12 +375,11 @@ function renderTable() {
                   data-expired-date="${escapeAttr(toInputDate(row.ExpiredDate))}"
                   data-msds="${escapeAttr(row.MSDS || '')}">
             <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-          <button class="delete-btn btn btn-xs btn-ghost text-error tooltip tooltip-left" data-tip="ลบ"
+          </button>` : ''}
+          ${canDelete() ? `<button class="delete-btn btn btn-xs btn-ghost text-error tooltip tooltip-left" data-tip="ลบ"
                   data-id="${escapeAttr(row.ID)}">
             <i class="fa-solid fa-trash-can"></i>
-          </button>
-          
+          </button>` : ''}
         </div>
       </td>
     `;
@@ -390,6 +389,10 @@ function renderTable() {
   // Event listeners
   document.querySelectorAll('.edit-btn').forEach((btn) => {
     btn.addEventListener('click', function () {
+      if (!canEdit()) {
+        showPermissionDenied('แก้ไขข้อมูล');
+        return;
+      }
       editRecord(
         this.dataset.id,
         this.dataset.materialCode,
@@ -422,6 +425,10 @@ function renderTable() {
  
   document.querySelectorAll('.delete-btn').forEach((btn) => {
     btn.addEventListener('click', function () {
+      if (!canDelete()) {
+        showPermissionDenied('ลบข้อมูล');
+        return;
+      }
       deleteRecord(this.dataset.id);
     });
   });
@@ -831,8 +838,12 @@ prevMobile?.addEventListener('click', prevPage);
 nextMobile?.addEventListener('click', nextPage);
  
 // --- Initial Load ---
-document.addEventListener('DOMContentLoaded', fetchData);
- 
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!checkUserPermissions()) return;
+  hideButtonsBasedOnPermissions();
+  await fetchData();
+});
+
 // ฟังก์ชันแสดงรายละเอียด Field Instrument
 function viewRecord(data) {
   const modal = document.getElementById('detail-modal');

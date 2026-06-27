@@ -11,129 +11,63 @@
   <style>
     body {
       font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-      background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 40%, #fdf4ff 100%);
+      background: #f8fafc;
       min-height: 100vh;
+      color: #0f172a;
     }
- 
-    .glass-card {
-      backdrop-filter: blur(16px);
-      background: rgba(255, 255, 255, 0.80);
-    }
- 
-    .stat-card {
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
- 
-    .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-    }
- 
-    .table-row-hover:hover {
-      background: rgba(99, 102, 241, 0.04);
-    }
- 
-    .badge-expired {
-      animation: pulse-red 2s infinite;
-    }
- 
-    @keyframes pulse-red {
- 
-      0%,
-      100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
-      }
- 
-      50% {
-        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
-      }
-    }
- 
-    /* custom scrollbar */
+
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
- 
+
     ::-webkit-scrollbar-thumb {
-      background: #c7d2fe;
+      background: #93c5fd;
       border-radius: 999px;
-    }
-
-    /* Sticky first column styles */
-    .sticky-first-col tbody td:first-child,
-    .sticky-first-col thead th:first-child {
-      position: sticky;
-      left: 0;
-      z-index: 10;
-      background-color: white;
-    }
-
-    .sticky-first-col tbody tr.table-row-hover:hover td:first-child {
-      background-color: rgba(99, 102, 241, 0.04);
-    }
-
-    .sticky-first-col tbody tr:nth-child(odd) td:first-child {
-      background-color: #f8fafc;
-    }
-
-    .sticky-first-col tbody tr:nth-child(even) td:first-child {
-      background-color: #ffffff;
-    }
-
-    .sticky-col {
-      position: sticky;
-      left: 0;
-      z-index: 20;
     }
   </style>
 
 
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen pb-12">
-
+<body class="min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800">
+    <div class="max-w-5xl mx-auto space-y-6">
     <!-- Header -->
-    <header class="bg-slate-900 text-white p-6 shadow-lg mb-8">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
+    <header class="mb-8 rounded-2xl bg-blue-800 p-6 text-white shadow-lg">
+        <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <div class="bg-orange-500 p-2 rounded-lg">
-                    <i data-lucide="wrench" class="text-white w-6 h-6"></i>
+                <div class="rounded-lg bg-white/20 p-2">
+                    <i data-lucide="wrench" class="h-6 w-6 text-white"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight">Flange Management Tool</h1>
-                    <p class="text-slate-400 text-xs uppercase tracking-widest">Torque & Tension Calculator</p>
+                    <p class="mt-1 text-sm text-blue-200">Torque & Tension Calculator</p>
                 </div>
             </div>
-            <div class="hidden md:block text-right text-slate-400">
+            <div class="hidden text-right text-blue-200 md:block">
                 <p class="text-xs">ASME B16.5 / PCC-1 Compliant</p>
                 <p class="text-xs font-mono">B7 Bolts • RF Flanges</p>
             </div>
 
-        <a href="main.html" class="btn btn-primary btn-sm gap-2 bg-orange-500 p-2 rounded-lg shadow-md shadow-orange-500/25">
-        <span class="hidden sm:inline">Back to Home</span>
-        </a>
-      <button onclick="fetchData()" class="btn btn-ghost btn-sm btn-circle tooltip tooltip-bottom" data-tip="รีเฟรช">
-        <i class="fa-solid fa-arrows-rotate text-slate-500"></i>
-      </button>
-      
-      
+            <a href="main.html" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">
+                <span class="hidden sm:inline">Back to Home</span>
+            </a>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <main class="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-0 md:grid-cols-3">
         
         <!-- Left Column: Settings -->
         <div class="md:col-span-1 space-y-4">
-            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-sm font-semibold mb-4 flex items-center gap-2">
-                    <i data-lucide="settings" class="text-slate-500 w-4 h-4"></i>
+            <section class="h-fit rounded-2xl border border-slate-200 bg-white p-6 shadow">
+                <h2 class="mb-4 flex items-center gap-2 border-b border-slate-200 pb-3 text-lg font-bold text-blue-800">
+                    <i data-lucide="settings" class="h-4 w-4 text-blue-700"></i>
                     การกำหนดค่าหน้าแปลน
                 </h2>
                 
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-wider">Pressure Class</label>
-                        <select id="pressureClass" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                        <select id="pressureClass" class="w-full appearance-none rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="150">Class 150</option>
                             <option value="300">Class 300</option>
                             <option value="600">Class 600</option>
@@ -144,7 +78,7 @@
 
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-wider">Flange Size (NPS)</label>
-                        <select id="flangeSize" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                        <select id="flangeSize" class="w-full appearance-none rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
                             <!-- Options will be populated by JS -->
                         </select>
                     </div>
@@ -158,7 +92,7 @@
 
                     <div id="lubricantSection">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-wider">Lubricant (K-Factor)</label>
-                        <select id="kFactor" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        <select id="kFactor" class="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="0.20">Machine Oil (0.20)</option>
                             <option value="0.13">Moly Paste / Nickel (0.13)</option>
                             <option value="0.15">Copper Anti-seize (0.15)</option>
@@ -168,9 +102,9 @@
                 </div>
             </section>
 
-            <div class="bg-orange-50 border border-orange-100 p-4 rounded-2xl flex gap-3">
-                <i data-lucide="alert-triangle" class="text-orange-500 shrink-0 w-5 h-5"></i>
-                <p class="text-[10px] text-orange-800 leading-relaxed">
+            <div class="flex gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                <i data-lucide="alert-triangle" class="h-5 w-5 shrink-0 text-blue-600"></i>
+                <p class="text-[10px] leading-relaxed text-blue-800">
                     <strong>ความปลอดภัย:</strong> ค่าคำนวณเบื้องต้นสำหรับ B7 Bolts (Yield Stress 50%) โปรดอ้างอิง Engineering Spec ของหน้างานเสมอ
                 </p>
             </div>
@@ -178,22 +112,22 @@
 
         <!-- Right Column: Results -->
         <div class="md:col-span-2 space-y-6">
-            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <h2 class="text-lg font-bold text-slate-800">ค่าที่แนะนำ (Results)</h2>
                             <p id="resultSubtitle" class="text-sm text-slate-500">Size: -- • Class: --</p>
                         </div>
-                        <div id="unitToggle" class="flex bg-slate-100 rounded-lg p-1 h-fit">
-                            <button onclick="setUnit('NM')" id="btnNM" class="px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white shadow-sm text-orange-600">N-M</button>
-                            <button onclick="setUnit('FT-LB')" id="btnFTLB" class="px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-400">FT-LB</button>
+                        <div id="unitToggle" class="flex h-fit rounded-lg bg-slate-100 p-1">
+                            <button onclick="setUnit('NM')" id="btnNM" class="rounded-md bg-white px-3 py-1 text-[10px] font-bold text-blue-700 shadow-sm transition-all">N-M</button>
+                            <button onclick="setUnit('FT-LB')" id="btnFTLB" class="rounded-md px-3 py-1 text-[10px] font-bold text-slate-400 transition-all">FT-LB</button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Main Result Card -->
-                        <div class="bg-slate-900 rounded-2xl p-6 text-white flex flex-col justify-center relative overflow-hidden ring-1 ring-white/10">
+                        <div class="relative flex flex-col justify-center overflow-hidden rounded-2xl bg-blue-800 p-6 text-white ring-1 ring-white/10">
                             <div class="absolute -right-4 -bottom-4 opacity-5">
                                 <i data-lucide="rotate-ccw" class="w-32 h-32"></i>
                             </div>
@@ -208,7 +142,7 @@
                             </div>
 
                             <div class="flex items-baseline gap-2">
-                                <span id="calculatedValue" class="text-6xl font-black text-orange-400">--</span>
+                                <span id="calculatedValue" class="text-6xl font-black text-blue-200">--</span>
                                 <span id="unitLabel" class="text-xl font-bold text-slate-300">N-M</span>
                             </div>
 
@@ -245,7 +179,7 @@
                             </div>
                             
                             <!-- Steps -->
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
                                 <p class="text-[10px] text-slate-400 uppercase font-bold mb-2">Tightening Steps (PCC-1)</p>
                                 <div class="space-y-2">
                                     <div class="flex justify-between text-xs items-center">
@@ -258,7 +192,7 @@
                                     </div>
                                     <div class="flex justify-between text-xs items-center">
                                         <span class="text-slate-500">Step 3 (100%)</span>
-                                        <span id="step3" class="font-mono font-bold text-orange-600">--</span>
+                                        <span id="step3" class="font-mono font-bold text-blue-700">--</span>
                                     </div>
                                 </div>
                             </div>
@@ -267,9 +201,9 @@
                 </div>
 
                 <!-- Visual Sequence -->
-                <div class="p-6 bg-slate-50 border-t border-slate-100">
+                <div class="border-t border-slate-100 bg-slate-50 p-6">
                     <h3 class="text-xs font-bold text-slate-800 mb-6 flex items-center gap-2">
-                        <i data-lucide="circle" class="text-orange-500 w-4 h-4"></i>
+                        <i data-lucide="circle" class="h-4 w-4 text-blue-700"></i>
                         ลำดับการขันตามมาตรฐาน (Sequence Map)
                     </h3>
                     <div id="sequenceWrapper" class="flex flex-col items-center">
@@ -284,20 +218,20 @@
             </section>
 
             <!-- Guidelines -->
-            <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-                   <i data-lucide="shield-check" class="text-emerald-500 w-5 h-5"></i>
+            <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+                <h3 class="mb-4 flex items-center gap-2 text-base font-bold text-blue-800">
+                   <i data-lucide="shield-check" class="h-5 w-5 text-blue-700"></i>
                    แนวทางปฏิบัติงาน (Tightening Procedure)
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <p class="text-[10px] font-bold text-orange-600 uppercase mb-2 border-b border-orange-100 pb-1">การเตรียมหน้างาน</p>
+                        <p class="mb-2 border-b border-blue-100 pb-1 text-[10px] font-bold uppercase text-blue-700">การเตรียมหน้างาน</p>
                         <div class="flex gap-2 text-xs text-slate-600 leading-snug"><i data-lucide="check-circle" class="text-emerald-500 shrink-0 w-3.5 h-3.5"></i> ตรวจสอบผิวหน้าแปลน (Serration) ห้ามมีรอย Radial scratch</div>
                         <div class="flex gap-2 text-xs text-slate-600 leading-snug"><i data-lucide="check-circle" class="text-emerald-500 shrink-0 w-3.5 h-3.5"></i> ล้างโบลท์ให้สะอาดและแห้งสนิทก่อนทาสารหล่อลื่น</div>
                         <div class="flex gap-2 text-xs text-slate-600 leading-snug"><i data-lucide="check-circle" class="text-emerald-500 shrink-0 w-3.5 h-3.5"></i> ทา Anti-seize เฉพาะส่วนที่เกลียวและจุดหมุนน็อต</div>
                     </div>
                     <div class="space-y-2">
-                        <p class="text-[10px] font-bold text-orange-600 uppercase mb-2 border-b border-orange-100 pb-1">ขั้นตอนการขัน</p>
+                        <p class="mb-2 border-b border-blue-100 pb-1 text-[10px] font-bold uppercase text-blue-700">ขั้นตอนการขัน</p>
                         <div class="flex gap-2 text-xs text-slate-600 leading-snug"><i data-lucide="check-circle" class="text-emerald-500 shrink-0 w-3.5 h-3.5"></i> ต้องขันตาม Star Pattern เพื่อให้หน้าแปลนขนานเสมอ</div>
                         <div class="flex gap-2 text-xs text-slate-600 leading-snug"><i data-lucide="check-circle" class="text-emerald-500 shrink-0 w-3.5 h-3.5"></i> ขั้นตอนสุดท้ายต้องทำ Circular Pass (ขันวน) จนแน่นเท่ากัน</div>
                         <div class="flex gap-2 text-xs text-slate-600 leading-snug"><i data-lucide="check-circle" class="text-emerald-500 shrink-0 w-3.5 h-3.5"></i> วัดช่องว่าง (Gap) หน้าแปลนให้สม่ำเสมอทุกด้าน</div>
@@ -436,7 +370,7 @@
             METHODS.forEach(m => {
                 const btn = document.createElement('button');
                 btn.id = `method-${m.id}`;
-                btn.className = "w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg border transition-all hover:bg-slate-50";
+                btn.className = "w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg border transition-all hover:bg-blue-50";
                 btn.innerHTML = `
                     <div class="flex items-center gap-2">
                         <i data-lucide="${m.icon}" class="w-3.5 h-3.5"></i>
@@ -455,8 +389,8 @@
 
         function setUnit(u) {
             currentUnit = u;
-            document.getElementById('btnNM').className = u === 'NM' ? "px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white shadow-sm text-orange-600" : "px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-400";
-            document.getElementById('btnFTLB').className = u === 'FT-LB' ? "px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white shadow-sm text-orange-600" : "px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-400";
+            document.getElementById('btnNM').className = u === 'NM' ? "px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white shadow-sm text-blue-700" : "px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-400";
+            document.getElementById('btnFTLB').className = u === 'FT-LB' ? "px-3 py-1 text-[10px] font-bold rounded-md transition-all bg-white shadow-sm text-blue-700" : "px-3 py-1 text-[10px] font-bold rounded-md transition-all text-slate-400";
             updateAll();
         }
 
@@ -485,10 +419,10 @@
                 const btn = document.getElementById(`method-${m.id}`);
                 const badge = document.getElementById(`rec-${m.id}`);
                 if (currentMethod === m.id) {
-                    btn.classList.add('bg-orange-50', 'border-orange-200', 'text-orange-700', 'font-bold');
+                    btn.classList.add('bg-blue-50', 'border-blue-200', 'text-blue-700', 'font-bold');
                     btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-500');
                 } else {
-                    btn.classList.remove('bg-orange-50', 'border-orange-200', 'text-orange-700', 'font-bold');
+                    btn.classList.remove('bg-blue-50', 'border-blue-200', 'text-blue-700', 'font-bold');
                     btn.classList.add('bg-white', 'border-slate-100', 'text-slate-500');
                 }
                 badge.classList.toggle('hidden', m.id !== recommended);
@@ -562,7 +496,7 @@
                 bolt.style.top = `${y}%`;
                 bolt.className = "absolute -translate-x-1/2 -translate-y-1/2";
                 bolt.innerHTML = `
-                    <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] font-black shadow-sm transition-all duration-300 ${order <= 4 ? 'bg-orange-500 border-orange-600 text-white' : 'bg-white border-slate-200 text-slate-700'}">
+                    <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] font-black shadow-sm transition-all duration-300 ${order <= 4 ? 'bg-blue-700 border-blue-800 text-white' : 'bg-white border-slate-200 text-slate-700'}">
                         ${i + 1}
                     </div>
                 `;
@@ -573,7 +507,7 @@
                 const item = document.createElement('div');
                 item.className = "flex flex-col items-center gap-1 min-w-[32px]";
                 item.innerHTML = `
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[10px] border ${idx < 4 ? 'bg-orange-500 border-orange-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-400'}">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[10px] border ${idx < 4 ? 'bg-blue-700 border-blue-800 text-white shadow-md' : 'bg-white border-slate-200 text-slate-400'}">
                         ${num}
                     </div>
                     <span class="text-[7px] text-slate-400 uppercase font-black">S${idx+1}</span>

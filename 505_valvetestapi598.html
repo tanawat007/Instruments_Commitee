@@ -68,7 +68,7 @@
         // --- Main Application ---
         const API598App = () => {
           // State variables for inputs
-          const [valveType, setValveType] = useState('Gate');
+          const [valveType, setValveType] = useState('Globe'); // Default Globe Valve
           const [valveSize, setValveSize] = useState('2'); // Default 2 inches
           const [pressureClass, setPressureClass] = useState('150');
           const [seatType, setSeatType] = useState('Metal');
@@ -238,12 +238,13 @@
                           onChange={(e) => setValveType(e.target.value)}
                           className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
-                          <option value="Gate">Gate Valve</option>
+                          
                           <option value="Globe">Globe Valve</option>
-                          <option value="Check">Check Valve</option>
                           <option value="Ball">Ball Valve</option>
                           <option value="Butterfly">Butterfly Valve</option>
+                          <option value="Gate">Gate Valve</option>
                           <option value="Plug">Plug Valve</option>
+                          <option value="Check">Check Valve</option>
                         </select>
                       </div>
 
