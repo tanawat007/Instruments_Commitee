@@ -93,9 +93,9 @@
                     <div id="lubricantSection">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-wider">Lubricant (K-Factor)</label>
                         <select id="kFactor" class="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="0.20">Machine Oil (0.20)</option>
-                            <option value="0.13">Moly Paste / Nickel (0.13)</option>
                             <option value="0.15">Copper Anti-seize (0.15)</option>
+                            <option value="0.13">Moly Paste / Nickel (0.13)</option>
+                            <option value="0.20">Machine Oil (0.20)</option>
                             <option value="0.30">Dry / No Lubricant (0.30)</option>
                         </select>
                     </div>
@@ -247,62 +247,83 @@
 
     <script>
         // Database updated with Bolt Length in MM (Rounded to nearest 5mm)
-        const FLANGE_DATA = {
-            "150": {
-                "1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 15, boltLength: "65" },
-                "3/4": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 18, boltLength: "70" },
-                "1": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 22, boltLength: "75" },
-                "1-1/4": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 28, boltLength: "85" },
-                "1-1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 35, boltLength: "90" },
-                "2": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 45, boltLength: "90" },
-                "2-1/2": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 55, boltLength: "100" },
-                "3": { boltSize: "5/8", boltCount: 4, torque_nm: 108, tension_kn: 70, boltLength: "110" },
-                "4": { boltSize: "5/8", boltCount: 8, torque_nm: 108, tension_kn: 70, boltLength: "115" },
-                "6": { boltSize: "3/4", boltCount: 8, torque_nm: 176, tension_kn: 110, boltLength: "125" },
-                "8": { boltSize: "3/4", boltCount: 8, torque_nm: 176, tension_kn: 140, boltLength: "135" },
-                "10": { boltSize: "7/8", boltCount: 12, torque_nm: 271, tension_kn: 190, boltLength: "150" },
-                "12": { boltSize: "7/8", boltCount: 12, torque_nm: 271, tension_kn: 230, boltLength: "160" }
-            },
-            "300": {
-                "1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 20, boltLength: "75" },
-                "3/4": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 30, boltLength: "90" },
-                "1": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 35, boltLength: "95" },
-                "1-1/2": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 55, boltLength: "115" },
-                "2": { boltSize: "5/8", boltCount: 8, torque_nm: 108, tension_kn: 50, boltLength: "115" },
-                "3": { boltSize: "3/4", boltCount: 8, torque_nm: 149, tension_kn: 85, boltLength: "135" },
-                "4": { boltSize: "3/4", boltCount: 8, torque_nm: 149, tension_kn: 105, boltLength: "145" },
-                "6": { boltSize: "3/4", boltCount: 12, torque_nm: 163, tension_kn: 120, boltLength: "150" },
-                "8": { boltSize: "7/8", boltCount: 12, torque_nm: 244, tension_kn: 180, boltLength: "170" },
-                "10": { boltSize: "1", boltCount: 16, torque_nm: 339, tension_kn: 240, boltLength: "190" },
-                "12": { boltSize: "1-1/8", boltCount: 16, torque_nm: 475, tension_kn: 310, boltLength: "210" }
-            },
-            "600": {
-                "1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 25, boltLength: "85" },
-                "3/4": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 35, boltLength: "110" },
-                "2": { boltSize: "5/8", boltCount: 8, torque_nm: 108, tension_kn: 65, boltLength: "125" },
-                "3": { boltSize: "3/4", boltCount: 8, torque_nm: 176, tension_kn: 110, boltLength: "150" },
-                "4": { boltSize: "7/8", boltCount: 8, torque_nm: 271, tension_kn: 160, boltLength: "170" },
-                "6": { boltSize: "1", boltCount: 12, torque_nm: 407, tension_kn: 250, boltLength: "210" },
-                "8": { boltSize: "1-1/8", boltCount: 12, torque_nm: 542, tension_kn: 340, boltLength: "235" },
-                "10": { boltSize: "1-1/4", boltCount: 16, torque_nm: 745, tension_kn: 450, boltLength: "265" },
-                "12": { boltSize: "1-1/4", boltCount: 20, torque_nm: 745, tension_kn: 520, boltLength: "280" }
-            },
-            "900": {
-                "1/2": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 60, boltLength: "115" },
-                "1": { boltSize: "7/8", boltCount: 4, torque_nm: 244, tension_kn: 110, boltLength: "140" },
-                "2": { boltSize: "7/8", boltCount: 8, torque_nm: 244, tension_kn: 140, boltLength: "165" },
-                "4": { boltSize: "1-1/8", boltCount: 8, torque_nm: 542, tension_kn: 310, boltLength: "205" },
-                "8": { boltSize: "1-3/8", boltCount: 12, torque_nm: 1016, tension_kn: 650, boltLength: "265" },
-                "12": { boltSize: "1-3/8", boltCount: 20, torque_nm: 1016, tension_kn: 980, boltLength: "300" }
-            },
-            "1500": {
-                "1/2": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 85, boltLength: "120" },
-                "1": { boltSize: "7/8", boltCount: 4, torque_nm: 244, tension_kn: 155, boltLength: "150" },
-                "4": { boltSize: "1-1/4", boltCount: 8, torque_nm: 745, tension_kn: 580, boltLength: "235" },
-                "8": { boltSize: "1-5/8", boltCount: 12, torque_nm: 1735, tension_kn: 1450, boltLength: "330" },
-                "12": { boltSize: "2", boltCount: 12, torque_nm: 3348, tension_kn: 2750, boltLength: "440" }
-            }
-        };
+const FLANGE_DATA = {
+    "150": { // Raised Face ความสูง 2 มม. รวมอยู่ในความยาวแล้ว
+        "1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 15, boltLength: "60" },
+        "3/4": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 18, boltLength: "65" },
+        "1": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 22, boltLength: "70" },
+        "1-1/4": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 28, boltLength: "70" },
+        "1-1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 35, boltLength: "75" },
+        "2": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 45, boltLength: "90" },
+        "2-1/2": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 55, boltLength: "95" },
+        "3": { boltSize: "5/8", boltCount: 4, torque_nm: 108, tension_kn: 70, boltLength: "95" },
+        "4": { boltSize: "5/8", boltCount: 8, torque_nm: 108, tension_kn: 70, boltLength: "95" },
+        "6": { boltSize: "3/4", boltCount: 8, torque_nm: 176, tension_kn: 110, boltLength: "110" },
+        "8": { boltSize: "3/4", boltCount: 8, torque_nm: 176, tension_kn: 140, boltLength: "120" },
+        "10": { boltSize: "7/8", boltCount: 12, torque_nm: 271, tension_kn: 190, boltLength: "140" },
+        "12": { boltSize: "7/8", boltCount: 12, torque_nm: 271, tension_kn: 230, boltLength: "140" }
+    },
+    "300": { // Raised Face ความสูง 2 มม. รวมอยู่ในความยาวแล้ว
+        "1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 20, boltLength: "65" },
+        "3/4": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 30, boltLength: "75" },
+        "1": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 35, boltLength: "75" },
+        "1-1/4": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 45, boltLength: "85" },
+        "1-1/2": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 55, boltLength: "90" },
+        "2": { boltSize: "5/8", boltCount: 8, torque_nm: 108, tension_kn: 50, boltLength: "90" },
+        "2-1/2": { boltSize: "3/4", boltCount: 8, torque_nm: 149, tension_kn: 70, boltLength: "100" },
+        "3": { boltSize: "3/4", boltCount: 8, torque_nm: 149, tension_kn: 85, boltLength: "110" },
+        "4": { boltSize: "3/4", boltCount: 8, torque_nm: 149, tension_kn: 105, boltLength: "115" },
+        "6": { boltSize: "3/4", boltCount: 12, torque_nm: 163, tension_kn: 120, boltLength: "120" },
+        "8": { boltSize: "7/8", boltCount: 12, torque_nm: 244, tension_kn: 180, boltLength: "140" },
+        "10": { boltSize: "1", boltCount: 16, torque_nm: 339, tension_kn: 240, boltLength: "160" },
+        "12": { boltSize: "1-1/8", boltCount: 16, torque_nm: 475, tension_kn: 310, boltLength: "170" }
+    },
+    "600": { // Raised Face ความสูง 7 มม. รวมอยู่ในความยาวแล้ว
+        "1/2": { boltSize: "1/2", boltCount: 4, torque_nm: 41, tension_kn: 25, boltLength: "75" },
+        "3/4": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 35, boltLength: "90" },
+        "1": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 45, boltLength: "90" },
+        "1-1/4": { boltSize: "5/8", boltCount: 4, torque_nm: 81, tension_kn: 50, boltLength: "95" },
+        "1-1/2": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 60, boltLength: "110" },
+        "2": { boltSize: "5/8", boltCount: 8, torque_nm: 108, tension_kn: 65, boltLength: "110" },
+        "2-1/2": { boltSize: "3/4", boltCount: 8, torque_nm: 149, tension_kn: 85, boltLength: "120" },
+        "3": { boltSize: "3/4", boltCount: 8, torque_nm: 176, tension_kn: 110, boltLength: "125" },
+        "4": { boltSize: "7/8", boltCount: 8, torque_nm: 271, tension_kn: 160, boltLength: "145" },
+        "6": { boltSize: "1", boltCount: 12, torque_nm: 407, tension_kn: 250, boltLength: "170" },
+        "8": { boltSize: "1-1/8", boltCount: 12, torque_nm: 542, tension_kn: 340, boltLength: "190" },
+        "10": { boltSize: "1-1/4", boltCount: 16, torque_nm: 745, tension_kn: 450, boltLength: "215" },
+        "12": { boltSize: "1-1/4", boltCount: 20, torque_nm: 745, tension_kn: 520, boltLength: "220" }
+    },
+    "900": { // Raised Face ความสูง 7 มม. รวมอยู่ในความยาวแล้ว
+        "1/2": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 60, boltLength: "110" },
+        "3/4": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 80, boltLength: "115" },
+        "1": { boltSize: "7/8", boltCount: 4, torque_nm: 244, tension_kn: 110, boltLength: "125" },
+        "1-1/4": { boltSize: "7/8", boltCount: 4, torque_nm: 244, tension_kn: 120, boltLength: "125" },
+        "1-1/2": { boltSize: "1", boltCount: 4, torque_nm: 339, tension_kn: 150, boltLength: "140" },
+        "2": { boltSize: "7/8", boltCount: 8, torque_nm: 244, tension_kn: 140, boltLength: "145" },
+        "2-1/2": { boltSize: "1", boltCount: 8, torque_nm: 339, tension_kn: 180, boltLength: "160" },
+        "3": { boltSize: "7/8", boltCount: 8, torque_nm: 244, tension_kn: 190, boltLength: "145" },
+        "4": { boltSize: "1-1/8", boltCount: 8, torque_nm: 542, tension_kn: 310, boltLength: "170" },
+        "6": { boltSize: "1-1/8", boltCount: 12, torque_nm: 542, tension_kn: 420, boltLength: "190" },
+        "8": { boltSize: "1-3/8", boltCount: 12, torque_nm: 1016, tension_kn: 650, boltLength: "220" },
+        "10": { boltSize: "1-3/8", boltCount: 16, torque_nm: 1016, tension_kn: 820, boltLength: "235" },
+        "12": { boltSize: "1-3/8", boltCount: 20, torque_nm: 1016, tension_kn: 980, boltLength: "255" }
+    },
+    "1500": { // Raised Face ความสูง 7 มม. รวมอยู่ในความยาวแล้ว
+        "1/2": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 85, boltLength: "110" },
+        "3/4": { boltSize: "3/4", boltCount: 4, torque_nm: 149, tension_kn: 95, boltLength: "115" },
+        "1": { boltSize: "7/8", boltCount: 4, torque_nm: 244, tension_kn: 155, boltLength: "125" },
+        "1-1/4": { boltSize: "7/8", boltCount: 4, torque_nm: 244, tension_kn: 160, boltLength: "125" },
+        "1-1/2": { boltSize: "1", boltCount: 4, torque_nm: 339, tension_kn: 190, boltLength: "140" },
+        "2": { boltSize: "7/8", boltCount: 8, torque_nm: 244, tension_kn: 220, boltLength: "145" },
+        "2-1/2": { boltSize: "1", boltCount: 8, torque_nm: 339, tension_kn: 280, boltLength: "160" },
+        "3": { boltSize: "1-1/8", boltCount: 8, torque_nm: 542, tension_kn: 380, boltLength: "180" },
+        "4": { boltSize: "1-1/4", boltCount: 8, torque_nm: 745, tension_kn: 580, boltLength: "195" },
+        "6": { boltSize: "1-3/8", boltCount: 12, torque_nm: 1016, tension_kn: 950, boltLength: "260" },
+        "8": { boltSize: "1-5/8", boltCount: 12, torque_nm: 1735, tension_kn: 1450, boltLength: "290" },
+        "10": { boltSize: "1-7/8", boltCount: 12, torque_nm: 2440, tension_kn: 2100, boltLength: "335" },
+        "12": { boltSize: "2", boltCount: 12, torque_nm: 3348, tension_kn: 2750, boltLength: "375" }
+    }
+};
 
         const METHODS = [
             { id: 'hand', label: 'Hand Torque', icon: 'wrench' },
