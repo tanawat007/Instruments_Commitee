@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Narrative and Diagnostic Tool - Compressor 48K002</title>
+    <!-- Tailwind CSS & DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for PDS & Process Curves -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .state-active {
+            box-shadow: 0 0 0 2px #2563eb, 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 p-3 md:p-6 text-slate-800">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Main Application Header -->
+        <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white p-5 md:p-6 rounded-2xl shadow-xl border border-blue-900 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-white/10 p-3.5 rounded-2xl border border-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner">
+                    <i class="fa-solid fa-microchip text-4xl text-blue-300"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="badge badge-accent font-mono text-xs font-bold shadow-sm">TAG: 48K002</span>
+                        <span class="badge badge-neutral text-xs font-mono">RECYCLE GAS COMPRESSOR</span>
+                        <span class="badge badge-outline text-blue-200 text-xs">DRIVER: 48KT002 (STEAM TURBINE SRV4-2)</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-bold mt-1.5 flex items-center gap-2">
+                        TriconCX & ProTech®-GII Control & Diagnostic System
+                    </h1>
+                    <p class="text-blue-200 text-xs md:text-sm mt-0.5">ระบบควบคุม วิเคราะห์ความผิดปกติ และจำลองการทำงานเครื่องจักร 48K002 (Control System Narrative P085-4801 Ref.)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 self-start lg:self-center flex-wrap">
+                <button onclick="switchTab('alarms')" class="btn btn-sm bg-white/15 hover:bg-white/25 text-white border-0 shadow-sm">
+                    <i class="fa-solid fa-diagram-next"></i> Troubleshooting
+                </button>
+                <button onclick="switchTab('subsystems')" class="btn btn-sm bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm">
+                    <i class="fa-solid fa-sliders"></i> Subsystems & PDS
+                </button>
+                <button onclick="switchTab('wizard')" class="btn btn-sm bg-amber-500 hover:bg-amber-600 text-white border-0 shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Smart Wizard
+                </button>
+
+            </div>
+            <a href="main.html" class="btn btn-xl bg-amber-700 hover:bg-amber-800 text-white border-0 shadow-sm">
+                    Back to Home
+            </a>
+        </header>
+
+        <!-- Key Architecture Overview Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-blue-300 transition">
+                <div class="p-3 bg-blue-50 text-blue-700 rounded-xl">
+                    <i class="fa-solid fa-server text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Control Architecture</div>
+                    <div class="text-sm font-bold text-slate-800">TriconCX TMR PLC + ProTech-GII</div>
+                    <div class="text-xs text-blue-600 font-semibold mt-0.5">Triple Modular Redundant (2oo3)</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-indigo-300 transition">
+                <div class="p-3 bg-indigo-50 text-indigo-700 rounded-xl">
+                    <i class="fa-solid fa-gauge-high text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Turbine Speed Range</div>
+                    <div class="text-sm font-bold text-slate-800">Rated: 11,695 RPM</div>
+                    <div class="text-xs text-indigo-600 font-semibold mt-0.5">Min Gov: 8,187 | Max: 12,397 RPM</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-red-300 transition">
+                <div class="p-3 bg-red-50 text-red-700 rounded-xl">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Overspeed Trip Logic</div>
+                    <div class="text-sm font-bold text-slate-800">PLC: 13,265 | ProTech: 13,637</div>
+                    <div class="text-xs text-red-600 font-semibold mt-0.5">2oo3 Voted Probes (SE4815002)</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-emerald-300 transition">
+                <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl">
+                    <i class="fa-solid fa-chart-line text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Machinery Monitoring (MMS)</div>
+                    <div class="text-sm font-bold text-slate-800">Bently Nevada 3500</div>
+                    <div class="text-xs text-emerald-600 font-semibold mt-0.5">Vibration: 103 µm | Temp: 135°C</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation Bar -->
+        <div class="flex border-b border-slate-200 bg-white rounded-2xl p-1.5 shadow-sm overflow-x-auto space-x-1 custom-scrollbar">
+            <button id="tab-btn-alarms" onclick="switchTab('alarms')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-blue-800 bg-blue-50 border border-blue-200">
+                <i class="fa-solid fa-list-check mr-1.5"></i> คู่มือตรวจสอบ Alarm (Troubleshooting KB)
+            </button>
+            <button id="tab-btn-sequence" onclick="switchTab('sequence')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-diagram-next mr-1.5"></i> ลำดับขั้นเดินเครื่อง & Permissives (9 States)
+            </button>
+            <button id="tab-btn-logic" onclick="switchTab('logic')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-network-wired mr-1.5"></i> วิเคราะห์ตรรกะ (Logic Diagram)
+            </button>
+            <button id="tab-btn-ce" onclick="switchTab('ce')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-table-cells mr-1.5"></i> เมทริกซ์ C&E (Cause & Effect)
+            </button>
+            <button id="tab-btn-subsystems" onclick="switchTab('subsystems')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-sliders mr-1.5"></i> ระบบย่อย & PDS Logic (Subsystem Inspector)
+            </button>
+            <button id="tab-btn-wizard" onclick="switchTab('wizard')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> ระบบวินิจฉัยด่วน (Diagnostic Wizard)
+            </button>
+            <button id="tab-btn-tags" onclick="switchTab('tags')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-tags mr-1.5"></i> ดัชนีแท็กเครื่องมือวัด (Instrument Index)
+            </button>
+            <button id="tab-btn-sop" onclick="switchTab('sop')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-screwdriver-wrench mr-1.5"></i> On-line Hot-Swap SOP
+            </button>
+        </div>
+
+        <!-- ================= TAB 1: ALARM KB ================= -->
+        <div id="tab-content-alarms" class="space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="flex items-center gap-1.5 flex-wrap w-full md:w-auto">
+                    <button id="filter-btn-ALL" onclick="setFilterCategory('ALL')" class="filter-cat-btn btn btn-xs md:btn-sm bg-blue-800 text-white rounded-xl border-0 shadow-sm">ทั้งหมด (All)</button>
+                    <button id="filter-btn-TRIP" onclick="setFilterCategory('TRIP')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> Trips & Interlocks</button>
+                    <button id="filter-btn-LUBE_OIL" onclick="setFilterCategory('LUBE_OIL')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-oil-can text-blue-500 mr-1"></i> Lube Oil</button>
+                    <button id="filter-btn-DRY_SEAL" onclick="setFilterCategory('DRY_SEAL')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-wind text-purple-500 mr-1"></i> Dry Gas Seal</button>
+                    <button id="filter-btn-MMS" onclick="setFilterCategory('MMS')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-chart-line text-emerald-500 mr-1"></i> MMS Vibration/Temp</button>
+                    <button id="filter-btn-HARDWARE" onclick="setFilterCategory('HARDWARE')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-server text-indigo-500 mr-1"></i> Hardware & PLC</button>
+                </div>
+                <div class="relative w-full md:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="alarmSearch" onkeyup="filterAlarms()" placeholder="ค้นหา Tag, ชื่อสัญญาณ, อาการ..." class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+            </div>
+            <div id="alarmCardsContainer" class="space-y-4"></div>
+        </div>
+
+        <!-- ================= TAB 2: SEQUENCE LOGIC (9 STATES) ================= -->
+        <div id="tab-content-sequence" class="hidden space-y-6">
+            <div id="startPermissiveStatusBanner" class="p-4 rounded-2xl border border-emerald-300 bg-emerald-50 text-emerald-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div id="permissiveStatusDot" class="w-4 h-4 rounded-full bg-emerald-500 shadow shrink-0"></div>
+                    <div>
+                        <h3 id="permissiveStatusTitle" class="font-bold text-sm md:text-base">COMPRESSOR START PERMISSIVE SATISFIED</h3>
+                        <p id="permissiveStatusSub" class="text-xs text-emerald-800">เงื่อนไขทั้ง 13 ข้อสมบูรณ์ - เครื่องจักรพร้อมทำการเดินเครื่อง (Ready to Start)</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-end md:self-center">
+                    <span id="permissiveBadge" class="badge bg-emerald-600 text-white font-mono text-xs font-bold py-2 px-3 border-0">XIC4814601 = 1 (GLOW)</span>
+                    <button onclick="checkAllPermissives()" class="btn btn-xs bg-emerald-700 hover:bg-emerald-800 text-white border-0 font-bold">
+                        <i class="fa-solid fa-check-double mr-1"></i> Reset All Permissives
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                            <i class="fa-solid fa-diagram-next text-blue-600"></i> ลำดับขั้นตอนการเดินเครื่องจักร 9 สถานะ (TriconCX Sequence States 0 to 8)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">กดเลือกสถานะเพื่อดูการเปิดวาล์วไอน้ำ, วาล์ว Anti-Surge และเงื่อนไขการอุ่นเครื่อง</p>
+                    </div>
+                    <span id="activeStateBadge" class="badge badge-primary font-mono text-xs font-bold">Active State: State 1 (READY TO START)</span>
+                </div>
+                <div id="stateButtonsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2"></div>
+                <div id="stateDetailBox" class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-4"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-blue-600"></i> เงื่อนไขอนุญาตการเดินเครื่อง 13 ข้อ (Start Permissives Logic Checklist)
+                        </h2>
+                    </div>
+                </div>
+                <div id="permissivesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: LOGIC DIAGRAM ================= -->
+        <div id="tab-content-logic" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-network-wired text-blue-600"></i> วิเคราะห์โครงสร้างตรรกะแบบละเอียด (Logic Diagram Explorer)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">อ้างอิงแบบวิศวกรรม Elliott Ebara Drawing Series 21E086A0010905 (DWG 001 - 085)</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button id="logic-dwg-DWG026" onclick="switchLogicDiagram('DWG026')" class="logic-dwg-btn btn btn-xs bg-blue-800 text-white rounded-lg">DWG 026: Start Permissive</button>
+                        <button id="logic-dwg-DWG040" onclick="switchLogicDiagram('DWG040')" class="logic-dwg-btn btn btn-xs bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg">DWG 040/041: Master Trip Logic</button>
+                        <button id="logic-dwg-DWG080" onclick="switchLogicDiagram('DWG080')" class="logic-dwg-btn btn btn-xs bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg">DWG 080: Oil Pump Auto Start</button>
+                        <button id="logic-dwg-DWG022" onclick="switchLogicDiagram('DWG022')" class="logic-dwg-btn btn btn-xs bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg">DWG 022: Turning Gear Intermittent</button>
+                        <button id="logic-dwg-DWG042" onclick="switchLogicDiagram('DWG042')" class="logic-dwg-btn btn btn-xs bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg">DWG 042: On-line T&T Test Interlock</button>
+                    </div>
+                </div>
+                <div id="logicDiagramContainer" class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs space-y-4 shadow-inner min-h-[380px]"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: CAUSE & EFFECT MATRIX ================= -->
+        <div id="tab-content-ce" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-table-cells text-indigo-600"></i> ตารางเมทริกซ์สาเหตุและผลลัพธ์ (Cause & Effect Matrix Table)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">การจับคู่เหตุการณ์ขัดข้อง (Cause Inputs) กับผลการตอบสนองเชิงความปลอดภัย (Safety Output Actions)</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button id="ce-btn-ALL" onclick="filterCEMatrix('ALL')" class="ce-cat-btn btn btn-xs bg-indigo-800 text-white rounded-lg">ทั้งหมด</button>
+                        <button id="ce-btn-TRIP" onclick="filterCEMatrix('TRIP')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">Overspeed / Trip</button>
+                        <button id="ce-btn-LUBE" onclick="filterCEMatrix('LUBE')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">Lube Oil</button>
+                        <button id="ce-btn-SEAL" onclick="filterCEMatrix('SEAL')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">Dry Gas Seal</button>
+                        <button id="ce-btn-PROCESS" onclick="filterCEMatrix('PROCESS')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">Process & Surge</button>
+                        <button id="ce-btn-MMS" onclick="filterCEMatrix('MMS')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">MMS Vib & Temp</button>
+                        <button id="ce-btn-ESD" onclick="filterCEMatrix('ESD')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">ESD / Manual Stop</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="table table-compact w-full text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="p-2.5 whitespace-nowrap">CAUSE DESCRIPTION</th>
+                                <th class="p-2.5 whitespace-nowrap">TAG NO.</th>
+                                <th class="p-2.5 whitespace-nowrap">VOTING</th>
+                                <th class="p-2.5 whitespace-nowrap">SETPOINT</th>
+                                <th class="p-2.5 text-center bg-red-50 text-red-800 whitespace-nowrap">T&T SOV</th>
+                                <th class="p-2.5 text-center bg-amber-50 text-amber-800 whitespace-nowrap">GOV SHUTOFF</th>
+                                <th class="p-2.5 text-center bg-blue-50 text-blue-800 whitespace-nowrap">ASV OPEN</th>
+                                <th class="p-2.5 text-center bg-emerald-50 text-emerald-800 whitespace-nowrap">START ELOP</th>
+                                <th class="p-2.5 text-center bg-indigo-50 text-indigo-800 whitespace-nowrap">STOP TURNING GEAR</th>
+                                <th class="p-2.5 text-center bg-slate-200 text-slate-800 whitespace-nowrap">DCS / PLC ALARM</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ceMatrixTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: SUBSYSTEM INSPECTOR (MATCHING IMAGE 1) ================= -->
+        <div id="tab-content-subsystems" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <!-- 4 Top Cards Bar (Image 1 Style) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <button id="sub-btn-lube" onclick="selectSubsystem('lube')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-blue-50/80 border-blue-300 shadow-sm">
+                        <div class="p-3 bg-blue-600 text-white rounded-xl shadow-sm">
+                            <i class="fa-solid fa-oil-can text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-blue-950">Lube Oil System</div>
+                            <div class="text-[11px] text-blue-700 font-medium mt-0.5">Console Control & Pumps</div>
+                        </div>
+                    </button>
+
+                    <button id="sub-btn-seal" onclick="selectSubsystem('seal')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-purple-300 hover:bg-purple-50/30">
+                        <div class="p-3 bg-purple-100 text-purple-700 rounded-xl">
+                            <i class="fa-solid fa-wind text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Dry Gas Seal System</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">Buffer Gas & Vent Control</div>
+                        </div>
+                    </button>
+
+                    <button id="sub-btn-pds" onclick="selectSubsystem('pds')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30">
+                        <div class="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Anti-Surge & PDS Logic</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">Split-Range & Surge Map</div>
+                        </div>
+                    </button>
+
+                    <button id="sub-btn-tg" onclick="selectSubsystem('tg')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-amber-300 hover:bg-amber-50/30">
+                        <div class="p-3 bg-amber-100 text-amber-700 rounded-xl">
+                            <i class="fa-solid fa-rotate text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Turning Gear Logic</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">Intermittent & Permissives</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Interactive Subsystem Display Area -->
+                <div id="subsystemDisplayArea" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 6: DIAGNOSTIC WIZARD (MATCHING IMAGE 2) ================= -->
+        <div id="tab-content-wizard" class="hidden space-y-6">
+            <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <!-- Header Title -->
+                <div class="border-b border-slate-200 pb-3">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-500 text-xl"></i>
+                        ระบบวิเคราะห์ปัญหาอัจฉริยะ (Interactive Diagnostic Wizard)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">เลือกอาการหรือสัญญาณขัดข้องที่พบเพื่อทำตามขั้นตอนวินิจฉัยทีละขั้นตอน (Guided Diagnostic Decision Tree)</p>
+                </div>
+
+                <!-- 6 Scenario Selection Cards Grid (Image 2 Style) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 1. Overspeed Trip (Red) -->
+                    <button onclick="startWizardFlow('OVERSPEED')" class="wizard-scenario-card p-4 rounded-2xl border border-red-200 bg-red-50/50 hover:bg-red-50 hover:border-red-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-red-500 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-red-950">Turbine Overspeed Trip</div>
+                            <div class="text-xs font-mono text-red-700 mt-0.5">SAHH4815001 / SSHH4815002 Active</div>
+                        </div>
+                    </button>
+
+                    <!-- 2. Lube Oil Press Low (Amber) -->
+                    <button onclick="startWizardFlow('LUBE_PRESS_LOW')" class="wizard-scenario-card p-4 rounded-2xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 hover:border-amber-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-amber-500 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-oil-can text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-amber-950">Lube Oil Header Pressure Low</div>
+                            <div class="text-xs font-mono text-amber-700 mt-0.5">PT-4814301 & PT-4814302A/B/C</div>
+                        </div>
+                    </button>
+
+                    <!-- 3. Primary Seal Vent Press HH (Purple) -->
+                    <button onclick="startWizardFlow('SEAL_VENT_HH')" class="wizard-scenario-card p-4 rounded-2xl border border-purple-200 bg-purple-50/50 hover:bg-purple-50 hover:border-purple-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-purple-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-wind text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-purple-950">Primary Seal Vent Press HH</div>
+                            <div class="text-xs font-mono text-purple-700 mt-0.5">PT-4814713 / PT-4814715 > 3.96 barG</div>
+                        </div>
+                    </button>
+
+                    <!-- 4. Speed Pickup Fault (Blue) -->
+                    <button onclick="startWizardFlow('SPEED_PICKUP_FAULT')" class="wizard-scenario-card p-4 rounded-2xl border border-blue-200 bg-blue-50/50 hover:bg-blue-50 hover:border-blue-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-blue-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-blue-950">Speed Pickup Fault / Loss</div>
+                            <div class="text-xs font-mono text-blue-700 mt-0.5">SE4815001A/B/C Signal Discrepancy</div>
+                        </div>
+                    </button>
+
+                    <!-- 5. Compressor Surge (Indigo) -->
+                    <button onclick="startWizardFlow('SURGE_TRIP')" class="wizard-scenario-card p-4 rounded-2xl border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 hover:border-indigo-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-indigo-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-chart-area text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-indigo-950">Compressor Surge Cycle / Trip</div>
+                            <div class="text-xs font-mono text-indigo-700 mt-0.5">Excessive Surge Trip (XS4801402)</div>
+                        </div>
+                    </button>
+
+                    <!-- 6. Turning Gear Not Running (Teal) -->
+                    <button onclick="startWizardFlow('TG_FAULT')" class="wizard-scenario-card p-4 rounded-2xl border border-teal-200 bg-teal-50/50 hover:bg-teal-50 hover:border-teal-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-teal-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-gear text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-teal-950">Turning Gear Not Running</div>
+                            <div class="text-xs font-mono text-teal-700 mt-0.5">XLP4814612 Permissive / Auto Start</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Guided Decision Flow Box Container -->
+                <div id="wizardFlowBox" class="p-5 bg-purple-50/30 rounded-2xl border border-purple-200 space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 7: INSTRUMENT TAG INDEX ================= -->
+        <div id="tab-content-tags" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-tags text-blue-600"></i> ดัชนีเครื่องมือวัดและแบบอ้างอิง (48K002 Complete Instrument Tag Index)
+                        </h2>
+                    </div>
+                    <div class="relative w-full md:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="tagIndexSearch" onkeyup="filterTagIndex()" placeholder="ค้นหา Tag No., ชนิดสัญญาณ..." class="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="table table-xs table-zebra w-full">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700">
+                                <th>TAG NO.</th>
+                                <th>SERVICE / DESCRIPTION</th>
+                                <th>NORMAL CONDITION</th>
+                                <th>PERMISSIVE</th>
+                                <th>ALARM SETPOINT</th>
+                                <th>TRIP SETPOINT</th>
+                                <th>P&ID REF</th>
+                                <th>LOGIC DWG REF</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tagIndexTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 8: HOT-SWAP SOP ================= -->
+        <div id="tab-content-sop" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <h2 class="text-base font-bold text-red-900 flex items-center gap-2">
+                        <i class="fa-solid fa-screwdriver-wrench text-red-600"></i> ขั้นตอนการถอดเปลี่ยนโมดูล ProTech®-GII แบบ On-line (Hot-Swap SOP)
+                    </h2>
+                    <span class="badge badge-error text-white text-xs font-mono font-bold">SIL-3 SAFETY CRITICAL</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
+                        <div class="flex items-center gap-2 text-amber-900 font-bold text-xs"><i class="fa-solid fa-circle-exclamation text-amber-600"></i> ข้อควรระวังก่อนเริ่มงาน</div>
+                        <ul class="text-[11px] text-amber-800 space-y-1 list-disc pl-4">
+                            <li>ตรวจสอบให้แน่ใจว่าโมดูลอีก 2 ช่องอยู่ในสภาวะ **HEALTHY Normal (2oo2 Mode)**</li>
+                            <li>หากพบโมดูลอื่นมี Fault ซ้อน **ห้ามทำ Hot-Swap เด็ดขาด**</li>
+                            <li>สวมใส่สายรัดข้อมือป้องกันไฟฟ้าสถิต (ESD Wrist Strap)</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
+                        <div class="flex items-center gap-2 text-blue-900 font-bold text-xs"><i class="fa-solid fa-list-check text-blue-600"></i> ขั้นตอนการเปลี่ยนโมดูล</div>
+                        <ol class="text-[11px] text-blue-800 space-y-1 list-decimal pl-4">
+                            <li>ขันสกรูยึดโมดูลที่ชำรุดออกด้วยไขควงปากแฉก</li>
+                            <li>กดสลักปลดล็อกแล้วค่อยๆ ดึงโมดูลออกจากแร็ค</li>
+                            <li>เสียบโมดูลใหม่ที่มี Firmware ตรงกันเข้าช่องแร็ค</li>
+                        </ol>
+                    </div>
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+                        <div class="flex items-center gap-2 text-emerald-900 font-bold text-xs"><i class="fa-solid fa-check-double text-emerald-600"></i> การตรวจสอบหลังเปลี่ยน</div>
+                        <ul class="text-[11px] text-emerald-800 space-y-1 list-disc pl-4">
+                            <li>ตรวจสอบไฟสถานะ HEALTHY หน้าเครื่องเปลี่ยนเป็นสีเขียวค้าง</li>
+                            <li>เข้าเมนู Diagnostics เพื่อตรวจเช็คค่าความเร็วรอบ MPU</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+            <!-- Footer Section -->
+        <footer class="mt-8 pb-8 text-center text-xs font-medium text-slate-400 border-t border-slate-200 pt-4">
+            &copy; 2026 Industrial Digital Architect — Compressor 48K002 Control Narrative & Diagnostic System
+        </footer>
+
+    </div>
+
+    <!-- ================= APPLICATION JAVASCRIPT ================= -->
+    <script>
+        // State Store
+        let currentAlarmCategory = 'ALL';
+        let currentCECategory = 'ALL';
+        let activeLogicDwg = 'DWG026';
+        let activeSubsystem = 'lube';
+        let currentActiveSequenceState = 1;
+
+        // 1. Alarm Knowledge Base (10 Comprehensive Items)
+        const ALARM_DATABASE = [
+            {
+                tag: "SSHH4815001",
+                name: "Turbine Overspeed Trip (PLC Level)",
+                category: "TRIP",
+                setpoint: "13,265 RPM (113.4% Speed)",
+                deadband: "2oo3 Voted Probe Logic",
+                symptom: "เครื่องจักรดับทันที, วาล์ว T&T Fast Close, สัญญาณ Trip โชว์หน้าตู้ PLC",
+                cause: "ระบบควบคุมความเร็วรอบล้มเหลว (Governor Actuator failure) หรือภาระเครื่องลดลงอย่างรวดเร็ว (Sudden Load Rejection)",
+                checks: ["เช็คค่า RPM จากเซนเซอร์ SE4815001A/B/C", "เช็คสถานะ Governor Valve Position", "เช็ครายงาน ProTech-GII Trip Log"],
+                action: "ทำการ Reset Interlock ที่ PLC HMI เมื่อความเร็วรอบกลับสู่ 0 RPM และหาสาเหตุก่อน Restart"
+            },
+            {
+                tag: "PSLL4814302",
+                name: "Lube Oil Header Pressure Low-Low Trip",
+                category: "TRIP",
+                setpoint: "0.76 barG",
+                deadband: "2oo3 Voted Transmitters (PT4814302A/B/C)",
+                symptom: "เครื่องจักร Trip ทันที, ปั๊มป้อนน้ำมันฉุกเฉิน (ELOP) สตาร์ททำงานอัตโนมัติ",
+                cause: "ปั๊มน้ำมันหลัก (MLOP) และปั๊มสแตนด์บาย (SLOP) ทำงานล้มเหลวพร้อมกัน หรือมีจุดรั่วไหลรุนแรงที่เส้นท่อ Lube Oil",
+                checks: ["เช็คแรงดัน Lube Oil Header สัมผัสจริง", "ตรวจสอบการทำงานของ ELOP และระดับน้ำมัน Rundown Tank", "เช็คจุดรั่วไหลที่ปั๊มและกรอง Duplex"],
+                action: "ตรวจสอบสาเหตุแรงดันตก, ตรวจเช็คสภาพลูกปืนเครื่องจักร (Bearing Inspection) ก่อนพิจารณา Reset"
+            },
+            {
+                tag: "PSHH4814713 / PSHH4814715",
+                name: "Primary Seal Vent Press HH Trip (DE / NDE)",
+                category: "TRIP",
+                setpoint: "3.96 barG",
+                deadband: "2oo3 Voted Transmitters",
+                symptom: "เครื่องจักร Trip ทันที, สัญญาณเตือน Primary Seal Vent Press HH บน DCS",
+                cause: "ชุดซีล Dry Gas Seal (Primary Seal) ชำรุดเสียหายรุนแรง ทำให้น้ำมันหรือก๊าซรั่วผ่านท่อ Vent เกินพิกัด",
+                checks: ["เช็คอัตราไหลก๊าซรั่วที่ท่อ Primary Vent (FT4814708/709)", "ตรวจสอบแรงดันก๊าซขับ Primary Buffer Gas DP", "เช็คประวัติเศษสิ่งสกปรกในระบบก๊าซซีล"],
+                action: "ทำการ Isolating ก๊าซซีล ตรวจเช็คความเสียหายของ Dry Gas Seal และทำการซ่อมบำรุงก่อนเดินเครื่อง"
+            },
+            {
+                tag: "XAC-4801402",
+                name: "Compressor Excessive Surge Trip",
+                category: "TRIP",
+                setpoint: "3 Surge Cycles ภายใน 60 วินาที",
+                deadband: "สะสมนับโดย ITCC TriconCX",
+                symptom: "เครื่องจักร Trip ทันที, สัญญาณเตือน Excessive Surge บน ITCC/DCS",
+                cause: "แรงดันด้านส่งสูงเกินไป หรืออัตราการไหลด้านดูดตกต่ำอย่างรวดเร็ว วาล์ว Anti-Surge (XV4801401) ตอบสนองไม่ทัน",
+                checks: ["ตรวจสอบกราฟ Performance & Surge Map บน ITCC", "เช็คความเร็วการเปิดของวาล์ว Anti-Surge", "เช็คเครื่องมือวัด Suction Flow / Discharge Press"],
+                action: "ตรวจสอบกระบวนการผลิต (Process Stability), Reset สัญญาณ Surge Trip ที่หน้าจอ ITCC ก่อนปฏิบัติตามลำดับสตาร์ท"
+            },
+            {
+                tag: "XA4814603A-C",
+                name: "MMS Bearing Vibration / Temp Common Trip",
+                category: "TRIP",
+                setpoint: "Vib: 103 µm | Bearing Temp: 135°C",
+                deadband: "2oo4 (Vib) / 2oo2 (Temp) จาก Bently Nevada 3500",
+                symptom: "เครื่องจักร Trip ทันที, สัญญาณเตือนจากระบบ MMS บน PLC/DCS",
+                cause: "เกิดการไม่สมดุลของโรเตอร์ (Unbalance), Alignment คลาดเคลื่อน หรือระบบ Lube Oil หล่อลื่นไม่เพียงพอ",
+                checks: ["ตรวจสอบค่าความสั่นสะเทือนจากตู้ BN3500 Rack", "เช็คอุณหภูมิเพลาและแบริ่งทุกจุด (Journal/Thrust)", "เช็คสภาพน้ำมันหล่อลื่นและเศษโลหะ"],
+                action: "วิเคราะห์ Spectrum ความสั่นสะเทือน ร่วมกับทีม Reliability ก่อนอนุญาตให้ทำการเดินเครื่อง"
+            },
+            {
+                tag: "PSL4815001",
+                name: "Control Oil Header Pressure Low Trip",
+                category: "TRIP",
+                setpoint: "9.3 barG",
+                deadband: "Direct Switch/Transmitter Logic",
+                symptom: "วาล์ว T&T ปิดทันที, สัญญาณ Control Oil Pressure Low บน LCP/DCS",
+                cause: "ปั๊ม Control Oil ทำงานผิดปกติ หรือมีไส้กรอง Control Oil อุดตัน (PDT4815003 HH)",
+                checks: ["เช็คแรงดัน Control Oil Header", "เช็คค่า Differential Pressure ที่กรอง Control Oil"],
+                action: "สลับไปใช้กรองชุดสแตนด์บาย หรือตรวจสอบปั๊ม Control Oil แล้วทำการ Reset สัญญาณ"
+            },
+            {
+                tag: "HSZ4814601",
+                name: "Emergency Stop Pushbutton Trip",
+                category: "TRIP",
+                setpoint: "Manual Push Button Pressed",
+                deadband: "Hardwired to TriconCX & Solenoid Circuit",
+                symptom: "เครื่องจักร Trip ทันทีจากการกดปุ่มฉุกเฉินที่ตู้ LCP/UCP",
+                cause: "ผู้ปฏิบัติงานกดปุ่ม Emergency Stop ด้วยตนเองเมื่อเกิดเหตุฉุกเฉิน",
+                checks: ["ตรวจสอบตำแหน่งปุ่มกดฉุกเฉิน HSZ4814601 ว่าถูกกดค้างไว้หรือไม่"],
+                action: "ดึงปุ่มกดฉุกเฉินกลับตำแหน่งปกติ (Pull to Reset) และกด Reset Interlock บน HMI"
+            },
+            {
+                tag: "PAL4814810",
+                name: "Lube Oil Supply Pressure Low Alarm",
+                category: "LUBE_OIL",
+                setpoint: "10.283 barG",
+                deadband: "0.2 bar",
+                symptom: "สัญญาณเตือน Alarm บน DCS, ปั๊ม Standby Lube Oil (SLOP) สตาร์ทอัตโนมัติ",
+                cause: "ปั๊ม Main Lube Oil (MLOP) ประสิทธิภาพตก หรือกรอง Lube Oil เริ่มอุดตัน",
+                checks: ["ตรวจสอบสถานะการทำงานของปั๊ม SLOP ว่าสตาร์ทเรียบร้อยหรือไม่", "เช็คค่า Differential Pressure ของกรอง Lube Oil"],
+                action: "ตรวจสอบปั๊ม MLOP และทำการซ่อมบำรุงเปลี่ยนกรองหากพบความต่างศักย์แรงดันสูง"
+            },
+            {
+                tag: "LAL4814801",
+                name: "Lube Oil Reservoir Level Low Alarm",
+                category: "LUBE_OIL",
+                setpoint: "35.8%",
+                deadband: "2.0%",
+                symptom: "สัญญาณเตือนระดับน้ำมันในถังพักต่ำบน DCS/PLC",
+                cause: "มีการรั่วไหลของน้ำมันหล่อลื่นในระบบ หรือการเติมน้ำมันไม่เพียงพอ",
+                checks: ["เช็คระดับน้ำมันจริงที่กระจกมองระดับ (Level Gauge)", "ตรวจหารอยรั่วรอบถังพักและปั๊ม"],
+                action: "เติมน้ำมันหล่อลื่นเพิ่มเข้าถังพัก Lube Oil Reservoir ให้ได้ระดับปกติ (> 50%)"
+            },
+            {
+                tag: "TAH4814801",
+                name: "Lube Oil Supply Temperature High Alarm",
+                category: "LUBE_OIL",
+                setpoint: "51.0°C",
+                deadband: "1.0°C",
+                symptom: "สัญญาณเตือนอุณหภูมิน้ำมันป้อนเข้าเครื่องจักรสูงบน DCS",
+                cause: "ระบบระบายความร้อน Lube Oil Cooler ทำงานไม่เต็มประสิทธิภาพ หรือวาล์วควบคุมอุณหภูมิ (TV4814801) ติดขัด",
+                checks: ["เช็คอัตราการไหลของน้ำใช้อุ้มความร้อน (Cooling Water Flow)", "เช็คตำแหน่งวาล์วควบคุมอุณหภูมิ TV4814801"],
+                action: "ปรับเพิ่มอัตราการไหล Cooling Water หรือสลับไปใช้ Lube Oil Cooler ชุดสแตนด์บาย"
+            },
+            {
+                tag: "PDAH4814808",
+                name: "Lube Oil Duplex Filter DP High Alarm",
+                category: "LUBE_OIL",
+                setpoint: "1.50 barD",
+                deadband: "0.1 barD",
+                symptom: "สัญญาณเตือนความต่างศักย์แรงดันกรองน้ำมันสูงบน DCS",
+                cause: "ไส้กรอง Lube Oil สกปรกหรือมีคราบเขม่าสะสมจากการใช้งานยาวนาน",
+                checks: ["เช็คค่า PDT4814808 บน LCP/DCS", "ตรวจสอบวาล์วสลับกรอง (Changeover Valve)"],
+                action: "ทำการสลับชุดไส้กรองไปด้านสแตนด์บายตามขั้นตอน และทำการถอดล้างเปลี่ยนไส้กรองชุดเดิม"
+            },
+            {
+                tag: "LAL4814301",
+                name: "Lube Oil Rundown Tank Level Low Alarm",
+                category: "LUBE_OIL",
+                setpoint: "91.8%",
+                deadband: "2.0%",
+                symptom: "สัญญาณเตือนระดับน้ำมันถังสำรองบนยอดตึกต่ำบน DCS",
+                cause: "วาล์วเติมน้ำมันเข้าถัง Rundown Tank ปิด หรือมีจุดรั่วไหลที่ท่อ Overflow",
+                checks: ["เช็คระดับจริงที่ LT4814301", "เช็คไลน์เติมน้ำมันหล่อลื่นขึ้นถัง Rundown Tank"],
+                action: "เปิดวาล์วเติมน้ำมันเข้าถัง Rundown Tank ให้เต็มระดับเพื่อพร้อมรองรับกรณีปั๊มดับ"
+            },
+            {
+                tag: "PDAH4814703",
+                name: "Primary Buffer Gas Supply DP Low/High Alarm",
+                category: "DRY_SEAL",
+                setpoint: "Low: 0.38 barD | High: 0.90 barD",
+                deadband: "0.05 barD",
+                symptom: "สัญญาณเตือนความต่างศักย์แรงดันก๊าซซีลคลาดเคลื่อนบน DCS",
+                cause: "วาล์วควบคุม PDV4814703 ตอบสนองช้า หรือแรงดันก๊าซอ้างอิง (Reference Gas) คลาดเคลื่อน",
+                checks: ["เช็คค่าแรงดันก๊าซซีลและก๊าซอ้างอิง PDI4814703", "ตรวจสอบการทำงานของชุดควบคุม PDIC4814703"],
+                action: "ปรับแต่งพารามิเตอร์ PID Controller หรือสลับไปใช้ระบบก๊าซซีลสำรอง (Booster Gas)"
+            },
+            {
+                tag: "PAH4814712 / PAH4814714",
+                name: "Primary Seal Vent Pressure High Alarm (DE / NDE)",
+                category: "DRY_SEAL",
+                setpoint: "3.46 barG",
+                deadband: "0.1 barG",
+                symptom: "สัญญาณเตือนก่อนทริป (Pre-Alarm) แรงดัน Primary Vent สูงบน DCS",
+                cause: "ชุดหน้าซีล Dry Gas Seal เริ่มมีความบกพร่อง หรือวาล์วระบาย PCV4814712 เปิดไม่เพียงพอ",
+                checks: ["เช็คแรงดัน Vent จริงที่ PT4814712/714", "เช็คการทำงานของวาล์วระบาย PCV4814712/714"],
+                action: "ตรวจสอบอัตราการรั่วไหล (Leakage Rate) และเตรียมแผนสำรองกรณีแรงดันขึ้นถึงจุด HH Trip (3.96 barG)"
+            },
+            {
+                tag: "TAL4814701 / TAL4814702",
+                name: "Primary Buffer Gas Supply Temp Low Alarm (DE / NDE)",
+                category: "DRY_SEAL",
+                setpoint: "50.5°C",
+                deadband: "1.0°C",
+                symptom: "สัญญาณเตือนอุณหภูมิก๊าซซีลป้อนต่ำกว่าเกณฑ์ Permissive สตาร์ท",
+                cause: "ฮีตเตอร์อุ่นก๊าซซีล (Seal Gas Heater) ไม่ทำงาน หรืออุณหภูมิก๊าซกระบวนการตกต่ำ",
+                checks: ["เช็คการจ่ายไฟตู้ควบคุม Seal Gas Heater", "ตรวจสอบค่าอุณหภูมิจาก TT4814701/702"],
+                action: "เปิดใช้งานฮีตเตอร์อุ่นก๊าซซีล และรอให้อุณหภูมิสูงกว่า 50.5°C ก่อนทำ Sequence Start"
+            },
+            {
+                tag: "PAL4814706",
+                name: "Back-up Nitrogen Gas Supply Pressure Low Alarm",
+                category: "DRY_SEAL",
+                setpoint: "3.0 barG",
+                deadband: "0.2 barG",
+                symptom: "สัญญาณเตือนแรงดันไนโตรเจนสำรองต่ำบน DCS",
+                cause: "ระบบจ่ายก๊าซ N2 จากโรงงานมีแรงดันตก หรือวาล์วจ่ายหลักถูกลดขนาดเปิด",
+                checks: ["เช็คแรงดัน N2 Header ที่ PT4814706", "เช็คการเปิดปิดโซลินอยด์วาล์ว XY4814705"],
+                action: "ติดต่อฝ่าย Utility เพื่อปรับเพิ่มแรงดัน Nitrogen ให้กลับสู่สภาวะปกติ (> 6.6 barG)"
+            },
+            {
+                tag: "PDAH4814702",
+                name: "Primary Seal Gas Filter DP High Alarm",
+                category: "DRY_SEAL",
+                setpoint: "0.50 barD",
+                deadband: "0.05 barD",
+                symptom: "สัญญาณเตือนกรองก๊าซซีลอุดตันบน DCS",
+                cause: "ฝุ่นหรือละอองของเหลวสะสมในไส้กรอง Seal Gas Filter",
+                checks: ["เช็คค่าต่างศักย์แรงดันที่ PDT4814702 บน LCP"],
+                action: "สลับกรองก๊าซซีลไปใช้ชุดสแตนด์บาย และเปลี่ยนไส้กรองที่อุดตันทันที"
+            },
+            {
+                tag: "VAH4814501-504",
+                name: "Compressor / Turbine Radial Vibration High Alert",
+                category: "MMS",
+                setpoint: "82.0 µm",
+                deadband: "1.0 µm",
+                symptom: "สัญญาณเตือนความสั่นสะเทือนเพลาสูง (Alert) บนตู้ BN3500 และ DCS",
+                cause: "เกิดความไม่สมดุลเล็กน้อย, ภาระกระบวนการเปลี่ยนอย่างรวดเร็ว หรืออุณหภูมิน้ำมันหล่อลื่นไม่เหมาะสม",
+                checks: ["ตรวจสอบสัญญาณเน้นย้ำบน BN3500 Rack", "เช็คค่าอุณหภูมิ Bearing และ Lube Oil"],
+                action: "เฝ้าระวังแนวโน้ม (Trend Analysis) และปรับสภาวะการเดินเครื่องเพื่อลดความสั่นสะเทือน"
+            },
+            {
+                tag: "ZAH4814501 / ZAH4814502",
+                name: "Compressor / Turbine Axial Displacement High Alert",
+                category: "MMS",
+                setpoint: "±0.432 mm",
+                deadband: "0.01 mm",
+                symptom: "สัญญาณเตือนการเคลื่อนตัวตามแกนเพลาสูงเตือนบน DCS",
+                cause: "เกิดแรงดันขนานแกน (Thrust Load) คลาดเคลื่อน หรือแบริ่งรับแรงแกนเริ่มสึกหรอ",
+                checks: ["เช็คค่าตำแหน่งเพลาจากเซนเซอร์ ZT4814501A/B/C", "เช็คอุณหภูมิ Thrust Bearing (TE4814501/502)"],
+                action: "ตรวจสอบแรงดันต่างระหว่าง Suction และ Discharge เพื่อลดภาระแรงกดแกนเพลา"
+            },
+            {
+                tag: "TAH4814501-508",
+                name: "Bearing Temperature High Alert (Journal & Thrust)",
+                category: "MMS",
+                setpoint: "130.0°C",
+                deadband: "1.0°C",
+                symptom: "สัญญาณเตือนอุณหภูมิแบริ่งสูงเตือนบน DCS",
+                cause: "การระบายความร้อนน้ำมันหล่อลื่นไม่ดี หรือเกิดภาระกดแบริ่งสูงเกินพิกัด",
+                checks: ["เช็คอุณหภูมิน้ำมันป้อนเข้า Lube Oil Supply Temp (41-51°C)", "เช็คอัตราไหลน้ำมันเข้าแบริ่ง"],
+                action: "ปรับลดอุณหภูมิน้ำมันป้อนเข้า หรือลดความเร็วรอบเครื่องจักรหากจำเป็น"
+            },
+            {
+                tag: "XA-4814601",
+                name: "TriconCX Main Processor / Chassis Diagnostic Fault",
+                category: "HARDWARE",
+                setpoint: "TMR Redundancy Degraded (2oo3 to 3-2-0 Fault)",
+                deadband: "Internal System Diagnostics Logic",
+                symptom: "ไฟเตือน FAULT บนตู้ TriconCX, สัญญาณ Common Hardware Alarm โชว์บน DCS",
+                cause: "การ์ดประมวลผล Main Processor (MP 3009) หรือโมดูล Power Supply ชำรุด 1 ช่องสัญญาณ",
+                checks: ["ตรวจสอบไฟสถานะ LED บนตู้ TriconCX Chassis", "เช็ค System Diagnostic Log ผ่านซอฟต์แวร์ TriStation 1131"],
+                action: "ถอดเปลี่ยนโมดูล MP หรือ Power Supply ที่ชำรุดแบบ Hot-Swap ขณะเครื่องกำลังทำงานอยู่"
+            },
+            {
+                tag: "XA-4815002",
+                name: "Woodward ProTech®-GII Module Health Degraded",
+                category: "HARDWARE",
+                setpoint: "Single Module Trip / Internal Fault",
+                deadband: "1oo2 Hardware Voting Operating Mode",
+                symptom: "ไฟเตือน ALARM สีส้มบนหน้าตู้ ProTech-GII, สัญญาณเตือนบน DCS",
+                cause: "โมดูล ProTech-GII (Module A, B หรือ C) ชำรุด หรือสัญญาณ Speed MPU หลุดหาย 1 ช่อง",
+                checks: ["ตรวจหน้าจอ OLED ของ ProTech-GII ว่าโมดูลใดขึ้น Fault", "เช็คแรงดันไฟเลี้ยง 24VDC Power Supply"],
+                action: "ปฏิบัติตาม On-line Hot-Swap SOP เพื่อทำการเปลี่ยนโมดูล ProTech-GII ที่ชำรุดอย่างปลอดภัย"
+            },
+            {
+                tag: "XA-4814602",
+                name: "TriconCX to DCS Modbus Communication Failure",
+                category: "HARDWARE",
+                setpoint: "Communication Link Timeout (> 3 seconds)",
+                deadband: "Redundant RS-485 / Ethernet Link Switch over",
+                symptom: "ค่าพารามิเตอร์บนหน้าจอ DCS ค้างหรือไม่ขึ้นอัปเดต (Bad Data / Questionable)",
+                cause: "สายสัญญาณ Modbus/Ethernet หลุดหลวม หรือตู้สื่อสาร Communication Gateway (NCM/TCM) มีปัญหา",
+                checks: ["เช็คไฟสถานะ RX/TX บนโมดูล TCM/NCM", "เช็คสายแลนและสวิตช์ Ethernet ในตู้ UCP"],
+                action: "ทำการ Reset โมดูลสื่อสารช่องทางหลัก หรือสลับไปใช้ช่องทางสื่อสารสำรอง (Redundant Channel)"
+            },
+            {
+                tag: "XA-4814603",
+                name: "TriconCX TMR I/O Module Channel Discrepancy",
+                category: "HARDWARE",
+                setpoint: "Channel Difference > Threshold Limit",
+                deadband: "Triple Modular Redundant Voting Engine",
+                symptom: "สัญญาณเตือน I/O Fault บน PLC HMI แต่เครื่องจักรยังทำงานปกติ (2oo3 Voting ยังครอบคลุม)",
+                cause: "โมดูลขาเข้า Analog Input (AI) หรือ Digital Input (DI) ช่องใดช่องหนึ่งคลาดเคลื่อน หรือเทอร์มินัล FTA มีคราบออกไซด์",
+                checks: ["เช็ค Diagnostic Menu ของ TriconCX PLC", "วัดค่าแรงดัน/กระแสไฟฟ้าที่ขาเทอร์มินัล FTA"],
+                action: "ทำความสะอาดจุดต่อสาย หรือทำ Hot-Swap เปลี่ยนโมดูล I/O ที่มีปัญหา"
+            },
+            {
+                tag: "SDAH4815001",
+                name: "MPU Speed Signal Deviation Alarm",
+                category: "HARDWARE",
+                setpoint: "Deviation > 100 RPM ระหว่าง MPU 3 ชุด",
+                deadband: "Continuous Comparison in ProTech-GII",
+                symptom: "สัญญาณเตือน Speed Signal Discrepancy บน LCP และ DCS",
+                cause: "ระยะห่าง Gap ของ MPU Probe คลาดเคลื่อน หรือมีคราบเศษโลหะเกาะที่ปลายหัววัด SE4815001A/B/C",
+                checks: ["วัดแรงดัน AC Voltage จาก MPU (ควรได้ ≥ 1.0 Vrms ขณะหมุน)", "เช็คระยะ Gap ของ MPU Probe (0.5 - 1.0 mm)"],
+                action: "ทำความสะอาดหัววัด MPU และปรับตั้งระยะ Gap ให้ถูกต้องขณะหยุดเครื่องจักร"
+            }
+        ];
+
+        // 2. Start Permissives Checklist (13 Complete Items)
+        const PERMISSIVE_DATA = [
+            { id: 1, tag: "XZSO4801401", desc: "Anti-Surge Valve (XV4801401) Fully Open", dwg: "DWG 075", state: true },
+            { id: 2, tag: "LT4814801", desc: "Lube Oil Reservoir Level Not Low (> 35.8%)", dwg: "DWG 082", state: true },
+            { id: 3, tag: "ZSO4814901", desc: "Turbine T&T Valve (UV4814901) Fully Open", dwg: "DWG 075", state: true },
+            { id: 4, tag: "PT4814301", desc: "Lube Oil Header Pressure Not Low (> 0.89 barG)", dwg: "DWG 077", state: true },
+            { id: 5, tag: "PT4815001", desc: "Control Oil Header Pressure Not Low (> 9.3 barG)", dwg: "DWG 074", state: true },
+            { id: 6, tag: "TT4814801", desc: "Lube Oil Supply Temp Not Low (> 21.0°C)", dwg: "DWG 076", state: true },
+            { id: 7, tag: "PDT4814703", desc: "Primary Seal Gas Supply Ref. DP Not Low (> 0.38 barD)", dwg: "DWG 074", state: true },
+            { id: 8, tag: "TT4814701", desc: "Primary Buffer Gas Supply (DE) Temp Not Low (> 50.5°C)", dwg: "DWG 076", state: true },
+            { id: 9, tag: "TT4814702", desc: "Primary Buffer Gas Supply (NDE) Temp Not Low (> 50.5°C)", dwg: "DWG 077", state: true },
+            { id: 10, tag: "ZS4814302", desc: "Turning Gear Clutch Engaged", dwg: "DWG 075", state: true },
+            { id: 11, tag: "XS4814601", desc: "Process Start Permissive (from DCS ESD)", dwg: "DWG 026", state: true },
+            { id: 12, tag: "XS4814603", desc: "Compressor Master Safety Interlock NOT TRIP", dwg: "DWG 040", state: true },
+            { id: 13, tag: "FT4814701", desc: "Booster Gas Supply Flow Not Low (> 83.4 Nm³/h)", dwg: "DWG 074", state: true }
+        ];
+
+        // 3. Sequence States (Full 9 States 0 to 8)
+        const SEQUENCE_STATES = [
+            { state: 0, name: "STATE 0: SHUTDOWN / IDLE", desc: "เครื่องจักรอุปกรณ์อยู่ในสภาวะหยุดทำงาน", speed: "0 RPM", govValve: "0%", asvValve: "100%", action: "รอน้ำมันหล่อลื่นและระบบก๊าซซีลพร้อม" },
+            { state: 1, name: "STATE 1: READY TO START", desc: "เงื่อนไข Start Permissives ทั้ง 13 ข้อสมบูรณ์", speed: "0 RPM", govValve: "0%", asvValve: "100%", action: "ผู้ปฏิบัติงานสามารถกดปุ่ม COMPRESSOR START" },
+            { state: 2, name: "STATE 2: ROLLING & WARM-UP", desc: "วาล์ว T&T เปิด จ่ายไอน้ำขับหมุนเพลาเพื่ออุ่นเครื่อง", speed: "500 - 1,000 RPM", govValve: "5-10%", asvValve: "100%", action: "จับเวลา Warm-up อุ่นเพลาและตัวเรือน" },
+            { state: 3, name: "STATE 3: ACCELERATING TO MIN GOV", desc: "เร่งความเร็วรอบข้ามช่วง critical vibration", speed: "1,000 -> 8,187 RPM", govValve: "15 RPM/s", asvValve: "100%", action: "เร่งสปีดข้าม Critical Speed โดยไว" },
+            { state: 4, name: "STATE 4: MIN GOVERNOR SPEED", desc: "ความเร็วรอบถึงระดับ Minimum Governor พร้อมรับโหลด", speed: "8,187 RPM", govValve: "Governor Control", asvValve: "100% -> Loading", action: "เตรียมปรับแรงดันและโหลดในระบบ" },
+            { state: 5, name: "STATE 5: NORMAL GOVERNOR OPERATION", desc: "การควบคุมความเร็วรอบปกติภายใต้ Governor Control", speed: "8,187 - 12,397 RPM", govValve: "Auto PDS", asvValve: "Auto SCL", action: "ควบคุมกระบวนการผลิตตามความต้องการ" },
+            { state: 6, name: "STATE 6: MAXIMUM GOVERNOR SPEED", desc: "ความเร็วรอบแตะระดับเพดานสูงสุดของระบบควบคุม", speed: "12,397 RPM", govValve: "100% Max Limit", asvValve: "0% Closed", action: "เฝ้าระวังไม่ให้เกิด Overspeed Trip" },
+            { state: 7, name: "STATE 7: COOLDOWN & SHUTDOWN", desc: "ลำดับการลดความเร็วรอบเพื่อการคูลดาวน์ก่อนดับเครื่อง", speed: "12,397 -> 0 RPM", govValve: "Ramp Down", asvValve: "100% Open", action: "ลดระดับไอน้ำและเข้าสู่โหมดหมุนเพลา" },
+            { state: 8, name: "STATE 8: EMERGENCY TRIP", desc: "สภาวะทริปฉุกเฉิน ตัดการจ่ายไอน้ำทันที", speed: "Coasting Down to 0", govValve: "Fast Close (0%)", asvValve: "Fast Open (100%)", action: "ปั๊มฉุกเฉิน ELOP ทำงาน ล็อค Latch" }
+        ];
+
+        // 4. Cause & Effect Database
+        const CAUSE_AND_EFFECT_DATABASE = [
+            { cause: "Turbine Overspeed Trip", tag: "SE4815002A/B/C", voting: "2oo3", setpoint: "13,637 RPM", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "TRIP" },
+            { cause: "Control Oil Supply Header Pressure Low-Low", tag: "PT4815001", voting: "1oo1", setpoint: "9.3 barG", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "TRIP" },
+            { cause: "Lube Oil Header Press Low-Low", tag: "PT4814302A/B/C", voting: "2oo3", setpoint: "0.76 barG", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "LUBE" },
+            { cause: "Primary Seal Vent Press DE HH", tag: "PT4814713A/B/C", voting: "2oo3", setpoint: "3.96 barG", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "SEAL" },
+            { cause: "Primary Seal Vent Press NDE HH", tag: "PT4814715A/B/C", voting: "2oo3", setpoint: "3.96 barG", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "SEAL" },
+            { cause: "Compressor Radial Vib HH", tag: "VXT/VYT4814501-502", voting: "2oo4", setpoint: "103 µm", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "MMS" },
+            { cause: "Turbine Radial Vib HH", tag: "VXT/VYT4814503-504", voting: "2oo4", setpoint: "103 µm", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "MMS" },
+            { cause: "Compressor Axial Displacement HH", tag: "ZT4814501A/B/C", voting: "2oo3", setpoint: "±0.559 mm", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "MMS" },
+            { cause: "Turbine Axial Displacement HH", tag: "ZT4814502A/B/C", voting: "2oo3", setpoint: "±0.559 mm", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "MMS" },
+            { cause: "Bearing Temperature HH", tag: "TE4814501-508", voting: "2oo2", setpoint: "135.0°C", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "MMS" },
+            { cause: "Compressor Excessive Surge", tag: "XAC4801402", voting: "1oo1", setpoint: "3 Cycles / 60s", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "PROCESS" },
+            { cause: "Emergency Stop Push Button", tag: "HSZ4814601", voting: "1oo1", setpoint: "Manual Press", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "ESD" },
+            { cause: "Process ESD Shutdown Signal", tag: "XS4814603", voting: "1oo1", setpoint: "DCS Trip Signal", tt: "X", gov: "X", asv: "O", elop: "O", tg: "X", alarm: "X", category: "ESD" }
+        ];
+
+        // 5. Complete Instrument Tag Index (Searchable)
+        const TAG_INDEX_DATABASE = [
+            { tag: "SE4815001A/B/C", desc: "Turbine Speed MPU Probes (Governor)", normal: "8,187 - 11,695 RPM", permissive: "N/A", alarm: "Pre-alarm: 12,397 RPM", trip: "13,265 RPM (PLC Level)", pid: "6600-M1-VP-K-101", logic: "DWG 031 / 070" },
+            { tag: "SE4815002A/B/C", desc: "Turbine Overspeed Probes (ProTech-GII)", normal: "8,187 - 11,695 RPM", permissive: "N/A", alarm: "Alarm: 12,397 RPM", trip: "13,637 RPM (SIL-3 Hardware)", pid: "6600-M1-VP-K-101", logic: "DWG 070" },
+            { tag: "PT4814302A/B/C", desc: "Lube Oil Header Pressure Transmitters", normal: "1.8 - 2.2 barG", permissive: "> 0.89 barG (PT4814301)", alarm: "Low: 1.0 barG", trip: "Low-Low: 0.76 barG (2oo3 Voted)", pid: "6600-M1-VP-K-108", logic: "DWG 060 / 077" },
+            { tag: "PT4814810", desc: "Lube Oil Supply Pressure Transmitter", normal: "12.0 - 14.0 barG", permissive: "N/A", alarm: "Low: 10.283 barG (Start SLOP)", trip: "N/A", pid: "6600-M1-VP-K-108", logic: "DWG 080" },
+            { tag: "PT4815001", desc: "Control Oil Supply Header Pressure", normal: "10.5 - 12.0 barG", permissive: "> 9.3 barG", alarm: "Low: 9.8 barG", trip: "Low: 9.3 barG (Direct Trip T&T)", pid: "6600-M1-VP-K-110", logic: "DWG 074" },
+            { tag: "PT4814713A/B/C", desc: "Primary Seal Vent Press (DE)", normal: "0.05 - 0.20 barG", permissive: "N/A", alarm: "High: 3.46 barG", trip: "High-High: 3.96 barG (2oo3 Voted)", pid: "6600-M1-VP-K-107", logic: "DWG 061 / 091" },
+            { tag: "PT4814715A/B/C", desc: "Primary Seal Vent Press (NDE)", normal: "0.05 - 0.20 barG", permissive: "N/A", alarm: "High: 3.46 barG", trip: "High-High: 3.96 barG (2oo3 Voted)", pid: "6600-M1-VP-K-107", logic: "DWG 062 / 091" },
+            { tag: "PDT4814703", desc: "Primary Buffer Gas Supply Ref. DP", normal: "0.50 - 0.70 barD", permissive: "> 0.38 barD", alarm: "Low: 0.38 barD | High: 0.90 barD", trip: "N/A", pid: "6600-M1-VP-K-107", logic: "DWG 074 / 090" },
+            { tag: "TT4814801", desc: "Lube Oil Supply Temperature Transmitter", normal: "43.0 - 48.0°C", permissive: "> 21.0°C", alarm: "High: 51.0°C | Low: 41.0°C", trip: "N/A", pid: "6600-M1-VP-K-108", logic: "DWG 076 / 092" },
+            { tag: "TT4814701/702", desc: "Primary Buffer Gas Temp (DE/NDE)", normal: "60.0 - 75.0°C", permissive: "> 50.5°C", alarm: "High: 111.1°C | Low: 50.5°C", trip: "N/A", pid: "6600-M1-VP-K-107", logic: "DWG 076 / 077" },
+            { tag: "LT4814801", desc: "Lube Oil Reservoir Level Transmitter", normal: "65.0 - 80.0%", permissive: "> 35.8%", alarm: "Low: 35.8%", trip: "N/A", pid: "6600-M1-VP-K-108", logic: "DWG 082" },
+            { tag: "LT4814301", desc: "Lube Oil Rundown Tank Level Transmitter", normal: "98.0 - 100.0%", permissive: "> 95.5%", alarm: "Low: 91.8%", trip: "N/A", pid: "6600-M1-VP-K-108", logic: "DWG 077" },
+            { tag: "FT4814701", desc: "Booster Gas Supply Flow Transmitter", normal: "100.0 - 150.0 Nm³/h", permissive: "> 83.4 Nm³/h", alarm: "Low: 83.4 Nm³/h", trip: "N/A", pid: "6600-M1-VP-K-107", logic: "DWG 074" },
+            { tag: "VXT/VYT4814501-504", desc: "Radial Vibration Proximity Probes", normal: "15 - 45 µm", permissive: "N/A", alarm: "Alert High: 82.0 µm", trip: "Trip High-High: 103.0 µm (2oo4)", pid: "6600-M1-VP-K-105", logic: "DWG 122 - 126" },
+            { tag: "ZT4814501/502A-C", desc: "Axial Position Proximity Probes", normal: "-0.10 to +0.10 mm", permissive: "N/A", alarm: "Alert: ±0.432 mm", trip: "Trip High-High: ±0.559 mm (2oo3)", pid: "6600-M1-VP-K-105", logic: "DWG 122 / 123" },
+            { tag: "TE4814501-508", desc: "Bearing Temperature RTDs", normal: "75.0 - 105.0°C", permissive: "N/A", alarm: "Alert High: 130.0°C", trip: "Trip High-High: 135.0°C (2oo2)", pid: "6600-M1-VP-K-105", logic: "DWG 130 - 136" }
+        ];
+
+        // 6. Diagnostic Wizard Complete Decision Trees
+        const WIZARD_NODES = {
+            'OVERSPEED': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Turbine Overspeed Trip (SAHH4815001 / SSHH4815002)",
+                step1_title: "ขั้นที่ 1: ตรวจเช็คค่าสปีดสะสมสูงสุดและสถานะ 2oo3 ProTech Module",
+                step1_desc: "อ่านค่า Peak Speed จากหน้าจอ ProTech®-GII เพื่อยืนยันว่าสปีดเกินเกณฑ์ 13,265 RPM จริง หรือเกิดจากเซนเซอร์ MPU ล้มเหลว",
+                optionA_title: "กรณี เป็น Overspeed สัมผัสจริง (Peak Speed > 13,265 RPM):",
+                optionA_desc: "เกิดจากภาระเครื่องจักรหลุดทันที (Sudden Load Rejection) หรือ Governor Valve ค้างเปิด ให้ตรวจเช็คก้านวาล์วไอน้ำและชุดไฮดรอลิก Actuation",
+                optionA_color: "red",
+                optionB_title: "กรณี ค่า Speed บนหน้าจอ ProTech ปกติ แต่สัญญาณ Trip สั่งลง PLC:",
+                optionB_desc: "เกิดจากสายไฟ MPU ชำรุด สัญญาณรบกวน High Frequency noise หรือบอร์ด I/O โมดูลอ่านค่าผิดพลาด ให้ทำ Hot-Swap เคลียร์โมดูลเสีย",
+                optionB_color: "amber",
+                step2_title: "ขั้นที่ 2: ตรวจสอบสถานะการปิดของวาล์ว T&T (UV4814901) และ Governor Valve",
+                step2_desc: "ยืนยันว่า Trip Solenoid XY4815001A/B/C สั่ง Drain น้ำมันควบคุมลง และวาล์ว Fast Close สมบูรณ์",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. รอความเร็วรอบเพลาหมุนลดลงจนหยุดนิ่ง (0 RPM)",
+                    "2. กดปุ่ม RESET บน ProTech-GII หน้าตู้ Local",
+                    "3. กดปุ่ม MASTER RESET บน TriconCX HMI เพื่อปลดล็อค Start Permissive"
+                ]
+            },
+            'LUBE_PRESS_LOW': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Lube Oil Header Pressure Low (PT-4814301 / 302)",
+                step1_title: "ขั้นที่ 1: ตรวจสอบสถานะการสตาร์ทปั๊มสำรอง (SLOP / ELOP)",
+                step1_desc: "ตรวจสอบค่าแรงดันเฮดเดอร์จริงและสวิตช์เลือกโหมดการทำงานของปั๊มน้ำมันหล่อลื่น",
+                optionA_title: "กรณี SLOP (48P020) ไม่สตาร์ทอัตโนมัติ:",
+                optionA_desc: "เช็คสวิตช์หน้าตู้ LCP ว่าอยู่ในตำแหน่ง AUTO หรือไม่ และวัดสัญญาณแรงดัน PT-4814810 (< 10.283 barG)",
+                optionA_color: "amber",
+                optionB_title: "กรณี แรงดันตกลงถึง 0.76 barG (2oo3 Trip):",
+                optionB_desc: "ปั๊มฉุกเฉิน ELOP (48P027) จะต้องสตาร์ทด้วยไฟแบตเตอรี่ DC ทันที ตรวจเช็คเบรกเกอร์ DC และระดับน้ำมัน Rundown Tank",
+                optionB_color: "red",
+                step2_title: "ขั้นที่ 2: ตรวจสอบความต่างแรงดันกรอง Duplex Filter (PDT-4814808)",
+                step2_desc: "หากค่าต่างศักย์แรงดันกรอง > 1.5 barD ให้สลับชุดไส้กรองไปยังชุดสแตนด์บายทันที",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. ทำการสลับกรองน้ำมันหล่อลื่น Duplex Filter",
+                    "2. ตรวจสอบแรงดันปั๊มหล่อลื่นหลัก MLOP และเปิดวาล์วบายพาสปรับแรงดัน",
+                    "3. กดปุ่ม RESET บน TriconCX HMI เพื่อเคลียร์สัญญาณ Low Pressure Trip"
+                ]
+            },
+            'SEAL_VENT_HH': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Primary Seal Vent Press HH (> 3.96 barG)",
+                step1_title: "ขั้นที่ 1: เปรียบเทียบอัตราการไหล (Vent Flow) กับแรงดัน (Vent Pressure)",
+                step1_desc: "อ่านค่าจาก PT-4814712 (DE) / PT-4814714 (NDE) ร่วมกับอัตราไหล FT-4814708 / FT-4814709",
+                optionA_title: "กรณี Flow สูงมาก (> 20 Nm³/h) + Press HH:",
+                optionA_desc: "หน้าสัมผัส Dry Gas Seal ชำรุดแตกหักรุนแรง (Primary Seal Face Failure) ทำให้น้ำมันหรือก๊าซรั่วผ่านท่อ Vent เกินพิกัด — ห้ามสตาร์ทเครื่องเด็ดขาด ต้องดำเนินการถอดเปลี่ยน Seal Cartridge",
+                optionA_color: "red",
+                optionB_title: "กรณี Flow ปกติ แต่ Press HH:",
+                optionB_desc: "เกิดจากวาล์วควบคุมระบาย PCV-4814712/714 (Fail Open) ขัดข้องติดค้างปิด หรือเกิด Backpressure สูงในท่อ Flare Line ฝั่งโรงงาน",
+                optionB_color: "amber",
+                step2_title: "ขั้นที่ 2: ตรวจสอบความต่างแรงดัน Primary Buffer Gas DP (PDT-4814703)",
+                step2_desc: "หากค่า DP ต่ำกว่า 0.5 barD แก๊สกระบวนการอาจย้อนเข้าทำลายหน้าซีล ให้ตรวจสอบสถานะการทำงานของชุด Seal Gas Booster (48Z006A/B) และ Solenoid XY-4814701/702",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. ตรวจสอบป้อนสัญญาณควบคุม 20-4mA ไปยัง PCV-4814712/714 และแรงดันลม Instrument Air",
+                    "2. แก้ไขปัญหาฝั่ง Vent Line จนแรงดันลดลงต่ำกว่า 3.46 barG (High Alarm Level)",
+                    "3. กดปุ่ม RESET บน TriconCX HMI เพื่อเคลียร์สัญญาณ Trip Permissive"
+                ]
+            },
+            'SPEED_PICKUP_FAULT': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Speed Pickup Fault / Loss (SE4815001A/B/C)",
+                step1_title: "ขั้นที่ 1: ตรวจสอบสัญญาณความเร็วรอบ MPU Probe แบบ Triple Voting",
+                step1_desc: "เปรียบเทียบค่าความเร็วรอบระหว่าง Probe A, B และ C บนหน้าตู้ ProTech-GII",
+                optionA_title: "กรณี สูญหายเพียง 1 ช่องสัญญาณ (Single Fault):",
+                optionA_desc: "ระบบ ProTech-GII จะทำการ Reject ช่องสัญญาณเสียออก และสลับโหมดควบคุมเป็น 2oo2 อัตโนมัติโดยไม่ทริปเครื่องจักร",
+                optionA_color: "blue",
+                optionB_title: "กรณี สูญหาย 2 ช่องสัญญาณขึ้นไป (Dual Loss Trip):",
+                optionB_desc: "ระบบจะสั่ง Fast Trip ทันทีเนื่องจากสูญเสียสัญญาณอ้างอิงความเร็วรอบหลัก",
+                optionB_color: "red",
+                step2_title: "ขั้นที่ 2: ตรวจวัดค่าความต้านทานและระยะ Gap ของ MPU Probe",
+                step2_desc: "วัดค่า AC Voltage จาก MPU (ต้อง ≥ 1.0 Vrms ขณะหมุน) และปรับระยะ Gap ให้อยู่ในช่วง 0.5 - 1.0 mm",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. ทำความสะอาดปลายหัววัด MPU Probe จากคราบเศษโลหะ",
+                    "2. ขันยึดน็อต MPU Probe ให้แน่น และเช็คสาย Shield Ground",
+                    "3. กดปุ่ม RESET บน ProTech-GII และ TriconCX HMI"
+                ]
+            },
+            'SURGE_TRIP': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Compressor Surge Cycle / Trip (XS4801402)",
+                step1_title: "ขั้นที่ 1: ตรวจสอบสถิติ Surge Counter บน Anti-Surge Controller",
+                step1_desc: "ตรวจสอบจำนวนรอบการ Surge ย้อนกลับในเวลา 1 นาที (หากเกิน 3 Cycles ใน 60 วินาที จะสั่ง Master Trip)",
+                optionA_title: "กรณี เกิดจากวาล์ว Anti-Surge (XV4801401) ตอบสนองช้า:",
+                optionA_desc: "ตรวจสอบแรงดันลมเลี้ยง Actuator และตรวจเช็คการทำงานของ Quick Exhaust Valve บนตัววาล์ว",
+                optionA_color: "amber",
+                optionB_title: "กรณี เกิดจากความดันด้านขาออก (Discharge Pressure) พุ่งสูงกระทันหัน:",
+                optionB_desc: "ตรวจสอบวาล์วในระบบกระบวนการฝั่งโรงงานอุดตัน หรือมีการปิด Check Valve ผิดพลาด",
+                optionB_color: "red",
+                step2_title: "ขั้นที่ 2: สอบทานเส้นโค้ง Surge Limit Line (SCL) ใน Anti-Surge Controller",
+                step2_desc: "ตรวจสอบการคำนวณค่า Molecular Weight (MW) และความหนาแน่นก๊าซในโปรแกรม PDS",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. สั่งเปิดวาล์ว Anti-Surge แบบ Manual 100% เพื่อบายพาสก๊าซ",
+                    "2. ตรวจเช็คความเสียหายทางกลที่ใบพัดคอมเพรสเซอร์ (Impeller Damage Check)",
+                    "3. กดปุ่ม RESET Surge Interlock บน DCS HMI"
+                ]
+            },
+            'TG_FAULT': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Turning Gear Not Running (XLP4814612)",
+                step1_title: "ขั้นที่ 1: ตรวจสอบเงื่อนไข Start Permissive ของ Turning Gear",
+                step1_desc: "ตรวจสอบแรงดันน้ำมันหล่อลื่น > 0.89 barG และคลัตช์ ZS4814302 ต่อเข้าตำแหน่ง (Engaged)",
+                optionA_title: "กรณี มอเตอร์ Turning Gear ไม่หมุนเมื่อกดสตาร์ท:",
+                optionA_desc: "เช็คเบรกเกอร์ในตู้ MCC และตรวจเช็คสัญญาณ Interlock ล็อคจากระบบชะลอกระแสไฟฟ้า",
+                optionA_color: "amber",
+                optionB_title: "กรณี หมุนสลับหยุด (Intermittent Mode Active):",
+                optionB_desc: "เป็นสภาวะปกติขณะใช้ปั๊มฉุกเฉิน ELOP (หมุน 60 วินาที / หยุดพัก 15 นาที) เพื่อประหยัดไฟแบตเตอรี่ DC",
+                optionB_color: "blue",
+                step2_title: "ขั้นที่ 2: ตรวจเช็คสภาพความตึง คลัตช์ mechanical limit switch",
+                step2_desc: "ตรวจสอบว่าคันเลื่อน engagement lever สัมผัสสวิตช์ ZS4814302 แน่นหนา",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. ทำการเข้าเกียร์ Turning Gear คลัตช์ด้วยมือ (Manual Engagement)",
+                    "2. ตรวจสอบกระแสไฟฟ้ามอเตอร์ขณะหมุนพ้นช่วงเพลาโก้ง",
+                    "3. ยืนยันสัญญาณ Turning Gear Running บน DCS"
+                ]
+            }
+        };
+
+        // Tab Switch Core Function
+        function switchTab(tabId) {
+            const tabs = ['alarms', 'sequence', 'logic', 'ce', 'subsystems', 'wizard', 'tags', 'sop'];
+            tabs.forEach(t => {
+                const contentEl = document.getElementById(`tab-content-${t}`);
+                const btnEl = document.getElementById(`tab-btn-${t}`);
+                
+                if (t === tabId) {
+                    if (contentEl) contentEl.classList.remove('hidden');
+                    if (btnEl) {
+                        btnEl.classList.remove('text-slate-600', 'hover:bg-slate-100');
+                        btnEl.classList.add('text-blue-800', 'bg-blue-50', 'border', 'border-blue-200');
+                    }
+                } else {
+                    if (contentEl) contentEl.classList.add('hidden');
+                    if (btnEl) {
+                        btnEl.classList.remove('text-blue-800', 'bg-blue-50', 'border', 'border-blue-200');
+                        btnEl.classList.add('text-slate-600', 'hover:bg-slate-100');
+                    }
+                }
+            });
+
+            if (tabId === 'subsystems' && activeSubsystem === 'pds') {
+                setTimeout(initPDSChart, 50);
+            }
+        }
+
+        // Alarm Filter Functions
+        function setFilterCategory(cat) {
+            currentAlarmCategory = cat;
+            const categories = ['ALL', 'TRIP', 'LUBE_OIL', 'DRY_SEAL', 'MMS', 'HARDWARE'];
+            categories.forEach(c => {
+                const btn = document.getElementById(`filter-btn-${c}`);
+                if (!btn) return;
+                if (c === cat) {
+                    btn.className = "filter-cat-btn btn btn-xs md:btn-sm bg-blue-800 text-white rounded-xl border-0 shadow-sm font-bold";
+                } else {
+                    btn.className = "filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0";
+                }
+            });
+            filterAlarms();
+        }
+
+        function filterAlarms() {
+            const searchVal = (document.getElementById('alarmSearch')?.value || '').toLowerCase();
+            const filtered = ALARM_DATABASE.filter(item => {
+                const matchesCategory = (currentAlarmCategory === 'ALL') || (item.category === currentAlarmCategory);
+                const matchesSearch = !searchVal || item.tag.toLowerCase().includes(searchVal) || item.name.toLowerCase().includes(searchVal) || item.symptom.toLowerCase().includes(searchVal);
+                return matchesCategory && matchesSearch;
+            });
+            renderAlarms(filtered);
+        }
+
+        function renderAlarms(alarms) {
+            const container = document.getElementById('alarmCardsContainer');
+            if (!container) return;
+            if (alarms.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200 text-xs">ไม่พบรายการสัญญาณ Alarm ตามเงื่อนไขที่ค้นหา</div>`;
+                return;
+            }
+            container.innerHTML = alarms.map(alarm => `
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs font-bold bg-slate-900 text-blue-300 px-2.5 py-1 rounded-lg">${alarm.tag}</span>
+                            <h3 class="text-sm font-bold text-slate-800">${alarm.name}</h3>
+                        </div>
+                        <span class="badge badge-error text-white font-mono text-[11px]">${alarm.setpoint}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 bg-red-50/60 rounded-xl border border-red-100">
+                            <div class="font-bold text-red-900"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> Symptom (อาการ)</div>
+                            <p class="text-red-800 text-[11px] mt-1 leading-relaxed">${alarm.symptom}</p>
+                        </div>
+                        <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-100">
+                            <div class="font-bold text-amber-900"><i class="fa-solid fa-magnifying-glass mr-1"></i> Cause (สาเหตุ)</div>
+                            <p class="text-amber-800 text-[11px] mt-1 leading-relaxed">${alarm.cause}</p>
+                        </div>
+                        <div class="p-3 bg-blue-50/60 rounded-xl border border-blue-100">
+                            <div class="font-bold text-blue-900"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Action (แนวทางแก้ไข)</div>
+                            <p class="text-blue-800 text-[11px] mt-1 leading-relaxed">${alarm.action}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Sequence & Permissives Renderers
+        function renderSequenceStates() {
+            const container = document.getElementById('stateButtonsContainer');
+            if (!container) return;
+            container.innerHTML = SEQUENCE_STATES.map(s => `
+                <button onclick="selectSequenceState(${s.state})" id="seq-btn-${s.state}" class="p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center gap-1 ${s.state === currentActiveSequenceState ? 'bg-blue-600 text-white border-blue-600 shadow-md font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'}">
+                    <span class="font-mono text-[11px]">STATE ${s.state}</span>
+                    <span class="text-[10px] truncate max-w-[80px]">${s.name.split(':')[1] || s.name}</span>
+                </button>
+            `).join('');
+            selectSequenceState(currentActiveSequenceState);
+        }
+
+        function selectSequenceState(stateId) {
+            currentActiveSequenceState = stateId;
+            const state = SEQUENCE_STATES.find(s => s.state === stateId) || SEQUENCE_STATES[1];
+            
+            SEQUENCE_STATES.forEach(s => {
+                const btn = document.getElementById(`seq-btn-${s.state}`);
+                if (!btn) return;
+                if (s.state === stateId) {
+                    btn.className = "p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center gap-1 bg-blue-600 text-white border-blue-600 shadow-md font-bold";
+                } else {
+                    btn.className = "p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center gap-1 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
+                }
+            });
+
+            const badge = document.getElementById('activeStateBadge');
+            if (badge) badge.textContent = `Active State: ${state.name}`;
+
+            const detailBox = document.getElementById('stateDetailBox');
+            if (detailBox) {
+                detailBox.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <h4 class="font-bold text-sm text-blue-900">${state.name}</h4>
+                            <span class="badge badge-accent font-mono text-[11px]">${state.speed}</span>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed">${state.desc}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <div class="text-slate-400 text-[10px]">GOVERNOR VALVE</div>
+                                <div class="font-mono font-bold text-blue-900 mt-0.5">${state.govValve}</div>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <div class="text-slate-400 text-[10px]">ANTI-SURGE VALVE (XV4801401)</div>
+                                <div class="font-mono font-bold text-red-700 mt-0.5">${state.asvValve}</div>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <div class="text-slate-400 text-[10px]">RECOMMENDED OPERATOR ACTION</div>
+                                <div class="font-medium text-emerald-800 mt-0.5">${state.action}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderPermissives() {
+            const container = document.getElementById('permissivesGrid');
+            if (!container) return;
+            container.innerHTML = PERMISSIVE_DATA.map(p => `
+                <div onclick="togglePermissive(${p.id})" class="p-3 bg-slate-50 rounded-xl border ${p.state ? 'border-emerald-300 bg-emerald-50/50' : 'border-red-300 bg-red-50/50'} cursor-pointer hover:shadow-md transition flex items-center justify-between gap-2">
+                    <div class="space-y-0.5">
+                        <div class="font-mono text-xs font-bold ${p.state ? 'text-emerald-900' : 'text-red-900'}">${p.tag}</div>
+                        <div class="text-[11px] ${p.state ? 'text-emerald-800' : 'text-red-800'}">${p.desc}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">${p.dwg}</div>
+                    </div>
+                    <div class="shrink-0">
+                        ${p.state ? '<i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>' : '<i class="fa-solid fa-circle-xmark text-red-500 text-lg"></i>'}
+                    </div>
+                </div>
+            `).join('');
+            updatePermissiveBanner();
+        }
+
+        function togglePermissive(id) {
+            const item = PERMISSIVE_DATA.find(p => p.id === id);
+            if (item) item.state = !item.state;
+            renderPermissives();
+        }
+
+        function checkAllPermissives() {
+            PERMISSIVE_DATA.forEach(p => p.state = true);
+            renderPermissives();
+        }
+
+        function updatePermissiveBanner() {
+            const allTrue = PERMISSIVE_DATA.every(p => p.state);
+            const banner = document.getElementById('startPermissiveStatusBanner');
+            const dot = document.getElementById('permissiveStatusDot');
+            const title = document.getElementById('permissiveStatusTitle');
+            const sub = document.getElementById('permissiveStatusSub');
+            const badge = document.getElementById('permissiveBadge');
+
+            if (allTrue) {
+                if (banner) banner.className = "p-4 rounded-2xl border border-emerald-300 bg-emerald-50 text-emerald-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm";
+                if (dot) dot.className = "w-4 h-4 rounded-full bg-emerald-500 shadow shrink-0";
+                if (title) title.textContent = "COMPRESSOR START PERMISSIVE SATISFIED";
+                if (sub) sub.textContent = "เงื่อนไขทั้ง 13 ข้อสมบูรณ์ - เครื่องจักรพร้อมทำการเดินเครื่อง (Ready to Start)";
+                if (badge) {
+                    badge.className = "badge bg-emerald-600 text-white font-mono text-xs font-bold py-2 px-3 border-0";
+                    badge.textContent = "XIC4814601 = 1 (GLOW)";
+                }
+            } else {
+                if (banner) banner.className = "p-4 rounded-2xl border border-red-300 bg-red-50 text-red-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm";
+                if (dot) dot.className = "w-4 h-4 rounded-full bg-red-500 shadow shrink-0 animate-pulse";
+                if (title) title.textContent = "START PERMISSIVE NOT SATISFIED";
+                if (sub) sub.textContent = "มีเงื่อนไขไม่สมบูรณ์ - ไม่สามารถสตาร์ทเครื่องจักรได้";
+                if (badge) {
+                    badge.className = "badge bg-red-600 text-white font-mono text-xs font-bold py-2 px-3 border-0";
+                    badge.textContent = "XIC4814601 = 0 (TRIP)";
+                }
+            }
+        }
+
+        // 7. Logic Diagram Switcher
+        function switchLogicDiagram(key) {
+            activeLogicDwg = key;
+            
+            const buttons = document.querySelectorAll('.logic-dwg-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('onclick')?.includes(`'${key}'`)) {
+                    btn.classList.remove('bg-slate-100', 'text-slate-700');
+                    btn.classList.add('bg-blue-800', 'text-white');
+                } else {
+                    btn.classList.remove('bg-blue-800', 'text-white');
+                    btn.classList.add('bg-slate-100', 'text-slate-700');
+                }
+            });
+
+            const container = document.getElementById('logicDiagramContainer');
+            if (!container) return;
+
+            if (key === 'DWG026') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-amber-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 21E086A0010905-026 (REV 7): COMPRESSOR START PERMISSIVE LOGIC</span>
+                            <span class="text-emerald-400">OUTPUT: XIC4814601 = 1</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2">
+                            <p class="text-slate-300 text-xs">โครงสร้างตรรกะประตู AND Gate รวมสัญญาณอินพุต 13 ข้อสำหรับการเริ่มเดินเครื่อง 48K002:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px] text-slate-300">
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [1] XZSO4801401 (ASV Fully Open) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [2] LSL4814801 (Lube Oil Tank Level) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [3] ZSO4814901 (T&T Valve Fully Open) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [4] PSL4814301 (Lube Oil Header Press) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [5] PSL4815001 (Control Oil Header Press) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [6] TSL4814801 (Lube Oil Supply Temp) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [7] PDSL4814703 (Primary Buffer Gas DP) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [8] TSL4814701 (DE Buffer Gas Temp) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [9] TSL4814702 (NDE Buffer Gas Temp) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [10] ZA4814302 (Turning Gear Engaged) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [11] XS4814601 (DCS Process Permissive) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [12] XS4814603 (Compressor NOT TRIP) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">└─ [13] FSL4814701 (Booster Gas Flow) = 1</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (key === 'DWG040') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-red-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 21E086A0010905-040 & 041: MASTER TRIP INTERLOCK LOGIC</span>
+                            <span class="text-red-400">MASTER TRIP OR GATE</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 text-xs">
+                            <p class="text-slate-300">ตรรกะตัดการทำงานฉุกเฉิน (Master Safety Interlock OR Gate) ส่งผลสั่งปิดวาล์ว T&T ทันที:</p>
+                            <div class="space-y-1.5 text-[11px]">
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► SSHH4815001: Overspeed Trip (2oo3 Voted Probes > 13,265 RPM)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► PSLL4814302: Lube Oil Header Press LL (2oo3 Voted PT-4814302A/B/C < 0.76 barG)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► PSHH4814713 / PSHH4814715: Primary Seal Vent Press HH (2oo3 Voted > 3.96 barG)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► XS4801402: Anti-Surge Excessive Surge Trip (3 Cycles / 60 sec)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► Bently Nevada 3500 MMS Common Trip (Vibration 2oo4, Axial 2oo3, Temp 2oo2)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► HSZ4814601: Emergency Stop Push Button (LCP / UCP Hardwired)</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (key === 'DWG080') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-blue-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 21E086A0010905-080: OIL PUMP AUTO-START LADDER</span>
+                            <span>PUMP CONTROL LOGIC</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 text-xs text-slate-300">
+                            <p class="font-bold text-amber-300">ลำดับการสตาร์ทปั๊มน้ำมันหล่อลื่นอัตโนมัติ (Lube Oil Pump Auto-Start Cascading):</p>
+                            <div class="space-y-2 text-[11px]">
+                                <div class="p-2 bg-blue-900/40 border border-blue-700 rounded">
+                                    <div class="font-bold text-blue-300">1. Standby Lube Oil Pump (SLOP) Auto-Start:</div>
+                                    <div>เมื่อ PT4814810 < 10.283 barG (PAL4814810 Active) -> PLC ส่งสัญญาณสตาร์ท SLOP ทันที</div>
+                                </div>
+                                <div class="p-2 bg-red-900/40 border border-red-700 rounded">
+                                    <div class="font-bold text-red-300">2. Emergency Lube Oil Pump (ELOP) Auto-Start:</div>
+                                    <div>เมื่อ PT4814302A/B/C < 0.76 barG (PSLL4814302 2oo3 Trip Active) -> สตาร์ท ELOP มอเตอร์ DC ทันที</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (key === 'DWG022') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-indigo-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 21E086A0010905-022: TURNING GEAR INTERMITTENT LOGIC</span>
+                            <span>AUTO START/STOP SEQUENCE</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 text-xs text-slate-300">
+                            <p class="font-bold text-indigo-300">ตรรกะการเดินปั๊ม Turning Gear ขณะใช้งานปั๊มน้ำมันฉุกเฉิน (ELOP Running):</p>
+                            <div class="p-2 bg-slate-900 rounded border border-slate-700 text-[11px] space-y-1">
+                                <div>• เมื่อ ELOP สตาร์ททำงาน -> Turning Gear จะทำงานแบบสลับ (Intermittent Cycle):</div>
+                                <div class="text-emerald-400 pl-3">► หมุนเพลาต่อเนื่องเป็นเวลา 60 วินาที (Run Time = 60s)</div>
+                                <div class="text-amber-400 pl-3">► หยุดพักเพลาเป็นเวลา 15 นาที (Pause Time = 15 mins)</div>
+                                <div class="text-slate-400 italic mt-1">*เหตุผล: เพื่อประหยัดพลังงานจากแบตเตอรี่ DC ในขณะที่ปั๊ม ELOP กำลังทำงานเลี้ยงระบบ*</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (key === 'DWG042') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-emerald-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 21E086A0010905-042: ON-LINE TRIP VALVE TESTING (T&T)</span>
+                            <span>2oo3 SOV TESTING LOGIC</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 text-xs text-slate-300">
+                            <p class="font-bold text-emerald-300">ตรรกะการทดสอบโซลินอยด์วาล์วทริปแบบ On-line (XY4815001A/B/C Test):</p>
+                            <div class="space-y-1 text-[11px]">
+                                <div>• สามารถเลือกทดสอบได้ทีละ 1 โซลินอยด์วาล์วเท่านั้น (A หรือ B หรือ C)</div>
+                                <div>• เมื่อกดทดสอบ ไทม์เมอร์จะเริ่มนับเวลา หากเกินขีดจำกัดจะแจ้งเตือน <span class="text-amber-400">XA4815004 Test Timer Exceeded</span> เพื่อป้องกันการเปิดวาล์วทดสอบค้างไว้นานเกินไป</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 8. Cause & Effect Matrix Renderers
+        function filterCEMatrix(cat) {
+            currentCECategory = cat;
+            const categories = ['ALL', 'TRIP', 'LUBE', 'SEAL', 'PROCESS', 'MMS', 'ESD'];
+            categories.forEach(c => {
+                const btn = document.getElementById(`ce-btn-${c}`);
+                if (!btn) return;
+                if (c === cat) {
+                    btn.className = "ce-cat-btn btn btn-xs bg-indigo-800 text-white rounded-lg font-bold";
+                } else {
+                    btn.className = "ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg";
+                }
+            });
+            const filtered = CAUSE_AND_EFFECT_DATABASE.filter(item => (cat === 'ALL') || (item.category === cat));
+            renderCEMatrix(filtered);
+        }
+
+        function renderCEMatrix(data) {
+            const container = document.getElementById('ceMatrixTableBody');
+            if (!container) return;
+            container.innerHTML = data.map(row => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-2 font-medium text-slate-800">${row.cause}</td>
+                    <td class="p-2 font-mono text-blue-900 font-bold">${row.tag}</td>
+                    <td class="p-2 font-mono text-slate-600">${row.voting}</td>
+                    <td class="p-2 font-mono text-amber-800">${row.setpoint}</td>
+                    <td class="p-2 text-center bg-red-50/50 font-bold text-red-600">${row.tt}</td>
+                    <td class="p-2 text-center bg-amber-50/50 font-bold text-amber-600">${row.gov}</td>
+                    <td class="p-2 text-center bg-blue-50/50 font-bold text-blue-600">${row.asv}</td>
+                    <td class="p-2 text-center bg-emerald-50/50 font-bold text-emerald-600">${row.elop}</td>
+                    <td class="p-2 text-center bg-indigo-50/50 font-bold text-indigo-600">${row.tg}</td>
+                    <td class="p-2 text-center bg-slate-100 font-bold text-slate-700">${row.alarm}</td>
+                </tr>
+            `).join('');
+        }
+
+        // 9. Subsystem Inspector Renderer (Image 1 Restored Layout)
+        function selectSubsystem(subId) {
+            activeSubsystem = subId;
+            const cards = ['lube', 'seal', 'pds', 'tg'];
+            cards.forEach(c => {
+                const btn = document.getElementById(`sub-btn-${c}`);
+                if (!btn) return;
+                if (c === subId) {
+                    btn.className = "subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-blue-50/80 border-blue-300 shadow-sm";
+                } else {
+                    btn.className = "subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50";
+                }
+            });
+
+            const container = document.getElementById('subsystemDisplayArea');
+            if (!container) return;
+
+            if (subId === 'lube') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-2">
+                            <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-oil-can text-blue-600"></i>
+                                ลอจิกการทำงานระบบน้ำมันหล่อลื่น (Lube Oil Console Control Section 10.1)
+                            </h3>
+                            <span class="badge badge-neutral font-mono text-xs">P&ID 6600-P-01-48-143 / 148</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                                <h4 class="font-bold text-sm text-slate-900">ปั๊มหลัก MLOP (48P019)</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    สตาร์ทด้วยมือจาก LOP หรือ Remote HMI เมื่อมีเงื่อนไข Start Permissive (ระดับน้ำมันถังพักไม่ต่ำ + แรงดันแก๊สซีล DE/NDE ไม่ต่ำกว่า 0.0225 barG)
+                                </p>
+                            </div>
+
+                            <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
+                                <h4 class="font-bold text-sm text-amber-950">ปั๊มสำรอง SLOP (48P020)</h4>
+                                <p class="text-xs text-slate-700 leading-relaxed">
+                                    สวิตช์อยู่ในตำแหน่ง AUTO จะสตาร์ทอัตโนมัติเมื่อแรงดันน้ำมันหล่อลื่นจ่าย <span class="font-bold font-mono text-amber-900">PT-4814810 < 10.283 barG</span> โดยมี Accumulator 48D021 สำรองแรงดัน 4 วินาที
+                                </p>
+                            </div>
+
+                            <div class="p-4 bg-red-50/50 rounded-2xl border border-red-200 space-y-2">
+                                <h4 class="font-bold text-sm text-red-950">ปั๊มฉุกเฉิน ELOP (48P027)</h4>
+                                <p class="text-xs text-slate-700 leading-relaxed">
+                                    สวิตช์อยู่ในตำแหน่ง AUTO จะสตาร์ทอัตโนมัติเมื่อแรงดันเฮดเดอร์ <span class="font-bold font-mono text-red-900">PT-4814302A/B/C < 0.76 barG (2oo3)</span> จ่ายน้ำมันตรงเข้า Header หล่อเลี้ยงลูกปืนขณะดับเครื่อง
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-blue-50/60 rounded-2xl border border-blue-200 space-y-1.5 text-xs text-blue-950">
+                            <div class="font-bold text-blue-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-temperature-half text-blue-600"></i>
+                                การควบคุมอุณหภูมิ (Oil Supply Temp Control TIC4814801):
+                            </div>
+                            <p class="leading-relaxed">
+                                วาล์วควบคุมอุณหภูมิ TV-4814801 (Fail Close) ทำหน้าที่ผสมน้ำมันร้อนจากปั๊มกับน้ำมันเย็นจาก Duplex Cooler (48E023/024) เพื่อรักษาอุณหภูมิน้ำมันจ่ายให้อยู่ในช่วง <span class="font-bold font-mono text-blue-900">41°C - 51°C</span> ฮีตเตอร์ไฟฟ้า 48B002 ติดตั้งในถังพัก มี Thermostat TS4814802 ตัดการทำงานเมื่ออุณหภูมิ > 32°C และต่อการทำงานเมื่ออุณหภูมิ < 21°C
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } else if (subId === 'seal') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-xs">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                            <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-wind text-purple-600"></i> ระบบควบคุมก๊าซซีล Dry Gas Seal Console (Section 10.2)
+                            </h3>
+                            <span class="badge badge-neutral font-mono">P&ID 6600-P-01-48-107</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-200 space-y-2">
+                                <div class="font-bold text-purple-950 text-sm">Primary Buffer Gas DP Control (PDIC4814703)</div>
+                                <p class="text-slate-700 leading-relaxed">
+                                    รักษาระดับความต่างศักย์แรงดันก๊าซซีลเทียบกับ Reference Gas ให้อยู่ในช่วง <span class="font-mono font-bold">0.50 - 0.70 barD</span> หากต่ำกว่า 0.38 barD สัญญาณจะสั่งเปิด Booster Pump Auto Start
+                                </p>
+                            </div>
+                            <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-200 space-y-2">
+                                <div class="font-bold text-purple-950 text-sm">Primary Vent Monitoring & Trip</div>
+                                <p class="text-slate-700 leading-relaxed">
+                                    ตรวจจับอัตราการรั่วผ่านหน้าซีล หากแรงดันใน Vent Line สูงถึง <span class="font-mono font-bold text-amber-800">3.46 barG (High Alarm)</span> และทริปเครื่องจักรทันทีเมื่อสูงถึง <span class="font-mono font-bold text-red-700">3.96 barG (2oo3 Voted HH Trip)</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (subId === 'pds') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm md:text-base">Process Demand Scheduler (PDS) & Split-Range Control</h3>
+                                <p class="text-xs text-slate-500">การควบคุมแบ่งย่านความเร็วรอบ Governor และ Anti-Surge Control Valve (Control Narrative Section 3)</p>
+                            </div>
+                            <span id="pdsValueDisplay" class="badge badge-primary font-mono text-xs font-bold py-2 px-3">Output Demand: 50%</span>
+                        </div>
+                        <input type="range" id="pdsSlider" min="0" max="100" value="50" oninput="updatePDSCurve(this.value)" class="range range-indigo range-xs w-full" />
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 h-64">
+                            <canvas id="pdsChartCanvas"></canvas>
+                        </div>
+                    </div>
+                `;
+                setTimeout(initPDSChart, 50);
+            } else if (subId === 'tg') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-xs">
+                        <div class="border-b border-slate-200 pb-3">
+                            <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-rotate text-amber-600"></i> ลอจิกหมุนเพลา Turning Gear Intermittent Control
+                            </h3>
+                        </div>
+                        <div class="p-4 bg-amber-50/60 rounded-2xl border border-amber-200 space-y-2 text-amber-950">
+                            <div class="font-bold text-sm">สภาวะการหมุนเพลาเมื่อใช้งานปั๊มน้ำมันฉุกเฉิน (ELOP Active):</div>
+                            <p class="leading-relaxed">
+                                เพื่อป้องกันการดึงไฟแบตเตอรี่ DC มากเกินไป Turning Gear จะทำงานแบบสลับวงรอบอัตโนมัติ: <span class="font-bold text-emerald-800">หมุนต่อเนื่อง 60 วินาที</span> จากนั้น <span class="font-bold text-amber-800">หยุดพัก 15 นาที</span> จนกว่าปั๊มน้ำมันหล่อลื่นหลักจะกลับมาทำงานปกติ
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 10. Diagnostic Wizard Renderer (Image 2 Restored Layout)
+        function startWizardFlow(scenarioKey) {
+            const flowBox = document.getElementById('wizardFlowBox');
+            if (!flowBox) return;
+
+            const node = WIZARD_NODES[scenarioKey] || WIZARD_NODES['SEAL_VENT_HH'];
+
+            flowBox.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-purple-200 pb-3">
+                        <h3 class="font-bold text-sm md:text-base text-purple-950 flex items-center gap-2">
+                            <i class="fa-solid fa-wind text-purple-600"></i>
+                            ${node.title}
+                        </h3>
+                        <button onclick="closeWizardFlow()" class="btn btn-ghost btn-xs text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-xmark text-base"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
+                        <div class="font-bold text-xs text-slate-900">${node.step1_title}</div>
+                        <p class="text-[11px] text-slate-500">${node.step1_desc}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-3.5 rounded-xl border border-red-200 bg-red-50/60 space-y-1">
+                            <div class="font-bold text-xs text-red-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-xmark text-red-500"></i> ${node.optionA_title}
+                            </div>
+                            <p class="text-[11px] text-red-900 leading-relaxed">${node.optionA_desc}</p>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 space-y-1">
+                            <div class="font-bold text-xs text-amber-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> ${node.optionB_title}
+                            </div>
+                            <p class="text-[11px] text-amber-900 leading-relaxed">${node.optionB_desc}</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
+                        <div class="font-bold text-xs text-slate-900">${node.step2_title}</div>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">${node.step2_desc}</p>
+                    </div>
+
+                    <div class="p-4 bg-purple-100/50 rounded-2xl border border-purple-200 space-y-2 text-purple-950">
+                        <div class="font-bold text-xs flex items-center gap-1.5 text-purple-900">
+                            <i class="fa-solid fa-angles-down text-purple-600"></i> ${node.action_title}
+                        </div>
+                        <ul class="text-[11px] space-y-1 pl-1">
+                            ${node.actions.map(act => `<li>${act}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeWizardFlow() {
+            const flowBox = document.getElementById('wizardFlowBox');
+            if (!flowBox) return;
+            flowBox.innerHTML = `
+                <div class="p-8 text-center text-slate-400 text-xs space-y-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-3xl text-slate-300"></i>
+                    <div>คลิกเลือกกรณีปัญหาขัดข้องจากปุ่มด้านบนเพื่อเริ่มต้นขั้นตอนการวินิจฉัย</div>
+                </div>
+            `;
+        }
+
+        // 11. Tag Index Filter
+        function filterTagIndex() {
+            const searchVal = (document.getElementById('tagIndexSearch')?.value || '').toLowerCase();
+            const filtered = TAG_INDEX_DATABASE.filter(item => 
+                item.tag.toLowerCase().includes(searchVal) || 
+                item.desc.toLowerCase().includes(searchVal) || 
+                item.pid.toLowerCase().includes(searchVal)
+            );
+            renderTagIndex(filtered);
+        }
+
+        function renderTagIndex(data) {
+            const container = document.getElementById('tagIndexTableBody');
+            if (!container) return;
+            container.innerHTML = data.map(item => `
+                <tr>
+                    <td class="font-mono font-bold text-blue-900">${item.tag}</td>
+                    <td class="font-medium text-slate-800">${item.desc}</td>
+                    <td class="font-mono text-emerald-800">${item.normal}</td>
+                    <td class="font-mono text-slate-600">${item.permissive}</td>
+                    <td class="font-mono text-amber-800">${item.alarm}</td>
+                    <td class="font-mono text-red-700 font-bold">${item.trip}</td>
+                    <td class="font-mono text-slate-500">${item.pid}</td>
+                    <td class="font-mono text-indigo-700">${item.logic}</td>
+                </tr>
+            `).join('');
+        }
+
+        // PDS Chart Initialization
+        let pdsChart = null;
+        function initPDSChart() {
+            const canvas = document.getElementById('pdsChartCanvas');
+            if (!canvas) return;
+
+            if (pdsChart) {
+                pdsChart.destroy();
+                pdsChart = null;
+            }
+
+            const ctx = canvas.getContext('2d');
+            pdsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['0%', '20%', '40%', '50%', '70%', '90%', '100%'],
+                    datasets: [
+                        {
+                            label: 'Governor Speed Setpoint (RPM)',
+                            data: [8187, 8187, 8187, 8187, 9890, 11593, 12397],
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            yAxisID: 'yRPM',
+                            tension: 0.1,
+                            fill: true
+                        },
+                        {
+                            label: 'Anti-Surge Valve Opening (%)',
+                            data: [100, 60, 20, 0, 0, 0, 0],
+                            borderColor: '#dc2626',
+                            borderDash: [5, 5],
+                            yAxisID: 'yASV',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yRPM: { type: 'linear', position: 'left', min: 7000, max: 13000 },
+                        yASV: { type: 'linear', position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false } }
+                    }
+                }
+            });
+        }
+
+        function updatePDSCurve(val) {
+            const display = document.getElementById('pdsValueDisplay');
+            if (display) display.textContent = `Output Demand: ${val}%`;
+        }
+
+        // Global Bindings
+        window.switchTab = switchTab;
+        window.setFilterCategory = setFilterCategory;
+        window.filterAlarms = filterAlarms;
+        window.renderAlarms = renderAlarms;
+        window.renderSequenceStates = renderSequenceStates;
+        window.selectSequenceState = selectSequenceState;
+        window.renderPermissives = renderPermissives;
+        window.togglePermissive = togglePermissive;
+        window.checkAllPermissives = checkAllPermissives;
+        window.switchLogicDiagram = switchLogicDiagram;
+        window.filterCEMatrix = filterCEMatrix;
+        window.renderCEMatrix = renderCEMatrix;
+        window.selectSubsystem = selectSubsystem;
+        window.startWizardFlow = startWizardFlow;
+        window.closeWizardFlow = closeWizardFlow;
+        window.filterTagIndex = filterTagIndex;
+        window.renderTagIndex = renderTagIndex;
+        window.updatePDSCurve = updatePDSCurve;
+
+        function initApp() {
+            setFilterCategory('ALL');
+            renderSequenceStates();
+            renderPermissives();
+            switchLogicDiagram('DWG026');
+            filterCEMatrix('ALL');
+            selectSubsystem('lube');
+            startWizardFlow('SEAL_VENT_HH');
+            renderTagIndex(TAG_INDEX_DATABASE);
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>

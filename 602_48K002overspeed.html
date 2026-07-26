@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProTech-GII Alarm & Diagnostic Tool - Compressor 48K002</title>
+    <!-- Tailwind CSS & DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        /* Hide spin buttons in number inputs */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Custom scrollbar for data tables */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 p-3 md:p-6 text-slate-800">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Header Section -->
+        <header class="bg-blue-800 text-white p-5 md:p-6 rounded-2xl shadow-lg border border-blue-900 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-white/15 p-3 rounded-xl border border-white/20 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-microchip text-3xl text-blue-200"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="badge badge-accent font-mono text-xs font-bold">TAG: 48K002</span>
+                        <span class="badge badge-neutral text-xs font-mono">RECYCLE GAS COMPRESSOR</span>
+                        <span class="badge badge-outline text-white text-xs">SIL-3 TMR (2oo3)</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-bold mt-1">ProTech®-GII Alarm Diagnostic & Troubleshooting Tool</h1>
+                    <p class="text-blue-200 text-xs md:text-sm mt-0.5">ระบบวิเคราะห์ความผิดปกติและการแก้ไขปัญหา Woodward ProTech-GII & Governor PLC Logic</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 self-start lg:self-center">
+                <button onclick="switchTab('alarms')" class="btn btn-sm bg-white/20 hover:bg-white/30 text-white border-0">
+                    <i class="fa-solid fa-bell"></i> Alarm List
+                </button>
+                <button onclick="switchTab('wizard')" class="btn btn-sm bg-amber-500 hover:bg-amber-600 text-white border-0">
+                    <i class="fa-solid fa-diagram-project"></i> Smart Wizard
+                </button>
+                <button onclick="switchTab('sop')" class="btn btn-sm bg-emerald-600 hover:bg-emerald-700 text-white border-0">
+                    <i class="fa-solid fa-gears"></i> Hot-Swap SOP
+                </button>
+            </div>
+
+            <a href="main.html" class="btn btn-xl bg-amber-700 hover:bg-amber-800 text-white border-0 shadow-sm">
+                    Back to Home
+            </a>
+            
+        </header>
+
+        <!-- System Architecture Overview Banner -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Hardware Module Status -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="p-3 bg-blue-50 text-blue-700 rounded-lg">
+                    <i class="fa-solid fa-cubes text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Protection Hardware</div>
+                    <div class="text-sm font-bold text-slate-800">TMR 3-Module Rack</div>
+                    <div class="text-xs text-blue-600 font-semibold mt-0.5">Module A | B | C Redundant</div>
+                </div>
+            </div>
+
+            <!-- Voting Logic -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="p-3 bg-indigo-50 text-indigo-700 rounded-lg">
+                    <i class="fa-solid fa-code-fork text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Trip Logic Architecture</div>
+                    <div class="text-sm font-bold text-slate-800">2-out-of-3 (2oo3) Voted</div>
+                    <div class="text-xs text-indigo-600 font-semibold mt-0.5">Response Time &lt; 12 ms</div>
+                </div>
+            </div>
+
+            <!-- Controller Integration -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="p-3 bg-emerald-50 text-emerald-700 rounded-lg">
+                    <i class="fa-solid fa-network-wired text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Interfacing Controllers</div>
+                    <div class="text-sm font-bold text-slate-800">Triconex ITCC / DCS / MMS</div>
+                    <div class="text-xs text-emerald-600 font-semibold mt-0.5">Governor SC4814601</div>
+                </div>
+            </div>
+
+            <!-- Speed Sensors -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="p-3 bg-amber-50 text-amber-700 rounded-lg">
+                    <i class="fa-solid fa-gauge-high text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Speed Pickups (MPU/Prox)</div>
+                    <div class="text-sm font-bold text-slate-800">3 Indep. Speed Probes</div>
+                    <div class="text-xs text-amber-600 font-semibold mt-0.5">SE4815001A / B / C</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation Bar -->
+        <div class="flex border-b border-slate-200 bg-white rounded-xl p-1.5 shadow-sm space-x-1">
+            <button id="tab-btn-alarms" onclick="switchTab('alarms')" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition text-blue-800 bg-blue-50 border border-blue-200">
+                <i class="fa-solid fa-list-check mr-2"></i> คู่มือตรวจสอบ Alarm (Alarm Troubleshooting)
+            </button>
+            <button id="tab-btn-wizard" onclick="switchTab('wizard')" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> ระบบช่วยวินิจฉัยด่วน (Interactive Wizard)
+            </button>
+            <button id="tab-btn-tags" onclick="switchTab('tags')" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-tags mr-2"></i> ดัชนีแท็กและแบบวิศวกรรม (Instrument Tag Index)
+            </button>
+            <button id="tab-btn-sop" onclick="switchTab('sop')" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-screwdriver-wrench mr-2"></i> ขั้นตอน On-line Hot-Swap SOP
+            </button>
+        </div>
+
+        <!-- ================= TAB 1: ALARM TROUBLESHOOTING LIST ================= -->
+        <div id="tab-content-alarms" class="space-y-6">
+            <!-- Filter & Search Panel -->
+            <div class="bg-white p-5 rounded-2xl shadow border border-slate-200">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full md:w-96">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="alarmSearch" onkeyup="filterAlarms()" placeholder="ค้นหาตาม Tag, ชื่อ Alarm, หรืออาการ..." class="w-full pl-9 pr-4 py-2 rounded-lg border border-slate-300 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div class="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                        <span class="text-xs font-semibold text-slate-500 shrink-0">ระดับความสำคัญ:</span>
+                        <button onclick="setFilterCategory('ALL')" class="filter-cat-btn btn btn-xs btn-active bg-blue-800 text-white border-0">ทั้งหมด</button>
+                        <button onclick="setFilterCategory('CRITICAL')" class="filter-cat-btn btn btn-xs bg-slate-100 text-slate-700 border-0 hover:bg-red-100 hover:text-red-700">Trip / Critical</button>
+                        <button onclick="setFilterCategory('WARNING')" class="filter-cat-btn btn btn-xs bg-slate-100 text-slate-700 border-0 hover:bg-amber-100 hover:text-amber-700">Warning / Pre-Alarm</button>
+                        <button onclick="setFilterCategory('HARDWARE')" class="filter-cat-btn btn btn-xs bg-slate-100 text-slate-700 border-0 hover:bg-blue-100 hover:text-blue-700">Hardware / Module</button>
+                        <button onclick="setFilterCategory('SENSOR')" class="filter-cat-btn btn btn-xs bg-slate-100 text-slate-700 border-0 hover:bg-purple-100 hover:text-purple-700">MPU Sensor</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alarm Cards List Container -->
+            <div id="alarmCardsContainer" class="grid grid-cols-1 gap-5">
+                <!-- Javascript will populate alarm items here -->
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: INTERACTIVE DIAGNOSTIC WIZARD ================= -->
+        <div id="tab-content-wizard" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow border border-slate-200">
+                <h2 class="text-lg font-bold text-blue-800 border-b border-slate-200 pb-3 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+                    ระบบช่วยวินิจฉัยและแก้ปัญหาตามลำดับขั้นตอน (Guided Step-by-Step Diagnostic)
+                </h2>
+                
+                <p class="text-sm text-slate-600 mb-6">เลือกอาการหรือสัญญาณเตือนที่ปรากฏบนหน้าจอ UCP, ProTech-GII หรือ DCS เพื่อเริ่มต้นการวินิจฉัยหาสาเหตุและแนวทางแก้ไขที่ถูกต้องแม่นยำ</p>
+
+                <!-- Step 1: Select Main Symptom -->
+                <div id="wizard-step-1" class="space-y-4">
+                    <h3 class="font-bold text-slate-700 text-sm">ขั้นตอนที่ 1: เลือกสถานะหรืออาการที่พบหน้างาน (Select Observed Symptom)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        
+                        <div onclick="startWizardFlow('TRIP')" class="p-4 rounded-xl border border-red-200 bg-red-50/50 hover:bg-red-50 hover:border-red-400 cursor-pointer transition shadow-sm group">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-red-500 text-white rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-red-800 group-hover:text-red-900 text-sm">Turbine Overspeed Trip</div>
+                                    <div class="text-xs text-red-600">เครื่องจักรหยุดทำงาน / SAHH4815001 Active</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div onclick="startWizardFlow('MPU_FAIL')" class="p-4 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-50 hover:border-purple-400 cursor-pointer transition shadow-sm group">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-purple-600 text-white rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-wave-square text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-purple-900 group-hover:text-purple-950 text-sm">Speed Signal Fault / Loss</div>
+                                    <div class="text-xs text-purple-700">สัญญาณความเร็ว SE4815001A/B/C ผิดปกติ</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div onclick="startWizardFlow('MODULE_FAULT')" class="p-4 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-50 hover:border-blue-400 cursor-pointer transition shadow-sm group">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-blue-600 text-white rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-microchip text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-blue-900 group-hover:text-blue-950 text-sm">ProTech Module Health Alarm</div>
+                                    <div class="text-xs text-blue-700">ไฟ Alarm บน Module A, B หรือ C ติดสว่าง</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div onclick="startWizardFlow('GOV_ALARM')" class="p-4 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 hover:border-amber-400 cursor-pointer transition shadow-sm group">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-amber-500 text-white rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-gears text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-amber-900 group-hover:text-amber-950 text-sm">Governor Actuator Fault</div>
+                                    <div class="text-xs text-amber-700">XS4815006 / XS4815007 Governor Alarm</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div onclick="startWizardFlow('POWER_FAIL')" class="p-4 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 cursor-pointer transition shadow-sm group">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-slate-700 text-white rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-plug-circle-exclamation text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-800 text-sm">Power Supply Failure</div>
+                                    <div class="text-xs text-slate-600">ไฟเลี้ยง 230VAC / 24VDC ขัดข้อง</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div onclick="startWizardFlow('TEST_FAIL')" class="p-4 rounded-xl border border-teal-200 bg-teal-50/50 hover:bg-teal-50 hover:border-teal-400 cursor-pointer transition shadow-sm group">
+                            <div class="flex items-center gap-3">
+                                <div class="p-3 bg-teal-600 text-white rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-vial-circle-check text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-teal-900 text-sm">On-Line Test Routine Fault</div>
+                                    <div class="text-xs text-teal-700">ทดสอบ Overspeed Test ไม่ผ่าน</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Dynamic Step 2 Flow Container -->
+                <div id="wizard-flow-container" class="hidden space-y-5 border-t border-slate-200 pt-5 mt-5">
+                    <!-- Javascript will render dynamic decision steps -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: INSTRUMENT TAG INDEX & DRAWINGS ================= -->
+        <div id="tab-content-tags" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow border border-slate-200">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-4 mb-4 gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-blue-800 flex items-center gap-2">
+                            <i class="fa-solid fa-tags"></i> ดัชนีเครื่องมือวัดและแบบอ้างอิง (48K002 Instrument Tag Index)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">อ้างอิงจากแบบ Unit Control Panel (UCP), Governor PLC Logic Diagram (21E086A0010905) และ ProTech-GII Datasheet</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold text-slate-500">ค้นหาแท็ก:</span>
+                        <input type="text" id="tagIndexSearch" onkeyup="filterTagTable()" placeholder="พิมพ์ Tag เช่น SE4815001..." class="px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Tag Index Table -->
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="table table-zebra w-full text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th>TAG NO.</th>
+                                <th>SERVICE DESCRIPTION</th>
+                                <th>LOCATION</th>
+                                <th>SYSTEM / INTERFACE</th>
+                                <th>SIGNAL TYPE</th>
+                                <th>LOGIC / DRAWING NO.</th>
+                                <th>REMARKS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tagTableBody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: HOT-SWAP MODULE SOP ================= -->
+        <div id="tab-content-sop" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow border border-slate-200 space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="badge badge-error text-white font-mono text-xs mb-2">SAFETY CRITICAL PROCEDURE</span>
+                    <h2 class="text-xl font-bold text-blue-800 flex items-center gap-2">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> Standard Operating Procedure: ProTech-GII On-line Module Replacement (Hot-Swap)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">ขั้นตอนการเปลี่ยนโมดูล ProTech-GII (Module A, B หรือ C) ขณะคอมเพรสเซอร์ 48K002 กำลังเดินเครื่องอยู่ (On-Line)</p>
+                </div>
+
+                <!-- Notice Banner -->
+                <div class="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-900 flex items-start gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mt-0.5"></i>
+                    <div>
+                        <strong class="font-bold">ข้อควรระวังความปลอดภัยสูงสุด (Critical Safety Warning):</strong>
+                        <p class="mt-1 leading-relaxed">
+                            สถาปัตยกรรม 2-out-of-3 (2oo3) อนุญาตให้ถอดเปลี่ยนโมดูลได้ทีละ **1 โมดูลเท่านั้น** เมื่อปลดโมดูลออก 1 ตัว ระบบจะเปลี่ยนสถานะเป็น **1-out-of-2 (1oo2)** หรือ Degraded Mode โดยอัตโนมัติ ห้ามปลดสายสัญญาณหรือถอดโมดูลพร้อมกันมากกว่า 1 ตัวเด็ดขาดเพราะจะทำให้ Turbine Trip ทันที!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step Timeline -->
+                <div class="space-y-4">
+                    
+                    <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <div class="bg-blue-800 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm">1</div>
+                        <div>
+                            <h3 class="font-bold text-blue-900 text-sm">เตรียมความพร้อมและขออนุญาตทำงาน (Pre-Job Checklist & Permit)</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                • ขอใบอนุญาตทำงาน (Work Permit) และ Bypass Notification (ถ้าต้องใช้ตามข้อกำหนดโรงกลั่น)<br>
+                                • ตรวจสอบให้มั่นใจว่าโมดูลอีก 2 ตัวที่เหลือมีสถานะ **Healthy 100%** (ไฟ Green HEALTH LED ติดสว่าง ปราศจาก Alarm ใดๆ)<br>
+                                • เตรียมโมดูลสำรอง Woodward ProTech-GII Part Number ตรงกัน พร้อมอัปโหลด Firmware เวอร์ชั่นเดียวกัน
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <div class="bg-blue-800 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm">2</div>
+                        <div>
+                            <h3 class="font-bold text-blue-900 text-sm">ปิดสวิตช์ Power Supply ของโมดูลที่จะทำการเปลี่ยน</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                • เปิดฝาตู้ UCP (Unit Control Panel) หรือ bulkhead mount<br>
+                                • สับสวิตช์ Power Switch เฉพาะของโมดูลที่มีปัญหา (เช่น Module B Power Switch) ไปที่ตำแหน่ง **OFF**<br>
+                                • สังเกตหน้าจอ Display ของโมดูลนั้นดับลง และไฟ Alarm Relay Out บนตู้ DCS อาจโชว์ Module Fault Alarm (เป็นปกติเนื่องจากโมดูล offline)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <div class="bg-blue-800 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm">3</div>
+                        <div>
+                            <h3 class="font-bold text-blue-900 text-sm">ถอดชุดคอนเนกเตอร์และโมดูลชำรุดออก (Module Extraction)</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                • คลายสกรูยึด Connector ขั้วต่อด้านหลังโมดูล (Power, MPU Input, Discrete I/O, Modbus, CAN Bus)<br>
+                                • คลายสกรูยึดตัวโมดูลเข้ากับ Rack/Bulkhead และค่อยๆ ดึงโมดูลออกจาก Backplane
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <div class="bg-blue-800 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm">4</div>
+                        <div>
+                            <h3 class="font-bold text-blue-900 text-sm">ติดตั้งโมดูลใหม่และป้อนไฟเลี้ยง (Installation & Power Up)</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                • ใส่โมดูลตัวใหม่เข้าตำแหน่ง ขันสกรูยึดให้แน่นหนา<br>
+                                • เสียบคอนเนกเตอร์สายสัญญาณ Power, MPU, I/O และ CAN Bus กลับเข้าตำแหน่งเดิม ขันสกรูล็อคสายให้แน่น<br>
+                                • สับสวิตช์ Power Switch ของโมดูลใหม่ไปที่ตำแหน่ง **ON**
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <div class="bg-blue-800 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm">5</div>
+                        <div>
+                            <h3 class="font-bold text-blue-900 text-sm">เปิดใช้งานระบบเรียนรู้ค่าคอนฟิกอัตโนมัติ (Module-to-Module Auto Learning)</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                • โมดูลใหม่จะทำการติดต่อกับโมดูลเดิมผ่าน CAN Sharing Port<br>
+                                • บนหน้าจอโมดูลใหม่จะแสดงเมนู **Learn Configuration?** ให้กดปุ่ม **YES / ENTER**<br>
+                                • ระบบจะคัดลอกค่า Trip Setpoints, Acceleration Limits, และ Parameter จากโมดูล Healthy มายังโมดูลใหม่โดยอัตโนมัติ ป้องกันความผิดพลาดจากการตั้งค่าด้วยมือ
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                        <div class="bg-blue-800 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm">6</div>
+                        <div>
+                            <h3 class="font-bold text-blue-900 text-sm">ตรวจสอบความสมบูรณ์และทำการ Reset Alarm</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                • ตรวจสอบค่าความเร็วรอบ (RPM) บนหน้าจอโมดูลใหม่ว่าตรงกับอีก 2 โมดูล<br>
+                                • กดปุ่ม **RESET** บนหน้าปัดโมดูลใหม่เพื่อเคลียร์ Latch Fault<br>
+                                • ยืนยันว่าไฟ **HEALTHY LED** สว่างเป็นสีเขียวบนทั้ง 3 โมดูล และสัญญาณ Alarm บน DCS ดับลงทั้งหมด
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <footer class="mt-8 pb-8 text-center text-xs font-medium text-slate-400 border-t border-slate-200 pt-4">
+            &copy; 2026 Industrial Digital Architect — Compressor 48K002 Woodward ProTech-GII Protection Diagnostics
+        </footer>
+    </div>
+
+    <!-- Script Section (Engineering Logic & Database) -->
+    <script>
+        // =========================================================================
+        // 1. DATA STORE: ALARM TROUBLESHOOTING KNOWLEDGE BASE
+        // =========================================================================
+        const ALARM_DATABASE = [
+            {
+                id: "ALM-001",
+                tag: "SAHH4815001 / GOV TRIP",
+                title: "Governor & ProTech Overspeed Trip (Turbine Tripped)",
+                category: "CRITICAL",
+                categoryLabel: "Trip / Critical",
+                badgeClass: "badge-error text-white",
+                symptom: "เครื่องจักร 48K002 หยุดทำงานทันที (Trip), สัญญาณ SAHH4815001 Active, ไฟ Trip Relay สว่างบน ProTech-GII",
+                possibleCauses: [
+                    "ความเร็วรอบ Turbine สูงเกินเกณฑ์ Trip Setpoint (>11,000 RPM หรือค่าที่กำหนด)",
+                    "เกิดการกระชากของกระบวนการผลิต (Process Surge / Load Loss จาก Recycle Valve)",
+                    "เกิดสัญญาณรบกวน (Noise/Spike) ในสาย MPU พร้อมกันมากกว่า 2 ช่องสัญญาณ",
+                    "Governor Control Valve (Varistoke Actuator) มีอาการติดขัดค้างเปิด (Stuck Open)"
+                ],
+                checks: [
+                    "ตรวจสอบประวัติค่าความเร็วรอบย้อนหลังใน Trip Log บนหน้าจอ ProTech-GII (บันทึกได้ 50 เหตุการณ์ย้อนหลัง)",
+                    "ตรวจสอบสถานะสัญญาณ Solenoid Valves (XST4814601 / XS4814618B) ในตู้ Triconex ITCC",
+                    "ตรวจสอบแรงดันน้ำมันไฮดรอลิก Trip Oil Header Pressure และ T&T Valve Position",
+                    "ตรวจเช็คค่าความเร็วที่อ่านได้จาก MPU ทั้ง 3 ช่อง (SE4815001A/B/C) เพื่อดูว่าเป็น Real Overspeed หรือ Signal Spike"
+                ],
+                actions: [
+                    "หากเป็น Real Overspeed: ห้ามทำการ Restart จนกว่าจะวิเคราะห์หาสาเหตุฝั่ง Governor Valve หรือ Steam Pressure",
+                    "หากเป็น False Trip จาก Noise: ตรวจสอบการต่อ Shield Ground ของสาย MPU Cable ว่าหลุดหลวมหรือไม่",
+                    "หลังแก้ไขสาเหตุแล้ว ให้กดปุ่ม Reset ที่หน้าตู้ LCP/UCP และผ่าน Triconex PLC Logic (XS4814601A Permissive)"
+                ],
+                drawingRef: "21E086A0010905-030 / 031"
+            },
+            {
+                id: "ALM-002",
+                tag: "SE4815001A / B / C",
+                title: "Speed Sensor MPU Signal Loss / Open Circuit Fault",
+                category: "SENSOR",
+                categoryLabel: "MPU Sensor",
+                badgeClass: "badge-purple text-white bg-purple-600",
+                symptom: "หน้าจอ ProTech-GII โมดูลใดโมดูลหนึ่งอ่านค่า 0 RPM หรือขึ้นเตือน MPU Open-Wire Detection Alarm บน Module A, B หรือ C",
+                possibleCauses: [
+                    "หัววัดความเร็ว Magnetic Pickup (MPU) หรือ Proximity Probe ชำรุด/ระยะ Gap ห่างเกินไป",
+                    "สายสัญญาณระหว่าง Field Junction Box (JB) มายัง UCP ขาดหรือขั้วต่อหลุดหลวม",
+                    "คราบน้ำมัน หรือเศษโลหะเกาะติดที่ปลายหัววัด MPU บน Gear Tooth"
+                ],
+                checks: [
+                    "วัดค่าความต้านทาน (Resistance) ของ MPU Coil (ค่าปกติประมาณ 100 - 300 Ohms ขึ้นกับรุ่น)",
+                    "วัดแรงดันไฟฟ้า AC (mV AC) จาก MPU ขณะเพลาหมุน (ต้องมีแรงดันอย่างน้อย 1.0 Vrms ที่หมุนใช้งาน)",
+                    "ตรวจสอบระยะห่าง Gap ของเซนเซอร์ MPU (ปกติประมาณ 0.5 - 1.0 mm จากยอดฟันเฟือง)"
+                ],
+                actions: [
+                    "หากสายหลุด/หลวม: ดำเนินการ Re-tighten ขั้วขันสายใน Junction Box",
+                    "หากหัววัดเสีย: ดำเนินการเปลี่ยน MPU Probe ตัวใหม่ (สามารถทำได้โดยปลอดภัยเนื่องจากระบบเป็น 2oo3)",
+                    "เช็ดทำความสะอาดคราบเศษโลหะที่หัววัด MPU"
+                ],
+                drawingRef: "21E086A0010905-031 / System Config Diagram"
+            },
+            {
+                id: "ALM-003",
+                tag: "PROTECH-MOD-FLT",
+                title: "ProTech-GII Internal Module Fault / Health Alarm",
+                category: "HARDWARE",
+                categoryLabel: "Hardware / Module",
+                badgeClass: "badge-info text-white bg-blue-600",
+                symptom: "ไฟ LED 'HEALTH' บนหน้าปัด ProTech-GII (Module A, B หรือ C) เปลี่ยนเป็นสีแดง/ดับลง และเกิด Alarm บน DCS",
+                possibleCauses: [
+                    "บอร์ดภายในโมดูลขัดข้อง (Internal Hardware Failure / CPU Diagnostic Error)",
+                    "แหล่งจ่ายไฟเลี้ยงฝั่ง High/Low Voltage ของโมดูลนั้นๆ ตกต่ำหรือสูญหาย",
+                    "อุณหภูมิภายในโมดูลสูงเกินเกณฑ์กำหนด (>60°C Operating Limit)"
+                ],
+                checks: [
+                    "ตรวจสอบไฟแสดงสถานะ Power Supply Input ด้านหลังตู้ UCP (230VAC / 24VDC)",
+                    "อ่านข้อความ Error บนหน้าจอ LCD Display ขนาด 4.2 นิ้ว ของโมดูลที่โชว์ Fault",
+                    "ตรวจสอบอุณหภูมิภายในตู้ UCP ว่าระบบพัดลมระบายความร้อนทำงานปกติหรือไม่"
+                ],
+                actions: [
+                    "หาก Power Supply ปกติแต่โมดูลขัดข้องที่ตัว hardware: ดำเนินการ On-line Hot-Swap เปลี่ยนโมดูลตาม SOP",
+                    "การเปลี่ยนโมดูลใหม่จะใช้ฟังก์ชัน Module-to-Module Learning คัดลอก Config จากโมดูลที่ดีให้อัตโนมัติ"
+                ],
+                drawingRef: "Woodward 03370 Spec / UCP Schematic"
+            },
+            {
+                id: "ALM-004",
+                tag: "SAL4815001 / XAC4814609",
+                title: "Turbine Low Speed Pre-Alarm",
+                category: "WARNING",
+                categoryLabel: "Warning / Pre-Alarm",
+                badgeClass: "badge-warning text-slate-900 bg-amber-400",
+                symptom: "สัญญาณเตือน SAL4815001 แสดงบนหน้าจอ DCS และ Annunciator บนตู้ LCP/HMI ติดสว่าง",
+                possibleCauses: [
+                    "ความเร็วรอบลดลงต่ำกว่าเกณฑ์ Low Speed Alarm Threshold",
+                    "ภาระโหลดของคอมเพรสเซอร์เพิ่มขึ้นกะทันหัน หรือ Steam Header Pressure ดรอปลง",
+                    "Governor Valve มีการปิดลงเนื่องจากสัญญาณควบคุม Remote Speed Setpoint (SY4801403) ตกต่ำ"
+                ],
+                checks: [
+                    "ตรวจสอบความดันไอน้ำ Inlet Steam Header Pressure และ Governor Actuator Position",
+                    "ตรวจสอบสัญญาณ Remote Speed Setpoint จาก ITCC/DCS มายัง Governor PLC SC4814601",
+                    "ตรวจสอบวาล์ว Anti-Surge ของคอมเพรสเซอร์ว่าเปิดระบายโหลดหรือไม่"
+                ],
+                actions: [
+                    "ปรับเพิ่ม Speed Setpoint ผ่านทาง HMI / LCP (ปุ่ม Raise Speed HS4814605)",
+                    "ประสานงานฝั่ง Process เพื่อปรับสภาวะโหลดของคอมเพรสเซอร์ 48K002"
+                ],
+                drawingRef: "21E086A0010905-030 / 031"
+            },
+            {
+                id: "ALM-005",
+                tag: "XS4815006 / XS4815007",
+                title: "Governor Actuator Alarm / Shutdown Signal",
+                category: "WARNING",
+                categoryLabel: "Governor Fault",
+                badgeClass: "badge-warning text-slate-900 bg-amber-400",
+                symptom: "สัญญาณ XA4815006 (Governor Actuator Alarm) หรือ XA4815007 (Actuator Shutdown) แสดงบน DCS",
+                possibleCauses: [
+                    "ชุดหัวขับ Governor Actuator (Varistoke/Woodward) เกิดความผิดปกติของสัญญาณ Feedback (4-20mA)",
+                    "น้ำมันควบคุมระบบไฮดรอลิก (Control Oil Pressure) มีความดันตกต่ำกว่าเกณฑ์",
+                    "การเชื่อมต่อระหว่าง Governor PLC กับ Actuator ขัดข้อง"
+                ],
+                checks: [
+                    "ตรวจสอบแรงดันน้ำมัน Control Oil ที่จ่ายเข้าชุด Governor Actuator",
+                    "ตรวจสอบสัญญาณ Governor Actuator Feedback XS4815005 (4-20mA)",
+                    "ตรวจสอบสายเคเบิลจากตู้ UCP (Junction Box JB) ไปยังชุด Actuator หน้างาน"
+                ],
+                actions: [
+                    "ตรวจสอบระบบ Lube Oil / Control Oil Console ของคอมเพรสเซอร์ 48K002",
+                    "หากเป็นการหลุดของสัญญาณ 4-20mA ให้ทำการปรับแต่ง Calibration/Zero-Span ของ Actuator Positioner"
+                ],
+                drawingRef: "21E086A0010905-031 / 032"
+            },
+            {
+                id: "ALM-006",
+                tag: "PROTECH-PWR-FAIL",
+                title: "Redundant Power Supply Loss (High/Low Voltage DC/AC)",
+                category: "HARDWARE",
+                categoryLabel: "Hardware / Power",
+                badgeClass: "badge-info text-white bg-blue-600",
+                symptom: "เกิดสัญญาณ Power Failure Alarm บน UCP / DCS หน้าจอ ProTech ดับไปบางโมดูล",
+                possibleCauses: [
+                    "เบรกเกอร์ (MCB) จ่ายไฟ 230VAC UPS หรือ 24VDC ทริปในตู้ UCP",
+                    "ชุด Switching Power Supply Unit (Isolated Power Supply) ในตู้เกิดการชำรุด",
+                    "สายไฟเลี้ยงหลวมหลุดในตู้คอนโทรล"
+                ],
+                checks: [
+                    "ใช้วอลต์มิเตอร์วัดแรงดัน 230VAC UPS และ 24VDC ที่ขั้ว Power Supply Input ของ ProTech-GII",
+                    "ตรวจสอบสถานะ MCB / Fuse ในตู้ UCP"
+                ],
+                actions: [
+                    "หากเบรกเกอร์ทริป ให้เช็คช็อตเซอร์กิตก่อนการสับขึ้น (Reset)",
+                    "ProTech-GII รองรับ Dual Redundant Power Inputs หากดับไปเพียงแหล่งเดียว ระบบยังคงทำงานต่อเนื่องได้ปกติ"
+                ],
+                drawingRef: "System Configuration Diagram (Page 1) / Power Dist."
+            }
+        ];
+
+        // =========================================================================
+        // 2. DATA STORE: TAG INDEX
+        // =========================================================================
+        const TAG_INDEX_DATABASE = [
+            { tag: "SE4815001A", service: "Turbine Speed Pickup (ProTech Module A)", location: "Field / Turbine Shaft Gear", system: "ProTech-GII / GOV-PLC", type: "Pulse (MPU/Prox)", drawing: "21E086A0010905-031", remarks: "SIL-3 Speed Probe Ch-A" },
+            { tag: "SE4815001B", service: "Turbine Speed Pickup (ProTech Module B)", location: "Field / Turbine Shaft Gear", system: "ProTech-GII / GOV-PLC", type: "Pulse (MPU/Prox)", drawing: "21E086A0010905-031", remarks: "SIL-3 Speed Probe Ch-B" },
+            { tag: "SE4815001C", service: "Turbine Speed Pickup (ProTech Module C)", location: "Field / Turbine Shaft Gear", system: "ProTech-GII / GOV-PLC", type: "Pulse (MPU/Prox)", drawing: "21E086A0010905-031", remarks: "SIL-3 Speed Probe Ch-C" },
+            { tag: "SC4814601", service: "Governor Controller (Triconex ITCC)", location: "Unit Control Panel (UCP)", system: "ITCC / PLC", type: "Controller Logic", drawing: "21E086A0010905-030", remarks: "TriconCX Redundant PLC" },
+            { tag: "SAHH4815001", service: "Governor Speed High-High Trip Signal", location: "UCP / DCS / MMS", system: "ProTech / Triconex", type: "Digital Output (DO Dry)", drawing: "21E086A0010905-030", remarks: "Overspeed Trip Command" },
+            { tag: "SAL4815001", service: "Governor Low Speed Alarm Signal", location: "DCS / HMI", system: "GOV-PLC / DCS", type: "Digital Output (DO)", drawing: "21E086A0010905-030", remarks: "Pre-Alarm Notification" },
+            { tag: "SY4814601", service: "Turbine Actual Speed Signal to ITCC", location: "UCP / ITCC", system: "ProTech -> ITCC", type: "Analog Output (4-20mA)", drawing: "21E086A0010905-031", remarks: "Speed Readout" },
+            { tag: "XS4815006", service: "Governor Actuator Alarm", location: "Field / UCP", system: "Governor Actuator", type: "Digital Input (DI Dry)", drawing: "21E086A0010905-032", remarks: "Actuator Fault Pre-alarm" },
+            { tag: "XS4815007", service: "Governor Actuator Shutdown", location: "Field / UCP", system: "Governor Actuator", type: "Digital Input (DI Dry)", drawing: "21E086A0010905-032", remarks: "Actuator Failure Trip" },
+            { tag: "XAC4814609", service: "Governor Low Speed Pre-Alarm Annunciator", location: "LCP / DCS HMI", system: "Annunciator Panel", type: "Status Indication", drawing: "21E086A0010905-030", remarks: "Visual/Audible Alarm" },
+            { tag: "SY4801403", service: "PFC Speed Setpoint to Governor", location: "ITCC -> GOV PLC", system: "ITCC / Performance Controller", type: "Analog Input (4-20mA)", drawing: "21E086A0010905-031", remarks: "Speed Range 7934-12014 RPM" },
+            { tag: "HS4814605", service: "Raise Speed Pushbutton (Manual)", location: "LCP / HMI", system: "Local / Remote Panel", type: "Digital Input (DI Dry)", drawing: "21E086A0010905-031", remarks: "Manual Speed Control" }
+        ];
+
+        let currentCategoryFilter = 'ALL';
+
+        // =========================================================================
+        // 3. UI RENDER FUNCTIONS
+        // =========================================================================
+        
+        // Render Alarms
+        function renderAlarms(alarmsToRender) {
+            const container = document.getElementById('alarmCardsContainer');
+            container.innerHTML = '';
+
+            if (alarmsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500">
+                        <i class="fa-solid fa-circle-exclamation text-3xl mb-2 text-slate-400"></i>
+                        <p class="font-bold text-sm">ไม่พบข้อมูล Alarm ที่ค้นหา</p>
+                    </div>
+                `;
+                return;
+            }
+
+            alarmsToRender.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl shadow border border-slate-200 space-y-4 hover:border-blue-300 transition";
+                
+                let causesHtml = item.possibleCauses.map(c => `<li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-blue-600 mt-0.5 shrink-0"></i><span>${c}</span></li>`).join('');
+                let checksHtml = item.checks.map(c => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-600 mt-0.5 shrink-0"></i><span>${c}</span></li>`).join('');
+                let actionsHtml = item.actions.map(a => `<li class="flex items-start gap-2"><i class="fa-solid fa-wrench text-amber-600 mt-0.5 shrink-0"></i><span>${a}</span></li>`).join('');
+
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="badge ${item.badgeClass} font-mono font-bold text-xs py-2 px-3">${item.categoryLabel}</span>
+                            <span class="font-mono text-sm font-bold text-blue-900 bg-slate-100 px-2.5 py-1 rounded-lg">${item.tag}</span>
+                        </div>
+                        <div class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                            <i class="fa-solid fa-file-lines"></i> Ref. Drawing: <span class="text-slate-700">${item.drawingRef}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">${item.title}</h3>
+                        <p class="text-xs text-slate-600 mt-1 bg-slate-50 p-2.5 rounded-lg border border-slate-200/80"><strong class="text-slate-700">อาการที่พบ:</strong> ${item.symptom}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs pt-1">
+                        <!-- Possible Causes -->
+                        <div class="bg-red-50/50 p-3 rounded-xl border border-red-100 space-y-2">
+                            <strong class="font-bold text-red-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-question"></i> สาเหตุที่เป็นไปได้ (Causes)
+                            </strong>
+                            <ul class="space-y-1 text-slate-700">${causesHtml}</ul>
+                        </div>
+
+                        <!-- Inspection Checklist -->
+                        <div class="bg-blue-50/50 p-3 rounded-xl border border-blue-100 space-y-2">
+                            <strong class="font-bold text-blue-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-magnifying-glass font-bold"></i> จุดที่ต้องตรวจสอบ (Checks)
+                            </strong>
+                            <ul class="space-y-1 text-slate-700">${checksHtml}</ul>
+                        </div>
+
+                        <!-- Corrective Actions -->
+                        <div class="bg-emerald-50/50 p-3 rounded-xl border border-emerald-100 space-y-2">
+                            <strong class="font-bold text-emerald-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-screwdriver-wrench"></i> แนวทางแก้ไข (Actions)
+                            </strong>
+                            <ul class="space-y-1 text-slate-700">${actionsHtml}</ul>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Render Tag Index Table
+        function renderTagTable(tags) {
+            const tbody = document.getElementById('tagTableBody');
+            tbody.innerHTML = '';
+
+            tags.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="font-mono font-bold text-blue-800">${t.tag}</td>
+                    <td class="font-medium text-slate-800">${t.service}</td>
+                    <td>${t.location}</td>
+                    <td><span class="badge badge-ghost text-xs">${t.system}</span></td>
+                    <td class="font-mono text-slate-600">${t.type}</td>
+                    <td class="font-mono text-xs text-slate-500">${t.drawing}</td>
+                    <td class="text-slate-500">${t.remarks}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Search & Filters
+        function filterAlarms() {
+            const query = document.getElementById('alarmSearch').value.toLowerCase();
+            const filtered = ALARM_DATABASE.filter(item => {
+                const matchCat = (currentCategoryFilter === 'ALL') || (item.category === currentCategoryFilter);
+                const matchQuery = item.tag.toLowerCase().includes(query) ||
+                                  item.title.toLowerCase().includes(query) ||
+                                  item.symptom.toLowerCase().includes(query);
+                return matchCat && matchQuery;
+            });
+            renderAlarms(filtered);
+        }
+
+        function setFilterCategory(cat) {
+            currentCategoryFilter = cat;
+            
+            // Update active styles on buttons
+            document.querySelectorAll('.filter-cat-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-800', 'text-white', 'btn-active');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+            event.target.classList.remove('bg-slate-100', 'text-slate-700');
+            event.target.classList.add('bg-blue-800', 'text-white', 'btn-active');
+
+            filterAlarms();
+        }
+
+        function filterTagTable() {
+            const query = document.getElementById('tagIndexSearch').value.toLowerCase();
+            const filtered = TAG_INDEX_DATABASE.filter(t => 
+                t.tag.toLowerCase().includes(query) ||
+                t.service.toLowerCase().includes(query) ||
+                t.system.toLowerCase().includes(query)
+            );
+            renderTagTable(filtered);
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            const tabs = ['alarms', 'wizard', 'tags', 'sop'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-content-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${t}`);
+                btn.classList.remove('text-blue-800', 'bg-blue-50', 'border', 'border-blue-200');
+                btn.classList.add('text-slate-600');
+            });
+
+            document.getElementById(`tab-content-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            activeBtn.classList.add('text-blue-800', 'bg-blue-50', 'border', 'border-blue-200');
+            activeBtn.classList.remove('text-slate-600');
+        }
+
+        // =========================================================================
+        // 4. INTERACTIVE WIZARD ENGINE
+        // =========================================================================
+        function startWizardFlow(symptomKey) {
+            const flowContainer = document.getElementById('wizard-flow-container');
+            flowContainer.classList.remove('hidden');
+
+            let content = '';
+
+            if (symptomKey === 'TRIP') {
+                content = `
+                    <div class="bg-red-50 p-5 rounded-2xl border border-red-200 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-red-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation"></i> ขั้นตอนการวินิจฉัยกรณี Turbine Overspeed Trip (SAHH4815001)
+                            </h3>
+                            <button onclick="closeWizardFlow()" class="btn btn-xs btn-circle btn-ghost text-red-700">✕</button>
+                        </div>
+                        
+                        <div class="space-y-3 text-xs text-slate-700">
+                            <div class="bg-white p-3 rounded-xl border border-red-200">
+                                <strong class="font-bold text-red-800 block mb-1">ขั้นที่ 1: ตรวจสอบ Trip Log บนหน้าจอ ProTech-GII</strong>
+                                <p>ไปที่หน้าปัด ProTech-GII Module A, B, C เลือกเมนู <strong>View Log -> Trip Log</strong> ดูค่าความเร็วรอบ (RPM) สองสามวินาทีก่อนทริป</p>
+                                <div class="mt-2 flex gap-2">
+                                    <span class="badge badge-outline text-xs">คำถาม: ค่า RPM พุ่งสูงเกิน 11,000 RPM ทั้ง 3 โมดูลหรือไม่?</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                    <strong class="font-bold text-slate-800 block mb-1">กรณีใช่ (Real Overspeed):</strong>
+                                    <p class="text-slate-600">เกิดจากปัญหาฝั่งกลไกไอน้ำ หรือ Governor Valve ติดขัด ให้เช็ค Governor Actuator (Varistoke) และ Anti-surge Control Valve ก่อนทำการ Reset</p>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                    <strong class="font-bold text-slate-800 block mb-1">กรณีไม่ใช่ (False Trip / Noise):</strong>
+                                    <p class="text-slate-600">หากค่า RPM พุ่งสูงเฉพาะโมดูลเดียว หรือแกว่งสลับไปมา ให้ตรวจสอบสาย Shield MPU Cable SE4815001A/B/C ใน Junction Box</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+                                <strong class="font-bold text-emerald-900 block mb-1"><i class="fa-solid fa-circle-check"></i> ขั้นตอนการ Reset เพื่อเริ่มสตาร์ทใหม่ (Start Permissive):</strong>
+                                <ol class="list-decimal pl-4 space-y-1 text-emerald-800">
+                                    <li>กดปุ่ม <strong>RESET</strong> บนหน้าปัด ProTech-GII ทุกโมดูลเพื่อเคลียร์ Latch</li>
+                                    <li>กดปุ่ม <strong>GOVERNOR RESET</strong> (XS4815008) บนตู้ LCP/HMI</li>
+                                    <li>ยื่นยืน Permissive <code>XS4814601A = 1</code> บน Triconex ITCC เพื่อเคลียร์สัญญาณ Interlock สตาร์ทเครื่อง</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (symptomKey === 'MPU_FAIL') {
+                content = `
+                    <div class="bg-purple-50 p-5 rounded-2xl border border-purple-200 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-purple-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-wave-square"></i> ขั้นตอนการตรวจเช็คสัญญาณความเร็ว SE4815001A/B/C
+                            </h3>
+                            <button onclick="closeWizardFlow()" class="btn btn-xs btn-circle btn-ghost text-purple-700">✕</button>
+                        </div>
+                        
+                        <div class="space-y-3 text-xs text-slate-700">
+                            <div class="bg-white p-3 rounded-xl border border-purple-200">
+                                <strong class="font-bold text-purple-900 block mb-1">ขั้นตอนการวัดสัญญาณหน้างาน (Field Measurement Checklist)</strong>
+                                <ol class="list-decimal pl-4 space-y-1">
+                                    <li>เปิดฝา Junction Box (JB) หน้างานของหัววัดความเร็ว</li>
+                                    <li>ใช้มัลติมิเตอร์วัดค่าความต้านทาน (Resistance) ของขั้วสัญญาณ MPU: ค่าปกติช่วง <strong>100 - 300 Ω</strong> (หากได้ ∞ Ω แสดงว่าสายขาด / 0 Ω แสดงว่าช็อตวงจร)</li>
+                                    <li>ปรับมัลติมิเตอร์เป็นย่าน <strong>AC Voltage (mV/V)</strong> วัดขณะเพลาหมุน: แรงดันต้องได้ไม่ต่ำกว่า <strong>1.0 Vrms</strong></li>
+                                </ol>
+                            </div>
+
+                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-amber-900">
+                                <i class="fa-solid fa-circle-info mr-1"></i>
+                                <strong>หมายเหตุ:</strong> หาก MPU เสีย 1 ตัว ระบบ ProTech-GII ยังสามารถทำงานได้ต่อเนื่องด้วยหลักการ 2oo3 (Degraded mode) สามารถดำเนินการเปลี่ยน MPU ใหม่หน้างานได้โดยไม่ต้องหยุดเครื่อง
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (symptomKey === 'MODULE_FAULT') {
+                content = `
+                    <div class="bg-blue-50 p-5 rounded-2xl border border-blue-200 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-blue-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-microchip"></i> การจัดการเมื่อ ProTech-GII โมดูลชำรุด (Module Fault)
+                            </h3>
+                            <button onclick="closeWizardFlow()" class="btn btn-xs btn-circle btn-ghost text-blue-700">✕</button>
+                        </div>
+                        <p class="text-xs text-blue-800">เนื่องจาก ProTech-GII ออกแบบตามมาตรฐาน SIL-3 TMR สามารถถอดเปลี่ยนโมดูลขณะเดินเครื่องได้ทันที (On-line Hot Swap)</p>
+                        <button onclick="switchTab('sop')" class="btn btn-sm bg-emerald-600 hover:bg-emerald-700 text-white border-0">
+                            <i class="fa-solid fa-arrow-right"></i> เปิดไปยังหน้าขั้นตอนการทำ Hot-Swap SOP
+                        </button>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="bg-slate-100 p-5 rounded-2xl border border-slate-300 space-y-3 text-xs">
+                        <div class="flex items-center justify-between">
+                            <strong class="font-bold text-slate-800 text-sm">การตรวจสอบเบื้องต้นสำหรับกลุ่มอาการนี้</strong>
+                            <button onclick="closeWizardFlow()" class="btn btn-xs btn-circle btn-ghost">✕</button>
+                        </div>
+                        <p class="text-slate-600">ตรวจสอบแรงดันไฟเลี้ยง 230VAC UPS / 24VDC และสัญญาณดรายคอนแทกต์ (Dry Contact) จากตู้ Control Panel ไปยัง ITCC/DCS ให้สอดคล้องกับแบบ Drawing 21E086A0010905</p>
+                    </div>
+                `;
+            }
+
+            flowContainer.innerHTML = content;
+        }
+
+        function closeWizardFlow() {
+            document.getElementById('wizard-flow-container').classList.add('hidden');
+        }
+
+        // Custom Toast Notification Function (No alert)
+        function showToast(message, type = 'info') {
+            const toastBox = document.createElement('div');
+            toastBox.className = 'toast toast-top toast-center z-50 transition-all duration-300';
+            
+            let alertClass = 'alert-info';
+            if (type === 'error') alertClass = 'alert-error';
+            if (type === 'success') alertClass = 'alert-success';
+
+            toastBox.innerHTML = `
+                <div class="alert ${alertClass} shadow-lg rounded-xl text-white text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(toastBox);
+            setTimeout(() => {
+                toastBox.style.opacity = '0';
+                setTimeout(() => toastBox.remove(), 300);
+            }, 3000);
+        }
+
+        // Window Load Initialization
+        window.onload = function() {
+            renderAlarms(ALARM_DATABASE);
+            renderTagTable(TAG_INDEX_DATABASE);
+        };
+    </script>
+</body>
+</html>
