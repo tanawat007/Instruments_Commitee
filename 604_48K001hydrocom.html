@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HydroCOM 48K001A/B Control & Diagnostic Suite</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter & Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .state-active {
+            box-shadow: 0 0 0 2px #2563eb, 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+    </style>
+
+
+</head>
+<body class="min-h-screen bg-slate-50 p-3 md:p-6 text-slate-800">
+    <div class="max-w-7xl mx-auto space-y-6">
+
+  <!-- Top Navigation / Hero Header -->
+        <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white p-5 md:p-6 rounded-2xl shadow-xl border border-blue-900 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-white/10 p-3.5 rounded-2xl border border-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner">
+                    <i class="fa-solid fa-microchip text-4xl text-blue-300"></i>
+                </div>
+      
+        <!-- Left Title & Tag Badges -->
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="bg-emerald-500 text-slate-950 text-xs font-black font-mono px-2.5 py-0.5 rounded shadow-sm">
+              TAG: 48K001A/B
+            </span>
+            <span class="bg-slate-800/90 text-slate-300 border border-slate-700 text-xs font-medium px-2.5 py-0.5 rounded">
+              RECYCLE GAS COMPRESSOR
+            </span>
+            <span class="bg-indigo-900/80 text-indigo-200 border border-indigo-700/60 text-xs font-medium px-2.5 py-0.5 rounded">
+              DRIVER: ELECTRIC MOTOR / HYDROCOM
+            </span>
+          </div>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight flex items-center gap-2.5 text-white">
+            <i class="fas fa-microchip text-indigo-400"></i>
+            <span>HydroCOM Control & Diagnostic System</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-300 font-light">
+            ระบบควบคุม วิเคราะห์ความผิดปกติ และคู่มือปฏิบัติการแก้ปัญหา HydroCOM System (HOERBIGER Ref.)
+          </p>
+        </div>
+
+        <!-- Right Quick Action Buttons -->
+        <div class="flex items-center gap-2 self-start lg:self-center flex-wrap">
+          <button onclick="switchTab('tab-kb')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-2">
+            <i class="fas fa-toolbox"></i>
+            <span>Troubleshooting</span>
+          </button>
+          <button onclick="switchTab('tab-pds')" class="bg-indigo-900/80 hover:bg-indigo-800 text-indigo-100 border border-indigo-700 text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-2">
+            <i class="fas fa-network-wired"></i>
+            <span>Subsystems & Topology</span>
+          </button>
+          <button onclick="switchTab('tab-calculator')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-2">
+            <i class="fas fa-calculator"></i>
+            <span>Health Calculator</span>
+          </button>
+          <!-- <button id="langToggleBtn" onclick="toggleLanguage()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 text-xs font-bold px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+            <i class="fas fa-globe text-sky-400"></i>
+            <span id="langText">TH / EN</span>
+          </button> -->
+
+        </div>
+            <a href="main.html" class="btn btn-xl bg-amber-700 hover:bg-amber-400 text-white border-0 px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-2">
+                    Back to Home
+            </a>
+      </div>
+
+  
+
+  </header>
+
+  <!-- Top KPI / Specs Overview Cards -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- KPI 1 -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-start gap-3">
+        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+          <i class="fas fa-server text-lg"></i>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Control Architecture</span>
+          <h4 class="text-sm font-bold text-slate-800 mt-0.5">CIU-4.1 + SIM-1</h4>
+          <p class="text-xs text-indigo-600 font-semibold mt-1">Dual Channel Fieldbus Comms</p>
+        </div>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-start gap-3">
+        <div class="p-3 bg-sky-50 text-sky-600 rounded-lg">
+          <i class="fas fa-oil-can text-lg"></i>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Hydraulic Unit Spec</span>
+          <h4 class="text-sm font-bold text-slate-800 mt-0.5">60 barG | ISO-VG 10/15</h4>
+          <p class="text-xs text-emerald-600 font-semibold mt-1">Trip: &lt; 50 bar / &gt; 80°C</p>
+        </div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-start gap-3">
+        <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
+          <i class="fas fa-sliders-h text-lg"></i>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Stepless Load Range</span>
+          <h4 class="text-sm font-bold text-slate-800 mt-0.5">30% - 100% Capacity</h4>
+          <p class="text-xs text-amber-600 font-semibold mt-1">Split-Range with Spillback PV</p>
+        </div>
+      </div>
+
+      <!-- KPI 4 -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-start gap-3">
+        <div class="p-3 bg-rose-50 text-rose-600 rounded-lg">
+          <i class="fas fa-ruler-vertical text-lg"></i>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Mechanical Assembly</span>
+          <h4 class="text-sm font-bold text-slate-800 mt-0.5">Rod Gap: 18.0 ± 2.0 mm</h4>
+          <p class="text-xs text-rose-600 font-semibold mt-1">TDC Gap: 2.0 ± 0.2 mm</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Main Navigation Tabs -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-2 overflow-x-auto custom-scrollbar">
+      <div class="flex space-x-1 min-w-max">
+        
+        <button onclick="switchTab('tab-kb')" id="btn-tab-kb" class="tab-btn active px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-sm">
+          <i class="fas fa-list-check"></i>
+          <span>คู่มือตรวจสอบ Alarm (Troubleshooting KB)</span>
+        </button>
+
+        <button onclick="switchTab('tab-permissives')" id="btn-tab-permissives" class="tab-btn px-4 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-2">
+          <i class="fas fa-key"></i>
+          <span>ลำดับขั้นตอนเดินเครื่อง & Permissives</span>
+        </button>
+
+        <button onclick="switchTab('tab-logic')" id="btn-tab-logic" class="tab-btn px-4 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-2">
+          <i class="fas fa-project-diagram"></i>
+          <span>วิเคราะห์ตรรกะ (Logic Diagram)</span>
+        </button>
+
+        <button onclick="switchTab('tab-ce')" id="btn-tab-ce" class="tab-btn px-4 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-2">
+          <i class="fas fa-table text-indigo-500"></i>
+          <span>เมทริกซ์ C&E (Cause & Effect)</span>
+        </button>
+
+        <button onclick="switchTab('tab-pds')" id="btn-tab-pds" class="tab-btn px-4 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-2">
+          <i class="fas fa-sitemap"></i>
+          <span>ระบบย่อย & PDS Topology</span>
+        </button>
+
+        <button onclick="switchTab('tab-calculator')" id="btn-tab-calculator" class="tab-btn px-4 py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-2">
+          <i class="fas fa-calculator text-amber-500"></i>
+          <span>Field Health Calculator</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- TAB 1: TROUBLESHOOTING KB (Alarm & Fault Diagnostic Cards) -->
+    <section id="tab-kb" class="tab-content mt-6">
+      
+      <!-- Filter Bar & Search Box -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          
+          <!-- Category Filter Pills -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button onclick="filterCategory('all')" id="filter-all" class="filter-pill active px-3 py-1.5 rounded-full text-xs font-bold bg-indigo-600 text-white transition-all shadow-sm">
+              ทั้งหมด (ALL)
+            </button>
+            <button onclick="filterCategory('trip')" id="filter-trip" class="filter-pill px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all flex items-center gap-1">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>Trips & Interlocks</span>
+            </button>
+            <button onclick="filterCategory('hu')" id="filter-hu" class="filter-pill px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all flex items-center gap-1">
+              <i class="fas fa-oil-can"></i>
+              <span>Hydraulic Unit (HU)</span>
+            </button>
+            <button onclick="filterCategory('actuator')" id="filter-actuator" class="filter-pill px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all flex items-center gap-1">
+              <i class="fas fa-cogs"></i>
+              <span>Actuator & Mech</span>
+            </button>
+            <button onclick="filterCategory('ciu')" id="filter-ciu" class="filter-pill px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all flex items-center gap-1">
+              <i class="fas fa-microchip"></i>
+              <span>CIU & Comms</span>
+            </button>
+            <button onclick="filterCategory('dcs')" id="filter-dcs" class="filter-pill px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all flex items-center gap-1">
+              <i class="fas fa-desktop"></i>
+              <span>DCS & Split-Range</span>
+            </button>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="relative w-full md:w-80">
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="ค้นหา Tag, ชื่อสัญญาณ, อาการ..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Cards Container -->
+      <div id="kbCardsContainer" class="space-y-4">
+        <!-- Javascript dynamically renders cards here -->
+      </div>
+
+    </section>
+
+    <!-- TAB 2: START/STOP PERMISSIVES & SEQUENCES -->
+    <section id="tab-permissives" class="tab-content hidden mt-6 space-y-6">
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-shield-alt text-emerald-600"></i>
+          <span>เงื่อนไขอนุญาตการเดินเครื่อง HydroCOM Permissives (HOERBIGER Spec)</span>
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Permissive Group 1 -->
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-3 flex items-center justify-between">
+              <span>1. Hydraulic Unit Health Permissives</span>
+              <span class="text-emerald-600 font-mono">NORMAL</span>
+            </h4>
+            <ul class="space-y-2 text-xs text-slate-700">
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>Hydraulic Oil Pressure &gt; 60.0 barG (PT-4801102 Normal)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>Hydraulic Oil Temperature &lt; 70.0 °C (TT-4801102 Normal)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>Hydraulic Tank Oil Level &gt; 70% (LT-4801102 Normal)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>Duplex Oil Filter Differential Pressure Normal (Indicator Green)</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Permissive Group 2 -->
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="text-xs font-bold text-indigo-900 uppercase tracking-wider mb-3 flex items-center justify-between">
+              <span>2. CIU & Instrument Loop Permissives</span>
+              <span class="text-emerald-600 font-mono">READY</span>
+            </h4>
+            <ul class="space-y-2 text-xs text-slate-700">
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>CIU Error Relay Contact CLOSED (No active CIU internal fault)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>EPS 48VDC Actuator Main Power Supply &gt; 44.0 VDC</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>Flywheel TDC Proximity Sensor gap verified (2.0 ± 0.2 mm)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>
+                <span>RS-485 Fieldbus Communication active with 0 parity/framing errors</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Action Button for Hot Restart Protocol -->
+        <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-fire-alt text-amber-600 text-2xl"></i>
+            <div>
+              <h5 class="text-xs font-bold text-amber-900">Hot-Restart Procedure (ขณะคอมเพรสเซอร์รันเต็ม 100% โหลด)</h5>
+              <p class="text-xs text-amber-800">ขั้นตอนการดึงระบบ HydroCOM กลับเข้าระดับควบคุมอัตโนมัติอย่างปลอดภัยหลังแก้ไข Fault</p>
+            </div>
+          </div>
+          <button onclick="openHotRestartModal()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow transition-all whitespace-nowrap">
+            ดูขั้นตอน Hot-Restart Protocol
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 3: LOGIC DIAGRAM & SPLIT-RANGE CONTROL PHILOSOPHY -->
+    <section id="tab-logic" class="tab-content hidden mt-6 space-y-6">
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <i class="fas fa-project-diagram text-indigo-600"></i>
+          <span>โครงสร้างตรรกะ Split-Range Control (30% - 100% HydroCOM vs Spillback PV)</span>
+        </h3>
+        <p class="text-xs text-slate-600 mb-6">
+          อธิบายการประสานงานระหว่าง HydroCOM Stepless Control และ Recycle Spillback Valve (PV-4801605/704)
+        </p>
+
+        <!-- Logic Diagram Flow Box -->
+        <div class="bg-slate-900 text-white p-6 rounded-xl font-mono text-xs overflow-x-auto custom-scrollbar">
+          <div class="min-w-[700px] space-y-4">
+            
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="text-emerald-400 font-bold">[DCS Controller PIC-4801103 Signal Output: 0.0 - 100.0%]</span>
+              <span class="text-slate-400">IRPC 48K001A/B Control Philosophy</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6 pt-2">
+              
+              <!-- Left: Spillback Range -->
+              <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700">
+                <div class="text-amber-400 font-bold mb-2">RANGE 1: 0% - 30% Demand</div>
+                <ul class="space-y-1.5 text-slate-300 text-[11px]">
+                  <li>• HydroCOM Capacity: <span class="text-emerald-400">LOCKED at 30% Minimum</span></li>
+                  <li>• Recycle Spillback Valve (PV): <span class="text-amber-300">Modulating 100% to 0% OPEN</span></li>
+                  <li>• Function: ป้องกัน Surge ขณะเปิดเครื่องหรือโหลดต่ำมาก</li>
+                </ul>
+              </div>
+
+              <!-- Right: HydroCOM Range -->
+              <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700">
+                <div class="text-sky-400 font-bold mb-2">RANGE 2: 30% - 100% Demand</div>
+                <ul class="space-y-1.5 text-slate-300 text-[11px]">
+                  <li>• Recycle Spillback Valve (PV): <span class="text-rose-400">100% FULLY CLOSED</span></li>
+                  <li>• HydroCOM Capacity: <span class="text-sky-300">Stepless Control 30% to 100%</span></li>
+                  <li>• Function: ประหยัดพลังงานไฟฟ้าโดยปรับระยะเปิดวาล์วดูด</li>
+                </ul>
+              </div>
+
+            </div>
+
+            <!-- Handover Point Graphic -->
+            <div class="bg-indigo-950 p-3 rounded border border-indigo-800 text-center text-indigo-200 text-[11px]">
+              <i class="fas fa-exchange-alt mr-2 text-indigo-400"></i>
+              <span>Seamless Handover Point: at 30.0% Control Demand (0.0% Spillback Valve / 30.0% HydroCOM Stepless)</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 4: CAUSE & EFFECT (C&E) MATRIX -->
+    <section id="tab-ce" class="tab-content hidden mt-6">
+      
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-5 border-b border-slate-200 bg-slate-50">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i class="fas fa-table text-indigo-600"></i>
+            <span> HydroCOM 48K001A/B Cause & Effect (C&E) Matrix</span>
+          </h3>
+          <p class="text-xs text-slate-600 mt-1">
+            ตารางแสดงความสัมพันธ์ระหว่างสัญญาณขัดข้อง (Cause Inputs) และผลการสั่งการตัดระบบ (Effect Outputs)
+          </p>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-900 text-white font-mono uppercase tracking-wider">
+                <th class="p-3 border-b border-slate-800">Cause Input Signal</th>
+                <th class="p-3 border-b border-slate-800">Setpoint / Condition</th>
+                <th class="p-3 border-b border-slate-800 text-center">CIU Error Relay</th>
+                <th class="p-3 border-b border-slate-800 text-center">HU Pump Motor</th>
+                <th class="p-3 border-b border-slate-800 text-center">Bypass to 100% Load</th>
+                <th class="p-3 border-b border-slate-800 text-center">DCS Alarm</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-slate-700">
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-mono font-bold text-slate-900">HU Pressure Low-Low</td>
+                <td class="p-3">&lt; 50.0 barG (PT-4801102)</td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">OPEN</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">TRIP</span></td>
+                <td class="p-3 text-center"><span class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">YES</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">ALARM</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-mono font-bold text-slate-900">HU Temperature High-High</td>
+                <td class="p-3">&gt; 80.0 °C (TT-4801102)</td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">OPEN</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">TRIP</span></td>
+                <td class="p-3 text-center"><span class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">YES</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">ALARM</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-mono font-bold text-slate-900">HU Tank Level Low-Low</td>
+                <td class="p-3">&lt; 60.0 % (LT-4801102)</td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">OPEN</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">TRIP</span></td>
+                <td class="p-3 text-center"><span class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">YES</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">ALARM</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-mono font-bold text-slate-900">RS-485 Fieldbus Error</td>
+                <td class="p-3">Bus Fault / Timeout</td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">OPEN</span></td>
+                <td class="p-3 text-center"><span class="bg-slate-200 text-slate-600 px-2 py-0.5 rounded">NO</span></td>
+                <td class="p-3 text-center"><span class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">YES</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">ALARM</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-mono font-bold text-slate-900">EPS 48V Power Supply Loss</td>
+                <td class="p-3">&lt; 40.0 VDC Fault</td>
+                <td class="p-3 text-center"><span class="bg-rose-500 text-white px-2 py-0.5 rounded font-bold">OPEN</span></td>
+                <td class="p-3 text-center"><span class="bg-slate-200 text-slate-600 px-2 py-0.5 rounded">NO</span></td>
+                <td class="p-3 text-center"><span class="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-bold">YES</span></td>
+                <td class="p-3 text-center"><span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">ALARM</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 5: SUBSYSTEMS & PDS TOPOLOGY -->
+    <section id="tab-pds" class="tab-content hidden mt-6 space-y-6">
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i class="fas fa-network-wired text-indigo-600"></i>
+            <span>แผนผังโครงสร้างสถาปัตยกรรม HydroCOM Systems Architecture (PDS Diagram)</span>
+          </h3>
+          <button onclick="openTerminalModal()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+            <i class="fas fa-plug text-sky-400"></i>
+            <span>Wiring & Terminal Lookup</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- Zone 1: Safe Area DCS -->
+          <div class="p-4 bg-slate-900 text-white rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <i class="fas fa-desktop"></i>
+              <span>Zone 1: Safe Area (DCS Room)</span>
+            </div>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="bg-slate-800 p-2 rounded border border-slate-700">
+                <strong class="text-white block">PIC-4801103 Controller</strong>
+                <span>คำนวณ Load Demand 4-20mA ส่งเข้า CIU SIM-4.1</span>
+              </li>
+              <li class="bg-slate-800 p-2 rounded border border-slate-700">
+                <strong class="text-white block">Manual Loader HC-1A/B</strong>
+                <span>สลับโหมด Manual Override และ Auto Stepless</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Zone 2: Safe Area Instrument Cabinet -->
+          <div class="p-4 bg-indigo-950 text-white rounded-xl border border-indigo-900">
+            <div class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <i class="fas fa-server"></i>
+              <span>Zone 2: Safe Area (CIU Subrack)</span>
+            </div>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="bg-indigo-900/60 p-2 rounded border border-indigo-800">
+                <strong class="text-white block">CIU-4.1 (GIM-4.1 + SIM-1)</strong>
+                <span>ประมวลผลจังหวะคำสั่งฉีดน้ำมันลิ้งก์ TDC Proximity</span>
+              </li>
+              <li class="bg-indigo-900/60 p-2 rounded border border-indigo-800">
+                <strong class="text-white block">EPS 48VDC Power Supply</strong>
+                <span>จ่ายไฟยกคอยล์ Actuator Solenoids 500W</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Zone 3: Hazardous Area Field Deck -->
+          <div class="p-4 bg-slate-900 text-white rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <i class="fas fa-industry"></i>
+              <span>Zone 3: Hazardous Area (Field Deck)</span>
+            </div>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="bg-slate-800 p-2 rounded border border-slate-700">
+                <strong class="text-white block">HydroCOM Actuator Blocks</strong>
+                <span>วาล์วฉีดน้ำมันควบคุมแกน Unloader Rod (18mm)</span>
+              </li>
+              <li class="bg-slate-800 p-2 rounded border border-slate-700">
+                <strong class="text-white block">Hydraulic Unit NG63/120</strong>
+                <span>สร้างแรงดันน้ำมัน 60 barG พร้อม Accumulator</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 6: FIELD HEALTH CALCULATOR & SIGNAL CONVERTER -->
+    <section id="tab-calculator" class="tab-content hidden mt-6 space-y-6">
+      
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
+          <i class="fas fa-calculator text-amber-500"></i>
+          <span>เครื่องมือคำนวณและตรวจสอบสัญญาณหน้างาน (Field Health & Signal Validator)</span>
+        </h3>
+        <p class="text-xs text-slate-600 mb-6">
+          ป้อนค่าแรงดัน อุณหภูมิ ระยะแกน หรือกระแส 4-20mA เพื่อตรวจสอบสถานะความปลอดภัยตามสเปก HOERBIGER
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Input Controls -->
+          <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+            
+            <!-- Input 1: Hydraulic Pressure -->
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">1. แรงดันน้ำมันไฮดรอลิก (Hydraulic Pressure - barG)</label>
+              <input type="number" id="calc-press" value="62.5" step="0.1" oninput="calculateHealth()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <span class="text-[11px] text-slate-500">เกณฑ์ปกติ: 58 - 65 barG (Alarm &lt; 60 bar / Trip &lt; 50 bar)</span>
+            </div>
+
+            <!-- Input 2: Hydraulic Temperature -->
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">2. อุณหภูมิน้ำมันไฮดรอลิก (Oil Temperature - °C)</label>
+              <input type="number" id="calc-temp" value="48.0" step="0.5" oninput="calculateHealth()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <span class="text-[11px] text-slate-500">เกณฑ์ปกติ: 35 - 60 °C (Alarm &gt; 70 °C / Trip &gt; 80 °C)</span>
+            </div>
+
+            <!-- Input 3: Actuator Rod Gap -->
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">3. ระยะประกอบแกน Unloader Rod Gap (mm)</label>
+              <input type="number" id="calc-rod" value="18.0" step="0.1" oninput="calculateHealth()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <span class="text-[11px] text-slate-500">เกณฑ์มาตรฐาน: 18.0 ± 2.0 mm (16.0 - 20.0 mm)</span>
+            </div>
+
+            <!-- Input 4: DCS Demand 4-20mA -->
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">4. สัญญาณคำสั่งโหลดจาก DCS (4-20mA Input)</label>
+              <input type="number" id="calc-ma" value="12.0" step="0.1" oninput="calculateHealth()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <span class="text-[11px] text-slate-500">ช่วงคำสั่ง: 4.0 mA (0% Load) ถึง 20.0 mA (100% Load)</span>
+            </div>
+
+          </div>
+
+          <!-- Evaluation Results Box -->
+          <div class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+            <div>
+              <h4 class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
+                <i class="fas fa-diagnostics text-sky-400 mr-2"></i> ผลการประเมินสถานะระบบ (Diagnostic Result)
+              </h4>
+
+              <div class="space-y-3 font-mono text-xs">
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                  <span class="text-slate-400">HU Pressure Status:</span>
+                  <span id="res-press-status" class="font-bold text-emerald-400">NORMAL (62.5 barG)</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                  <span class="text-slate-400">HU Oil Temp Status:</span>
+                  <span id="res-temp-status" class="font-bold text-emerald-400">NORMAL (48.0 °C)</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                  <span class="text-slate-400">Unloader Rod Gap:</span>
+                  <span id="res-rod-status" class="font-bold text-emerald-400">PASS (18.0 mm)</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                  <span class="text-slate-400">Calculated Stepless Capacity:</span>
+                  <span id="res-capacity" class="font-bold text-amber-400">50.0 % Load</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="overall-health-box" class="mt-6 p-3 rounded-lg bg-emerald-900/60 border border-emerald-700 text-center">
+              <div class="text-xs font-bold text-emerald-300">OVERALL SYSTEM HEALTH STATUS</div>
+              <div id="overall-health-text" class="text-sm font-black text-emerald-400 mt-0.5">READY FOR STEPLESS OPERATION</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL 1: HOT RESTART PROTOCOL -->
+  <div id="hotRestartModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <i class="fas fa-fire-alt text-amber-600"></i>
+          <span>ขั้นตอน Hot-Restart HydroCOM (ขณะคอมเพรสเซอร์รัน 100% Full Load)</span>
+        </h3>
+        <button onclick="closeHotRestartModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+        <p class="bg-amber-50 text-amber-900 p-3 rounded-lg border border-amber-200">
+          <strong>ข้อควรระวัง:</strong> ขั้นตอนนี้ใช้เมื่อแก้ปัญหาไฮดรอลิก/ CIU เรียบร้อยแล้ว แต่คอมเพรสเซอร์กำลังรัน 100% Full Load และต้องการดึงระบบ HydroCOM กลับเข้าระดับควบคุมอัตโนมัติ
+        </p>
+
+        <ol class="space-y-2.5 list-decimal list-inside font-medium">
+          <li class="p-2.5 bg-slate-50 rounded border border-slate-200">
+            <strong>ตรวจสอบแรงดันไฮดรอลิก:</strong> สตาร์ตปั๊ม HU Motor และตรวจสอบแรงดันจนคงที่ที่ &gt; 60.0 barG
+          </li>
+          <li class="p-2.5 bg-slate-50 rounded border border-slate-200">
+            <strong>สลับ Manual Loader HC-1:</strong> ปรับ HC-1 บนหน้าจอ DCS ให้อยู่ในโหมด MANUAL และตั้งค่า Output ไว้ที่ 100.0% โหลด
+          </li>
+          <li class="p-2.5 bg-slate-50 rounded border border-slate-200">
+            <strong>กดปุ่ม RESET บน CIU:</strong> กดปุ่ม Reset สัญญาณ Error บนหน้าตู้ CIU หรือผ่าน DCS จนไฟ CIU Error Relay กลับมาสภาวะปกติ (Contact Closed)
+          </li>
+          <li class="p-2.5 bg-slate-50 rounded border border-slate-200">
+            <strong>สลับกลับเข้า CASCADE / AUTO:</strong> เมื่อ CIU ยืนยันสภาวะ Enable ให้สลับ HC-1 จาก MANUAL กลับสู่ CASCADE เพื่อให้ตัวควบคุม PIC-4801103 ควบคุมตาม Setpoint
+          </li>
+        </ol>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button onclick="closeHotRestartModal()" class="bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-lg hover:bg-slate-800 transition-all">
+          รับทราบและปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: TERMINAL & WIRING LOOKUP -->
+  <div id="terminalModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <i class="fas fa-plug text-indigo-600"></i>
+          <span>ตารางการต่อสาย Terminal Wiring & Cable Pinouts (HOERBIGER Ref.)</span>
+        </h3>
+        <button onclick="closeTerminalModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fas fa-times text-lg"></i>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto custom-scrollbar text-xs">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-900 text-white font-mono">
+              <th class="p-2.5 border border-slate-800">Module / Location</th>
+              <th class="p-2.5 border border-slate-800">Connector / Terminal</th>
+              <th class="p-2.5 border border-slate-800">Signal Description</th>
+              <th class="p-2.5 border border-slate-800">Cable Specification</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <tr>
+              <td class="p-2.5 font-bold">CIU Backplane</td>
+              <td class="p-2.5 font-mono text-indigo-600 font-bold">X81 Terminals</td>
+              <td class="p-2.5">93-250 VAC Main Power Supply</td>
+              <td class="p-2.5 font-mono">3x1.5 mm² Shielded</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-bold">SIM-1 Card</td>
+              <td class="p-2.5 font-mono text-indigo-600 font-bold">Xm1 (A, B, GND)</td>
+              <td class="p-2.5">RS-485 Fieldbus Communication</td>
+              <td class="p-2.5 font-mono">Belden 3106A / 9842LS</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-bold">SIM-4.1 Card</td>
+              <td class="p-2.5 font-mono text-indigo-600 font-bold">Terminals 1 & 2</td>
+              <td class="p-2.5">4-20mA DCS Demand Signal Input</td>
+              <td class="p-2.5 font-mono">1x2x1.5 mm² Twisted Pair</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-bold">Field Actuator</td>
+              <td class="p-2.5 font-mono text-indigo-600 font-bold">Ex e Box Terminals</td>
+              <td class="p-2.5">48VDC Actuator Solenoid Coil</td>
+              <td class="p-2.5 font-mono">2x2.5 mm² Armored</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button onclick="closeTerminalModal()" class="bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-lg hover:bg-slate-800 transition-all">
+          ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic section -->
+  <script>
+    // Language State ('TH' or 'EN')
+    let currentLang = 'TH';
+    let currentCategory = 'all';
+
+    // Comprehensive 16 HydroCOM Fault Cases Database
+    const kbData = [
+      {
+        id: 'node_1',
+        tagID: 'ER_RELAY_TRIP',
+        category: 'trip',
+        titleTH: '1. สัญญาณ CIU Error Relay เปิดวงจร (Contact Open)',
+        titleEN: '1. CIU Error Relay Contact Open (Trip Signal)',
+        valueBadge: 'TRIP: CONTACT OPEN',
+        valueBadgeColor: 'bg-rose-500 text-white',
+        categoryTag: 'CIU & INTERLOCK',
+        symptomTH: 'เครื่องจักรดักสัญญาณ Trip ทันที, วาล์ว HU ตัดการทำงาน, ไฟเตือน CIU Error โชว์ที่หน้าตู้และ DCS, คอมเพรสเซอร์ถูกสั่งปลดไปรันเต็ม 100% โหลด',
+        symptomEN: 'Compressor trips, HU pump stops, CIU Error alarm on DCS, compressor forced to 100% full load',
+        causeTH: 'ระบบไฟเลี้ยง 93-250VAC เข้าตู้ CIU ขาดหาย, ฟิวส์ F1 (4A) ขาด, สายสื่อสาร RS-485 Belden ขาดหรือเกิด Noise, สัญญาณ 4-20mA หรือ TDC sensor ขาดหาย',
+        causeEN: 'CIU 93-250VAC power supply loss, Fuse F1 (4A) blown, RS-485 Belden communication cable broken or improper termination switch setting',
+        actionTH: 'ตรวจสอบไฟเลี้ยง AC ที่ Connector X81, เช็กไฟ LED หน้าการ์ด GIM-4.1/SIM-1, ตรวจสาย RS-485 Belden 3106A และยืนยันว่า Actuator ตัวสุดท้ายสับ Termination = ON เพียงตัวเดียว',
+        actionEN: 'Check AC supply on CIU backplane Connector X81, observe GIM-4.1 status LEDs, inspect RS-485 Belden wiring and verify DIP switch termination ON at final actuator',
+        ref: 'HOERBIGER Manual Section 5.2.4 & 6.3.1'
+      },
+      {
+        id: 'node_2',
+        tagID: 'HU_PRESS_LOW',
+        category: 'hu',
+        titleTH: '2. แรงดันน้ำมันไฮดรอลิกตกต่ำ (< 60 bar หรือ < 50 bar)',
+        titleEN: '2. Hydraulic Oil Pressure Low (< 60 bar or < 50 bar)',
+        valueBadge: 'TRIP: < 50.0 barG',
+        valueBadgeColor: 'bg-rose-500 text-white',
+        categoryTag: 'HYDRAULIC UNIT',
+        symptomTH: 'แรงดันน้ำมันไฮดรอลิกตกต่ำลงกว่า 60 bar (เตือน Alarm) หรือ < 50 bar (สั่งทริปปั๊ม HU Motor และปลดระบบ HydroCOM)',
+        symptomEN: 'Hydraulic pressure drops below 60 bar (Alarm) or < 50 bar (HU Trip)',
+        causeTH: 'ไส้กรองน้ำมันไฮดรอลิกอุดตัน (Filter Clogging Indicator ขึ้นแดง), ระดับน้ำมันไฮดรอลิกในถังต่ำกว่า 60%, วาล์วปรับแรงดัน Relief Valve คลายตัว หรือ N2 Precharge รั่ว',
+        causeEN: 'Hydraulic oil filter element clogged, oil tank level low (< 60%), Pressure Relief Valve unseated, or Diaphragm Cylinder N2 precharge loss',
+        actionTH: 'ตรวจสอบดัชนีชี้วัดกรองน้ำมัน หากขึ้นสีแดงให้ทำการสลับไส้กรองทันที, ตรวจดูระดับน้ำมันถัง NG63 ให้มากกว่า 70%, เช็กแรงดันก๊าซ N2 ใน Diaphragm Cylinder (~30 bar)',
+        actionEN: 'Inspect filter clogging indicators on HU manifold; replace elements if red, verify oil level is > 70%, measure N2 precharge in diaphragm cylinders (~30 bar)',
+        ref: 'HOERBIGER Manual Section 5.8 & 7.4'
+      },
+      {
+        id: 'node_3',
+        tagID: 'HU_TEMP_HIGH',
+        category: 'hu',
+        titleTH: '3. อุณหภูมิน้ำมันไฮดรอลิกสูงเกินเกณฑ์ (> 70°C / > 80°C)',
+        titleEN: '3. Hydraulic Oil Temperature High (> 70°C / > 80°C)',
+        valueBadge: 'TRIP: > 80.0 °C',
+        valueBadgeColor: 'bg-rose-500 text-white',
+        categoryTag: 'HYDRAULIC UNIT',
+        symptomTH: 'อุณหภูมิน้ำมันไฮดรอลิกขึ้นสูงเตือนที่ 70°C หรือทริปดับปั๊ม HU ที่ 80°C สั่งการปลด HydroCOM สู่ 100% โหลด',
+        symptomEN: 'Oil temp high warning at 70°C or high-high trip at 80°C',
+        causeTH: 'เดินเครื่องคอมเพรสเซอร์ที่โหลดต่ำกว่า 30% เป็นเวลานานเกินไป ทำให้แกน Unloader เสียดสีเกิดความร้อนสูง, ระบบระบายความร้อน Oil Cooler ขัดข้อง หรือใช้น้ำมันผิดเกรด',
+        causeEN: 'Compressor operating continuously below 30% load causing gas recirculation heating, oil cooler water flow restricted, or incorrect oil grade used',
+        actionTH: 'หลีกเลี่ยงการเดินเครื่องที่โหลดต่ำกว่า 30% เป็นเวลานาน, ตรวจสอบวาล์วน้ำเย็นเข้า Oil Cooler, ยืนยันเกรดน้ำมันตามสเปก ISO-VG 10 หรือ ISO-VG 15',
+        actionEN: 'Avoid continuous operation below 30% load, inspect cooling water supply to HU oil cooler, verify oil viscosity matches ISO-VG 10 or ISO-VG 15',
+        ref: 'IRPC Control Philosophy Section - Temp Alarms'
+      },
+      {
+        id: 'node_4',
+        tagID: 'HU_LEVEL_LOW',
+        category: 'hu',
+        titleTH: '4. ระดับน้ำมันไฮดรอลิกในถังต่ำกว่าเกณฑ์ (< 70% / < 60%)',
+        titleEN: '4. Hydraulic Oil Tank Level Low (< 70% / < 60%)',
+        valueBadge: 'TRIP: < 60.0 %',
+        valueBadgeColor: 'bg-rose-500 text-white',
+        categoryTag: 'HYDRAULIC UNIT',
+        symptomTH: 'สัญญาณแจ้งเตือนระดับน้ำมันในถัง NG63 ต่ำกว่า 70% (Alarm) และทริปหยุดปั๊ม HU ที่ระดับต่ำกว่า 60% (Low-Low Trip)',
+        symptomEN: 'Oil level low alarm at < 70% and HU pump trip at < 60%',
+        causeTH: 'เกิดการรั่วซึมของน้ำมันไฮดรอลิกบริเวณจุดต่อท่อ Field Deck, ซีล Actuator รั่ว, หรือไม่มีการเติมน้ำมันสำรองตามวงรอบ Maintenance',
+        causeEN: 'Hydraulic oil leakage at field deck piping fittings, actuator seal leakage, or lack of routine oil top-up',
+        actionTH: 'ตรวจสอบจุดรั่วซึมรายรอบยูนิตปั๊ม HU และตู้ Actuator บน Field Deck, เติมน้ำมัน ISO-VG 10/15 ผ่านกรองเติมน้ำมันจนระดับกลับมาที่ 80-90%',
+        actionEN: 'Inspect HU piping connections and field actuators for leaks, top up with clean filtered ISO-VG 10/15 oil to 80-90% level',
+        ref: 'HOERBIGER Manual Section 5.8.2'
+      },
+      {
+        id: 'node_5',
+        tagID: 'HU_FILTER_CLOG',
+        category: 'hu',
+        titleTH: '5. ไส้กรองน้ำมันไฮดรอลิกอุดตัน (Differential Pressure High)',
+        titleEN: '5. Hydraulic Oil Filter Clogged (DP High Indicator)',
+        valueBadge: 'ALARM: DP HIGH',
+        valueBadgeColor: 'bg-amber-500 text-slate-900 font-black',
+        categoryTag: 'HYDRAULIC UNIT',
+        symptomTH: 'ดัชนีชี้วัดความต่างศักย์แรงดันไส้กรอง (Filter Differential Indicator) แสดงสีแดง หรือมีสัญญาณ Alarm โชว์หน้าตู้ปั๊ม HU',
+        symptomEN: 'Filter differential pressure indicator pops RED or warning alarm active on HU local panel',
+        causeTH: 'ไส้กรองสะสมสิ่งสกปรกจากการใช้งาน, คราบเสื่อมสภาพของน้ำมันไฮดรอลิก หรือไม่ได้เปลี่ยนไส้กรองตามชั่วโมงการทำงาน (PM)',
+        causeEN: 'Particulate contamination accumulation, oil degradation sludge, or overdue filter element replacement',
+        actionTH: 'สลับคันโยก Duplex Filter ไปยังฝั่งสำรอง จากนั้นถอดทำความสะอาดหม้อกรองและเปลี่ยนไส้กรองตัวใหม่ (10 micron) ทันที',
+        actionEN: 'Switch Duplex Filter lever to standby side, depressurize standby housing, and replace filter element (10 micron)',
+        ref: 'HOERBIGER Manual Section 7.2.1'
+      },
+      {
+        id: 'node_6',
+        tagID: 'ROD_GAP_ERR',
+        category: 'actuator',
+        titleTH: '6. ระยะประกอบแกน Unloader Rod คลาดเคลื่อน (ไม่ได้ 18 ± 2 mm)',
+        titleEN: '6. Actuator Unloader Rod Gap Out of Spec (Not 18 ± 2 mm)',
+        valueBadge: 'SPEC: 18.0 ± 2.0 mm',
+        valueBadgeColor: 'bg-blue-600 text-white',
+        categoryTag: 'ACTUATOR & MECH',
+        symptomTH: 'วาล์วดูด Unload ไม่สมบูรณ์, มีเสียงกระแทกที่หัววาล์ว (Knocking), หรือกำลังอัดคอมเพรสเซอร์ไม่ได้ตามเปอร์เซ็นต์สั่งการ',
+        symptomEN: 'Incomplete valve unloading, knocking noise at valve head, or capacity output mismatch',
+        causeTH: 'การประกอบขันระยะแกน Unloader Rod ระหว่าง Valve Housing กับ Seal Housing คลาดเคลื่อน, แผ่นประเก็น Gasket ชำรุดหรือไม่ได้ใส่',
+        causeEN: 'Incorrect mechanical assembly height between seal housing and unloader rod, damaged or missing gasket between seal housing and valve block',
+        actionTH: 'แยก Valve Block ออกจาก Seal Housing แล้วใช้วงเวียนเวอร์เนียวัดระยะจากขอบบนสุด Seal Housing ถึงขอบบน Rod ต้องได้ 18.0 mm (± 2.0 mm) ขันสกรู Torque 8 Nm',
+        actionEN: 'Remove valve block from seal housing, measure distance from upper edge of seal housing to upper rod edge (18.0 ± 2.0 mm), torque mounting screws to 8 Nm',
+        ref: 'HOERBIGER Manual Section 5.1.3 & Fig. 2'
+      },
+      {
+        id: 'node_7',
+        tagID: 'TDC_SENSOR_ERR',
+        category: 'actuator',
+        titleTH: '7. สัญญาณ Proximity Sensor TDC ขาดหายหรือระยะห่างคลาดเคลื่อน',
+        titleEN: '7. Top Dead Center (TDC) Sensor Signal Loss or Gap Error',
+        valueBadge: 'ALARM / TRIP: GAP 2.0mm',
+        valueBadgeColor: 'bg-rose-500 text-white',
+        categoryTag: 'SENSORS & FIELD',
+        symptomTH: 'CIU ไม่สามารถจับจังหวะตำแหน่งศูนย์สูบหน้า (Top Dead Center) ได้, ไฟ LED TDC หน้าการ์ด GIM-4.1 ดับหรือไม่กระพริบตามรอบหมุน',
+        symptomEN: 'CIU unable to synchronize timing pulse, TDC LED on GIM-4.1 fails to pulse with flywheel rotation',
+        causeTH: 'ระยะห่าง Proximity Sensor ถึง Flywheel ไม่ได้ 2.0 ± 0.2 mm, สายสัญญาณจาก IA Barrier หลุดหลวม, หรือมีเศษโลหะเกาะที่หน้าเซนเซอร์',
+        causeEN: 'TDC proximity sensor gap misadjusted (not 2.0 ± 0.2 mm), wiring loose at IA barrier terminals 7/8, or metallic debris on sensor face',
+        actionTH: 'ตั้งระยะห่างหน้าเซนเซอร์ TDC กับ Trigger Pin บน Flywheel ให้ได้ 2.0 mm (± 0.2 mm), ทำความสะอาดหน้าสัมผัส และเช็กไฟ +24VDC จาก Isolation Barrier',
+        actionEN: 'Adjust TDC sensor target gap to 2.0 ± 0.2 mm using feeler gauge, clean sensor tip, verify +24VDC loop power from IA barrier',
+        ref: 'HOERBIGER Manual Section 5.3.1'
+      },
+      {
+        id: 'node_8',
+        tagID: 'ACT_TEMP_HIGH',
+        category: 'actuator',
+        titleTH: '8. อุณหภูมิคอยล์ Actuator Valve บล็อกสูงเกินกำหนด (> 100°C)',
+        titleEN: '8. Actuator Coil / Block High Temperature (> 100°C)',
+        valueBadge: 'ALARM: > 100 °C',
+        valueBadgeColor: 'bg-amber-500 text-slate-900 font-black',
+        categoryTag: 'ACTUATOR & MECH',
+        symptomTH: 'สัญญาณเตือน Actuator Temperature High บนตู้ CIU และ DCS, เสี่ยงต่อการชำรุดของโซลินอยด์คอยล์สั่งการ',
+        symptomEN: 'Actuator high temperature warning on CIU and DCS console, risk of high-frequency solenoid coil burnout',
+        causeTH: 'การระบายความร้อนที่วาล์วดูดไม่เพียงพอ, Gas Discharge Temp ของคอมเพรสเซอร์สูงเกินไป, หรือมีการจ่ายไฟยกคอยล์ถี่เกินไปในสภาวะแกว่งตัว',
+        causeEN: 'Insufficient cooling around compressor valve head, elevated process gas temperature, or excessive coil pulsing due to control hunting',
+        actionTH: 'ตรวจสอบอุณหภูมิก๊าซขาออกจากคอมเพรสเซอร์ (Cylinder Gas Temp), ตรวจสอบการไหลของน้ำมันไฮดรอลิกไประบายความร้อน Actuator Block',
+        actionEN: 'Check cylinder discharge gas temperature, verify hydraulic oil cooling flow to actuator block, check solenoid valve operation frequency',
+        ref: 'HOERBIGER Manual Section 6.2.3'
+      },
+      {
+        id: 'node_9',
+        tagID: 'RS485_COMM_FAIL',
+        category: 'ciu',
+        titleTH: '9. สัญญาณสื่อสาร RS-485 ขัดข้อง (SIM-1 to Actuator Bus Fault)',
+        titleEN: '9. RS-485 Fieldbus Communication Failure (SIM-1 Bus Fault)',
+        valueBadge: 'ALARM: COMM FAIL',
+        valueBadgeColor: 'bg-rose-500 text-white',
+        categoryTag: 'CIU & COMMS',
+        symptomTH: 'การ์ด SIM-1 แจ้งเตือน Bus Error, Actuator ไม่ตอบสนองต่อคำสั่งปรับช่วงการเปิดวาล์ว, ไฟ LED RS-485 กระพริบผิดปกติ',
+        symptomEN: 'SIM-1 card reports bus error, actuators fail to respond to timing commands, RS-485 LED flashing red',
+        causeTH: 'สาย Belden 3106A/9842LS หลุดหลวม, สวิตช์ End-of-Line Termination DIP switch ตั้งเปิด (ON) ซ้ำซ้อนหลายจุด, หรือมีสัญญาณรบกวน Noise จากสาย Power',
+        causeEN: 'Belden RS-485 cable terminal loose, multiple bus termination DIP switches set to ON, or electrical noise coupling from power cables',
+        actionTH: 'ตรวจสอบสาย A, B, Gnd ที่ Terminal Xm1 ของ SIM-1, ตรวจสอบให้แน่ใจว่าสวิตช์ Termination DIP Switch อยู่ที่ตำแหน่ง ON เฉพาะ Actuator ตัวสุดท้ายเท่านั้น',
+        actionEN: 'Check A, B, Gnd terminals at SIM-1 connector Xm1, verify termination DIP switch is set to ON ONLY at the physically last actuator on the loop',
+        ref: 'HOERBIGER Manual Section 5.2.2 & Belden Wiring'
+      },
+      {
+        id: 'node_10',
+        tagID: 'STUCK_100_LOAD',
+        category: 'dcs',
+        titleTH: '10. คอมเพรสเซอร์ติดค้างที่ 100% โหลด ไม่ตอบสนองต่อสัญญาณ DCS',
+        titleEN: '10. Compressor Stuck at 100% Load (Not Responding to DCS)',
+        valueBadge: 'LOAD: 100% STUCK',
+        valueBadgeColor: 'bg-slate-700 text-white',
+        categoryTag: 'DCS & LOGIC',
+        symptomTH: 'สัญญาณเอาต์พุตจาก PIC-4801103 เปลี่ยนแปลง แต่กำลังอัดคอมเพรสเซอร์ยังคงค้างที่ 100% เต็มโหลดตลอดเวลา',
+        symptomEN: 'DCS demand changes but compressor stays stuck at 100% capacity',
+        causeTH: 'สัญญาณ ENABLE จาก PLC ขาดหายไป (CIU Enable Loop ไม่ครบเงื่อนไข), เกิด HydroCOM System Error ทำให้ระบบ Bypass ไปรันเต็มโหลด, หรือ Manual Loader HC-1 ค้างที่ 100%',
+        causeEN: 'CIU Enable signal dropped by PLC logic, HydroCOM System Error active forcing full load bypass, or Manual Loader HC-1 left in MANUAL mode at 100%',
+        actionTH: 'เช็กสถานะสัญญาณ CIU Enable ใน PLC ต้องเป็น LOGIC 1, ตรวจสอบโหมดของ Manual Loader HC-1 บน DCS ว่าอยู่ในโหมด CASCADE หรือไม่',
+        actionEN: 'Verify CIU Enable logic in PLC is High (Logic 1), check Manual Loader HC-1 mode on DCS console; set to CASCADE',
+        ref: 'IRPC Control Philosophy Section - Enable Loop'
+      },
+      {
+        id: 'node_11',
+        tagID: 'STUCK_0_LOAD',
+        category: 'dcs',
+        titleTH: '11. คอมเพรสเซอร์ติดค้างที่ 0% โหลด (Unloaded ตลอดเวลา)',
+        titleEN: '11. Compressor Stuck at 0% Load (Fully Unloaded state)',
+        valueBadge: 'LOAD: 0% UNLOADED',
+        valueBadgeColor: 'bg-slate-700 text-white',
+        categoryTag: 'DCS & LOGIC',
+        symptomTH: 'คอมเพรสเซอร์เดินหมุนแต่ไม่สร้างแรงดัน (0% Flow Output), สัญญาณความดันด้านจ่ายไม่ขึ้นตามค่า Setpoint',
+        symptomEN: 'Compressor running but producing no flow output (0% capacity), discharge pressure fails to build up',
+        causeTH: 'สวิตช์ Load/Unload บน DCS ยังสับอยู่ที่ตำแหน่ง "UNLOAD", สัญญาณสั่งโหลด 4-20mA ต่ำกว่า 4.0 mA, หรือวาล์วไฮดรอลิกโซลินอยด์ค้างสภาวะระบายแรงดัน',
+        causeEN: 'Load/Unload switch on DCS console stuck in "UNLOAD" position, 4-20mA demand signal < 4.0 mA, or hydraulic unloading valve stuck open',
+        actionTH: 'ย้อนเช็กสวิตช์ Load/Unload บน DCS ว่าสับไปที่ "LOAD" หรือยัง, วัดกระแสสัญญาณ mA จาก DCS เข้าการ์ด SIM-4.1 (ต้องได้ 4.0 ถึง 20.0 mA)',
+        actionEN: 'Verify DCS Load/Unload switch is set to "LOAD", measure 4-20mA input current into SIM-4.1 terminal block (must be between 4.0 and 20.0 mA)',
+        ref: 'IRPC Control Philosophy Section - Load Demands'
+      },
+      {
+        id: 'node_12',
+        tagID: 'STEPLESS_HUNTING',
+        category: 'dcs',
+        titleTH: '12. แรงดันคอมเพรสเซอร์แกว่งตัวในโหมด Stepless Control (30% - 100%)',
+        titleEN: '12. Pressure Hunting & Instability in Stepless Mode (30-100%)',
+        valueBadge: 'ALARM: HUNTING',
+        valueBadgeColor: 'bg-amber-500 text-slate-900 font-black',
+        categoryTag: 'DCS & LOGIC',
+        symptomTH: 'ค่าแรงดันด้านจ่าย Discharge Pressure แกว่งขึ้นลงเป็นลูกคลื่น, สัญญาณโหลด HydroCOM ตอบสนองเร็ว/ช้าเกินไป',
+        symptomEN: 'Discharge pressure oscillating in stepless range, HydroCOM load demand responding with high overshoot',
+        causeTH: 'ค่า PID Tuning Parameters (Gain P, Integral Time I) ในตัวควบคุม PIC-4801103 แรงเกินไป, หรือมี Deadband แคบเกินไปในบล็อกสั่งการ SIM4.1',
+        causeEN: 'Overly aggressive PID parameters (high P-gain, low Reset time) on PIC-4801103 controller, or tight deadband in SIM4.1 interface',
+        actionTH: 'ปรับลด Proportional Gain (P) และเพิ่ม Integral Time (I) ใน PIC-4801103, ปรับค่า Dampening Filter ในตัวแปร SIM4.1 ให้สอดคล้องกับ Volume ถังพัก',
+        actionEN: 'Reduce Proportional Gain (P) and increase Integral Time (I) on PIC-4801103 controller, apply signal damping filter in SIM4.1 config',
+        ref: 'HOERBIGER Manual Section 8.1 - Tuning SIM4.1'
+      },
+      {
+        id: 'node_13',
+        tagID: 'SPLIT_RANGE_ERR',
+        category: 'dcs',
+        titleTH: '13. ความผิดปกติช่วงเปลี่ยนผ่าน Split-Range (HydroCOM vs Spillback PV)',
+        titleEN: '13. Split-Range Handover Fault (HydroCOM vs Spillback PV)',
+        valueBadge: 'ALARM: OVERLAP ERR',
+        valueBadgeColor: 'bg-amber-500 text-slate-900 font-black',
+        categoryTag: 'DCS & LOGIC',
+        symptomTH: 'เกิดการชนกันของสัญญาณควบคุมช่วงโหลด 30% ทำให้ Recycle Valve PV-4801605/704 เปิดซ้ำซ้อนกับ HydroCOM',
+        symptomEN: 'Control overlap at 30% load transition point causing Recycle Valve PV-4801605/704 to fight HydroCOM stepless control',
+        causeTH: 'ตารางการกำหนดค่า Split-Range ใน DCS ไม่ตรงสเปก ( HydroCOM ต้องทำงาน 30-100% ขณะที่ Spillback PV ทำงาน 0-30% ), บล็อก SELSPA/B ทำงานผิดพลาด',
+        causeEN: 'Mismatched Split-Range transfer table in DCS logic (HydroCOM 30-100% vs Spillback PV 0-30%), SELSPA/B selector block fault',
+        actionTH: 'ตรวจสอบจุดคาบเกี่ยว Split Range ใน DCS: ที่ 30% โหลด Spillback Valve ต้องปิดสนิท 100% และ HydroCOM เริ่มรับภาระที่ 30% โหลดต่อเนื่อง',
+        actionEN: 'Re-calibrate Split-Range function block in DCS: at 30% demand, Spillback valve must be 100% closed while HydroCOM takes over at minimum 30% load',
+        ref: 'IRPC 48K001A/B Split-Range Logic Diagram'
+      },
+      {
+        id: 'node_14',
+        tagID: 'N2_PRECHARGE_LOW',
+        category: 'hu',
+        titleTH: '14. แรงดันก๊าซ N2 ใน Diaphragm Accumulator ตกต่ำ (< 30 bar)',
+        titleEN: '14. N2 Gas Precharge Low in Diaphragm Accumulator (< 30 bar)',
+        valueBadge: 'ALARM: N2 < 30 bar',
+        valueBadgeColor: 'bg-amber-500 text-slate-900 font-black',
+        categoryTag: 'HYDRAULIC UNIT',
+        symptomTH: 'แรงดันน้ำมันไฮดรอลิกเกิดการกระพือตกวูบเป็นช่วงๆ (Pressure Pulsation) ขณะ Actuator ทำงานฉีดน้ำมัน',
+        symptomEN: 'Hydraulic pressure pulsation spikes during actuator opening cycles due to insufficient accumulator dampening',
+        causeTH: 'ก๊าซไนโตรเจน (N2) ในถังสะสมแรงดัน Diaphragm Cylinder (160 cm³) รั่วซึมตามกาลเวลา ทำให้แรงดัน N2 ต่ำกว่า 30 bar',
+        causeEN: 'Nitrogen gas (N2) leakage through accumulator charging valve over time, reducing precharge pressure below 30 bar spec',
+        actionTH: 'หยุดปั๊ม HU คลายแรงดันน้ำมันในระบบออกจนเป็น 0 bar จากนั้นใช้ N2 Charging Kit วัดและอัดก๊าซ N2 บริสุทธิ์เข้า Accumulator ให้ได้ 30 barG',
+        actionEN: 'Isolate and depressurize hydraulic system to 0 bar, connect N2 charging set, and recharge diaphragm accumulators with pure N2 to 30 barG',
+        ref: 'HOERBIGER Maintenance Manual Section 7.5'
+      },
+      {
+        id: 'node_15',
+        tagID: 'EPS_48V_FAIL',
+        category: 'ciu',
+        titleTH: '15. แรงดันไฟเลี้ยง EPS 48VDC จ่าย Actuator ตกต่ำหรือขาดหาย',
+        titleEN: '15. EPS 48VDC Actuator Power Supply Fault / Voltage Drop',
+        valueBadge: 'TRIP: EPS 48V FAIL',
+        valueBadgeColor: 'bg-rose-500 text-white',
+        categoryTag: 'CIU & COMMS',
+        symptomTH: 'ตู้ CIU แจ้งเตือน Actuator Power Fault, Actuator ทุกตัวไม่สามารถขยับเปิดวาล์วได้ ทำให้ระบบตัดเข้าสู่สภาวะ Error',
+        symptomEN: 'CIU panel reports Actuator Power Fault, all field actuators lose power, forcing CIU Error Relay to trip',
+        causeTH: 'ชุดจ่ายไฟ EPS (External Power Supply 48VDC / 500W) ชำรุด, เบรกเกอร์ MCB จ่ายไฟ 48V ทริป, หรือแรงดันปลายสาย Field Deck ตกเกินเกณฑ์เนื่องจากสายส่งยาวเกินไป',
+        causeEN: 'EPS 48VDC power supply unit failure, 48VDC output MCB tripped, or significant line voltage drop to field deck actuators',
+        actionTH: 'วัดแรงดันไฟ 48VDC ที่ขั้วต่อ Power Supply ในตู้ Instrument Cabinet และวัดแรงดันที่ขั้ว + และ - ในกล่อง Ex e Terminal Box ของ Actuator หน้างาน (ต้องไม่ต่ำกว่า 44VDC)',
+        actionEN: 'Measure 48VDC output voltage at EPS unit and at actuator field Ex e junction box terminals (+ and -); ensure voltage is >= 44VDC',
+        ref: 'HOERBIGER Wiring Map KX001268'
+      },
+      {
+        id: 'node_16',
+        tagID: 'CIU_WARN_ALM',
+        category: 'ciu',
+        titleTH: '16. สัญญาณ CIU Warning Relay เปิดวงจร (Warning Contact Open)',
+        titleEN: '16. CIU Warning Relay Contact Open (Warning Signal)',
+        valueBadge: 'ALARM: WARNING ACTIVE',
+        valueBadgeColor: 'bg-amber-500 text-slate-900 font-black',
+        categoryTag: 'CIU & COMMS',
+        symptomTH: 'รีเลย์ WA (Warning Contact) เปิดวงจร ส่งสัญญาณเตือนเข้า DCS แต่เครื่องจักรยังคงทำงานและควบคุมแบบ Stepless ได้ต่อเนื่อง',
+        symptomEN: 'WA Relay contact opens, triggering maintenance warning on DCS while stepless control continues normally',
+        causeTH: 'อุณหภูมิคอยล์ Actuator สูงเตือน, มีเซนเซอร์วัดค่า PT/TT ไฮดรอลิกเริ่มอ่านค่าเบี่ยงเบนออกนอกช่วงสเปกปกติ, หรือมีสัญญาณรบกวนในสายสื่อสาร RS-485 เล็กน้อย',
+        causeEN: 'Actuator temp high warning, hydraulic PT/TT sensor drift, or minor transient communication noise frames detected on RS-485 bus',
+        actionTH: 'ตรวจสอบหน้าจอวินิจฉัย Diagnostic หน้าตู้ CIU เพื่ออ่านรหัส Warning Code เฉพาะจุด จากนั้นเข้าตรวจสอบอุปกรณ์ประกอบตามรหัสแจ้งเตือนก่อนกลายเป็น Error Trip',
+        actionEN: 'Check CIU front display diagnostic menu to read specific Warning Code, inspect highlighted field sensor or component before fault escalates to Error Trip',
+        ref: 'HOERBIGER Manual Section 6.3.2'
+      }
+    ];
+
+    function renderKBCards(items) {
+      const container = document.getElementById('kbCardsContainer');
+      if (!container) return;
+
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-white rounded-xl border border-slate-200">
+            <i class="fas fa-search-minus text-3xl text-slate-400 mb-2"></i>
+            <p class="text-xs font-bold text-slate-600">ไม่พบข้อมูลที่ตรงกับการค้นหา / No matching records found</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 hover:shadow-md transition-shadow">
+          <!-- Card Header -->
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="bg-slate-900 text-white px-2.5 py-1 rounded text-xs font-mono font-bold tracking-wider uppercase">
+                ${item.tagID}
+              </span>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                ${item.categoryTag}
+              </span>
+            </div>
+            <div>
+              <span class="${item.valueBadgeColor} px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide">
+                ${item.valueBadge}
+              </span>
+            </div>
+          </div>
+
+          <!-- Title -->
+          <h3 class="font-bold text-slate-800 text-sm sm:text-base mb-3 leading-snug">
+            ${currentLang === 'TH' ? item.titleTH : item.titleEN}
+          </h3>
+
+          <!-- 3-Column Symptom / Cause / Action Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs sm:text-sm">
+            <!-- 1. Symptom -->
+            <div class="bg-rose-50/70 border border-rose-100 rounded-lg p-3">
+              <div class="font-bold text-rose-800 mb-1 flex items-center gap-1.5">
+                <i class="fas fa-exclamation-triangle text-rose-600"></i>
+                <span>${currentLang === 'TH' ? 'Symptom (อาการ)' : 'Symptom'}</span>
+              </div>
+              <p class="text-slate-700 leading-relaxed text-xs">
+                ${currentLang === 'TH' ? item.symptomTH : item.symptomEN}
+              </p>
+            </div>
+
+            <!-- 2. Cause -->
+            <div class="bg-amber-50/70 border border-amber-100 rounded-lg p-3">
+              <div class="font-bold text-amber-900 mb-1 flex items-center gap-1.5">
+                <i class="fas fa-search text-amber-600"></i>
+                <span>${currentLang === 'TH' ? 'Cause (สาเหตุ)' : 'Cause'}</span>
+              </div>
+              <p class="text-slate-700 leading-relaxed text-xs">
+                ${currentLang === 'TH' ? item.causeTH : item.causeEN}
+              </p>
+            </div>
+
+            <!-- 3. Action -->
+            <div class="bg-sky-50/70 border border-sky-100 rounded-lg p-3">
+              <div class="font-bold text-sky-900 mb-1 flex items-center gap-1.5">
+                <i class="fas fa-tools text-sky-600"></i>
+                <span>${currentLang === 'TH' ? 'Action (แนวทางแก้ไข)' : 'Action'}</span>
+              </div>
+              <p class="text-slate-700 leading-relaxed text-xs mb-2">
+                ${currentLang === 'TH' ? item.actionTH : item.actionEN}
+              </p>
+              <div class="text-[11px] font-medium text-sky-700/80 border-t border-sky-200/50 pt-1.5 mt-2 flex items-center gap-1">
+                <i class="fas fa-book text-sky-500"></i>
+                <span>Ref: ${item.ref}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Filter Logic by Category
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.classList.remove('active', 'bg-indigo-600', 'text-white');
+        btn.classList.add('bg-slate-100', 'text-slate-700');
+      });
+
+      const activeBtn = document.getElementById(`filter-${cat}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+        activeBtn.classList.add('active', 'bg-indigo-600', 'text-white');
+      }
+
+      applyFilters();
+    }
+
+    // Search Logic
+    function handleSearch() {
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+      
+      let filtered = kbData.filter(item => {
+        const matchesCategory = (currentCategory === 'all') || (item.category === currentCategory);
+        const matchesSearch = !searchVal || 
+          item.tagID.toLowerCase().includes(searchVal) ||
+          item.titleTH.toLowerCase().includes(searchVal) ||
+          item.titleEN.toLowerCase().includes(searchVal) ||
+          item.symptomTH.toLowerCase().includes(searchVal) ||
+          item.causeTH.toLowerCase().includes(searchVal) ||
+          item.actionTH.toLowerCase().includes(searchVal);
+
+        return matchesCategory && matchesSearch;
+      });
+
+      renderKBCards(filtered);
+    }
+
+    // Tab Switching Function
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+        btn.classList.add('text-slate-600');
+      });
+
+      const activeContent = document.getElementById(tabId);
+      if (activeContent) activeContent.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+        activeBtn.classList.remove('text-slate-600');
+      }
+    }
+
+    // Language Toggle
+    function toggleLanguage() {
+      currentLang = (currentLang === 'TH') ? 'EN' : 'TH';
+      applyFilters();
+    }
+
+    // Health Calculator Logic
+    function calculateHealth() {
+      const press = parseFloat(document.getElementById('calc-press').value) || 0;
+      const temp = parseFloat(document.getElementById('calc-temp').value) || 0;
+      const rod = parseFloat(document.getElementById('calc-rod').value) || 0;
+      const ma = parseFloat(document.getElementById('calc-ma').value) || 0;
+
+      const pressElem = document.getElementById('res-press-status');
+      const tempElem = document.getElementById('res-temp-status');
+      const rodElem = document.getElementById('res-rod-status');
+      const capElem = document.getElementById('res-capacity');
+      const overallBox = document.getElementById('overall-health-box');
+      const overallText = document.getElementById('overall-health-text');
+
+      let isHealthy = true;
+
+      // Pressure Evaluation
+      if (press < 50) {
+        pressElem.textContent = `TRIP LOW-LOW (${press} barG)`;
+        pressElem.className = 'font-bold text-rose-400';
+        isHealthy = false;
+      } else if (press < 60) {
+        pressElem.textContent = `ALARM LOW (${press} barG)`;
+        pressElem.className = 'font-bold text-amber-400';
+      } else {
+        pressElem.textContent = `NORMAL (${press} barG)`;
+        pressElem.className = 'font-bold text-emerald-400';
+      }
+
+      // Temp Evaluation
+      if (temp > 80) {
+        tempElem.textContent = `TRIP HIGH-HIGH (${temp} °C)`;
+        tempElem.className = 'font-bold text-rose-400';
+        isHealthy = false;
+      } else if (temp > 70) {
+        tempElem.textContent = `ALARM HIGH (${temp} °C)`;
+        tempElem.className = 'font-bold text-amber-400';
+      } else {
+        tempElem.textContent = `NORMAL (${temp} °C)`;
+        tempElem.className = 'font-bold text-emerald-400';
+      }
+
+      // Rod Gap
+      if (rod < 16.0 || rod > 20.0) {
+        rodElem.textContent = `OUT OF SPEC (${rod} mm)`;
+        rodElem.className = 'font-bold text-rose-400';
+        isHealthy = false;
+      } else {
+        rodElem.textContent = `PASS (${rod} mm)`;
+        rodElem.className = 'font-bold text-emerald-400';
+      }
+
+      // 4-20mA to Stepless Capacity Conversion
+      let capacity = 0;
+      if (ma <= 4.0) capacity = 0;
+      else if (ma >= 20.0) capacity = 100;
+      else {
+        capacity = ((ma - 4.0) / 16.0) * 100.0;
+      }
+      capElem.textContent = `${capacity.toFixed(1)} % Load`;
+
+      // Overall Health Box
+      if (!isHealthy) {
+        overallBox.className = 'mt-6 p-3 rounded-lg bg-rose-900/60 border border-rose-700 text-center';
+        overallText.className = 'text-sm font-black text-rose-400 mt-0.5';
+        overallText.textContent = 'FAULT CONDITION DETECTED / TRIP ACTIVE';
+      } else {
+        overallBox.className = 'mt-6 p-3 rounded-lg bg-emerald-900/60 border border-emerald-700 text-center';
+        overallText.className = 'text-sm font-black text-emerald-400 mt-0.5';
+        overallText.textContent = 'READY FOR STEPLESS OPERATION';
+      }
+    }
+
+    // Modal Control Functions
+    function openHotRestartModal() {
+      document.getElementById('hotRestartModal').classList.remove('hidden');
+    }
+
+    function closeHotRestartModal() {
+      document.getElementById('hotRestartModal').classList.add('hidden');
+    }
+
+    function openTerminalModal() {
+      document.getElementById('terminalModal').classList.remove('hidden');
+    }
+
+    function closeTerminalModal() {
+      document.getElementById('terminalModal').classList.add('hidden');
+    }
+
+    // Initialize Page on Window Load
+    window.onload = function() {
+      renderKBCards(kbData);
+      calculateHealth();
+    };
+  </script>
+</body>
+</html>
