@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Narrative & Diagnostic System - Compressor 32K001A/B</title>
+    <!-- Tailwind CSS & DaisyUI CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for Process & Performance Curves -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom scrollbar styling */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .state-active {
+            box-shadow: 0 0 0 2px #16a34a, 0 4px 12px rgba(22, 163, 74, 0.2);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 p-3 md:p-6 text-slate-800">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Main Application Header -->
+        <header class="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white p-5 md:p-6 rounded-2xl shadow-xl border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-emerald-500/20 p-3.5 rounded-2xl border border-emerald-400/30 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner">
+                    <i class="fa-solid fa-compress text-4xl text-emerald-400"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <div class="join border border-emerald-500/30 rounded-lg overflow-hidden">
+                            <button id="header-btn-32K001A" onclick="setGlobalUnit('32K001A')" class="join-item btn btn-xs bg-emerald-500 text-slate-950 font-bold border-0">32K001A</button>
+                            <button id="header-btn-32K001B" onclick="setGlobalUnit('32K001B')" class="join-item btn btn-xs bg-slate-800 text-slate-300 border-0 hover:bg-slate-700">32K001B</button>
+                        </div>
+                        <span id="header-tag-badge" class="badge badge-accent font-mono text-xs font-bold shadow-sm">TAG: 32K001A</span>
+                        <span class="badge badge-neutral text-xs font-mono">WET GAS COMPRESSOR (DCC / PLANT 32)</span>
+                        <span class="badge badge-outline text-emerald-300 text-xs">DRIVER: ELECTRIC MOTOR (2,960 RPM)</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-bold mt-1.5 flex items-center gap-2">
+                        Control Narrative & Diagnostic System: Compressor <span id="header-unit-title">32K001A</span>
+                    </h1>
+                    <p class="text-emerald-200/80 text-xs md:text-sm mt-0.5">ระบบวิเคราะห์ตรรกะนิรภัย ลำดับขั้นเดินเครื่อง และคู่มือแก้ไขความผิดปกติสำหรับหน่วยผลิต Refinery Unit 32</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 self-start lg:self-center flex-wrap">
+                <button onclick="switchTab('alarms')" class="btn btn-sm bg-white/10 hover:bg-white/20 text-white border-0 shadow-sm">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Troubleshooting KB
+                </button>
+                <button onclick="switchTab('subsystems')" class="btn btn-sm bg-emerald-600 hover:bg-emerald-700 text-white border-0 shadow-sm">
+                    <i class="fa-solid fa-sliders"></i> Subsystems & Curves
+                </button>
+                <button onclick="switchTab('wizard')" class="btn btn-sm bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold border-0 shadow-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Smart Wizard
+                </button>
+                <button onclick="window.print()" class="btn btn-sm bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">
+                    <i class="fa-solid fa-print"></i> พิมพ์
+                </button>
+            </div>
+                        <a href="main.html" class="btn btn-xl bg-amber-700 hover:bg-amber-800 text-white border-0 shadow-sm">
+                    Back to Home
+            </a>
+        </header>
+
+        <!-- Key Architecture Overview Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-emerald-300 transition">
+                <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl">
+                    <i class="fa-solid fa-gears text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Compressor Body & Type</div>
+                    <div class="text-sm font-bold text-slate-800">UNION / HHS 3x4x13A</div>
+                    <div class="text-xs text-emerald-600 font-semibold mt-0.5">Horiz. Centrifugal Stage-2</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-blue-300 transition">
+                <div class="p-3 bg-blue-50 text-blue-700 rounded-xl">
+                    <i class="fa-solid fa-gauge-high text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Operating Pressure Range</div>
+                    <div id="card-press-range" class="text-sm font-bold text-slate-800">Suction 3.4 - Discharge 9.5</div>
+                    <div class="text-xs text-blue-600 font-semibold mt-0.5">kg/cm²g Design Limits</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-red-300 transition">
+                <div class="p-3 bg-red-50 text-red-700 rounded-xl">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Interlock Safety Limit</div>
+                    <div class="text-sm font-bold text-slate-800">PSHH: 9.50 / PSLL: 2.20</div>
+                    <div class="text-xs text-red-600 font-semibold mt-0.5">kg/cm²g Trip Interlocks</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3 hover:border-cyan-300 transition">
+                <div class="p-3 bg-cyan-50 text-cyan-700 rounded-xl">
+                    <i class="fa-solid fa-shield-cat text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-medium">Mechanical Seal System</div>
+                    <div class="text-sm font-bold text-slate-800">John Crane 715 BSARX</div>
+                    <div class="text-xs text-cyan-600 font-semibold mt-0.5">API Plan 21 & Plan 62 (N2 Flush)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation Bar -->
+        <div class="flex border-b border-slate-200 bg-white rounded-2xl p-1.5 shadow-sm overflow-x-auto space-x-1 custom-scrollbar">
+            <button id="tab-btn-alarms" onclick="switchTab('alarms')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-emerald-800 bg-emerald-50 border border-emerald-200">
+                <i class="fa-solid fa-list-check mr-1.5"></i> คู่มือตรวจสอบ Alarm (Troubleshooting KB)
+            </button>
+            <button id="tab-btn-sequence" onclick="switchTab('sequence')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-diagram-next mr-1.5"></i> ลำดับขั้นเดินเครื่อง & Permissives (9 States)
+            </button>
+            <button id="tab-btn-logic" onclick="switchTab('logic')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-network-wired mr-1.5"></i> วิเคราะห์ตรรกะ (Logic Diagram)
+            </button>
+            <button id="tab-btn-ce" onclick="switchTab('ce')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-table-cells mr-1.5"></i> เมทริกซ์ C&E (Cause & Effect)
+            </button>
+            <button id="tab-btn-subsystems" onclick="switchTab('subsystems')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-sliders mr-1.5"></i> ระบบย่อย & Performance Curves
+            </button>
+            <button id="tab-btn-wizard" onclick="switchTab('wizard')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> ระบบวินิจฉัยด่วน (Diagnostic Wizard)
+            </button>
+            <button id="tab-btn-tags" onclick="switchTab('tags')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-tags mr-1.5"></i> ดัชนีแท็กเครื่องมือวัด (Instrument Index)
+            </button>
+            <button id="tab-btn-sop" onclick="switchTab('sop')" class="py-2.5 px-4 text-xs md:text-sm font-bold rounded-xl transition shrink-0 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-screwdriver-wrench mr-1.5"></i> Maintenance SOP & Inspection
+            </button>
+        </div>
+
+        <!-- ================= TAB 1: ALARM KB ================= -->
+        <div id="tab-content-alarms" class="space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="flex items-center gap-1.5 flex-wrap w-full md:w-auto">
+                    <button id="filter-btn-ALL" onclick="setFilterCategory('ALL')" class="filter-cat-btn btn btn-xs md:btn-sm bg-emerald-800 text-white rounded-xl border-0 shadow-sm">ทั้งหมด (All)</button>
+                    <button id="filter-btn-TRIP" onclick="setFilterCategory('TRIP')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> Trips & Interlocks</button>
+                    <button id="filter-btn-PRESS" onclick="setFilterCategory('PRESS')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-gauge-high text-blue-500 mr-1"></i> Suction/Discharge Press</button>
+                    <button id="filter-btn-LUBE_OIL" onclick="setFilterCategory('LUBE_OIL')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-oil-can text-amber-500 mr-1"></i> Lube Oil System</button>
+                    <button id="filter-btn-VIB_TEMP" onclick="setFilterCategory('VIB_TEMP')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-wave-square text-purple-500 mr-1"></i> Vibration & Temp</button>
+                    <button id="filter-btn-SEAL" onclick="setFilterCategory('SEAL')" class="filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0"><i class="fa-solid fa-shield-halved text-cyan-500 mr-1"></i> Seal & Auxiliary</button>
+                </div>
+                <div class="relative w-full md:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="alarmSearch" onkeyup="filterAlarms()" placeholder="ค้นหา Tag No., สัญญาณเตือน, อาการ..." class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                </div>
+            </div>
+            <div id="alarmCardsContainer" class="space-y-4"></div>
+        </div>
+
+        <!-- ================= TAB 2: SEQUENCE LOGIC (9 STATES) ================= -->
+        <div id="tab-content-sequence" class="hidden space-y-6">
+            <div id="startPermissiveStatusBanner" class="p-4 rounded-2xl border border-emerald-300 bg-emerald-50 text-emerald-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div id="permissiveStatusDot" class="w-4 h-4 rounded-full bg-emerald-500 shadow shrink-0"></div>
+                    <div>
+                        <h3 id="permissiveStatusTitle" class="font-bold text-sm md:text-base">COMPRESSOR 32K001 START PERMISSIVE SATISFIED</h3>
+                        <p id="permissiveStatusSub" class="text-xs text-emerald-800">เงื่อนไขทั้ง 12 ข้อสมบูรณ์ - เครื่องจักรพร้อมทำการกดสตาร์ท (Ready to Start)</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-end md:self-center">
+                    <span id="permissiveBadge" class="badge bg-emerald-600 text-white font-mono text-xs font-bold py-2 px-3 border-0">START PERMISSIVE = SATISFIED</span>
+                    <button onclick="checkAllPermissives()" class="btn btn-xs bg-emerald-700 hover:bg-emerald-800 text-white border-0 font-bold">
+                        <i class="fa-solid fa-check-double mr-1"></i> Reset All Permissives
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-emerald-900 flex items-center gap-2">
+                            <i class="fa-solid fa-diagram-next text-emerald-600"></i> ลำดับขั้นตอนการเดินเครื่องจักร 9 สถานะ (Sequence States 0 to 8)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">กดเลือกสถานะเพื่อดูสภาวะมอเตอร์ไดรฟ์, แรงดัน Suction/Discharge และสถานะวาล์วระบาย/หมุนวน</p>
+                    </div>
+                    <span id="activeStateBadge" class="badge badge-primary font-mono text-xs font-bold bg-emerald-600 border-0">Active State: State 1 (READY TO START)</span>
+                </div>
+                <div id="stateButtonsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2"></div>
+                <div id="stateDetailBox" class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-4"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-emerald-600"></i> เงื่อนไขอนุญาตการเดินเครื่อง 12 ข้อ (Start Permissives Logic Checklist)
+                        </h2>
+                    </div>
+                </div>
+                <div id="permissivesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: LOGIC DIAGRAM ================= -->
+        <div id="tab-content-logic" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-network-wired text-emerald-600"></i> วิเคราะห์โครงสร้างตรรกะแบบรายละเอียด (Logic Diagram Explorer)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">อ้างอิงแบบวิศวกรรม Process & Instrumentation Diagrams (P&ID 4-122 529.219 / 573.587)</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button id="logic-dwg-DWG32K01" onclick="switchLogicDiagram('DWG32K01')" class="logic-dwg-btn btn btn-xs bg-emerald-800 text-white rounded-lg">DWG 32K-01: Start Permissive</button>
+                        <button id="logic-dwg-DWG32K02" onclick="switchLogicDiagram('DWG32K02')" class="logic-dwg-btn btn btn-xs bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg">DWG 32K-02: Discharge HH & Suction LL Trip</button>
+                        <button id="logic-dwg-DWG32K03" onclick="switchLogicDiagram('DWG32K03')" class="logic-dwg-btn btn btn-xs bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg">DWG 32K-03: Lube Oil Auto-Start Logic</button>
+                        <button id="logic-dwg-DWG32K04" onclick="switchLogicDiagram('DWG32K04')" class="logic-dwg-btn btn btn-xs bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg">DWG 32K-04: Vibration & Motor Winding Protection</button>
+                    </div>
+                </div>
+                <div id="logicDiagramContainer" class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs space-y-4 shadow-inner min-h-[380px]"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: CAUSE & EFFECT MATRIX ================= -->
+        <div id="tab-content-ce" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-table-cells text-emerald-600"></i> ตารางเมทริกซ์สาเหตุและผลลัพธ์ (Cause & Effect Matrix Table)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">การจับคู่เหตุการณ์ขัดข้อง (Cause Inputs) กับผลการตอบสนองเชิงความปลอดภัย (Safety Output Actions)</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <button id="ce-btn-ALL" onclick="filterCEMatrix('ALL')" class="ce-cat-btn btn btn-xs bg-emerald-800 text-white rounded-lg">ทั้งหมด</button>
+                        <button id="ce-btn-TRIP" onclick="filterCEMatrix('TRIP')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">High-High / Low-Low Trip</button>
+                        <button id="ce-btn-PRESS" onclick="filterCEMatrix('PRESS')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">Suction/Discharge</button>
+                        <button id="ce-btn-LUBE" onclick="filterCEMatrix('LUBE')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">Lube Oil System</button>
+                        <button id="ce-btn-VIB" onclick="filterCEMatrix('VIB')" class="ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg">Vibration & Motor Temp</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="table table-compact w-full text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="p-2.5 whitespace-nowrap">CAUSE DESCRIPTION</th>
+                                <th class="p-2.5 whitespace-nowrap">TAG NO.</th>
+                                <th class="p-2.5 whitespace-nowrap">VOTING / LOGIC</th>
+                                <th class="p-2.5 whitespace-nowrap">SETPOINT</th>
+                                <th class="p-2.5 text-center bg-red-50 text-red-800 whitespace-nowrap">TRIP MOTOR</th>
+                                <th class="p-2.5 text-center bg-amber-50 text-amber-800 whitespace-nowrap">ALARM ONLY</th>
+                                <th class="p-2.5 text-center bg-blue-50 text-blue-800 whitespace-nowrap">START AUX PUMP</th>
+                                <th class="p-2.5 text-center bg-emerald-50 text-emerald-800 whitespace-nowrap">ISOLATE GAS</th>
+                                <th class="p-2.5 text-center bg-slate-200 text-slate-800 whitespace-nowrap">DCS ANNUNCIATOR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ceMatrixTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: SUBSYSTEM INSPECTOR ================= -->
+        <div id="tab-content-subsystems" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <!-- 4 Top Cards Bar -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <button id="sub-btn-lube" onclick="selectSubsystem('lube')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-emerald-50/80 border-emerald-300 shadow-sm">
+                        <div class="p-3 bg-emerald-600 text-white rounded-xl shadow-sm">
+                            <i class="fa-solid fa-oil-can text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-emerald-950">Lube Oil System</div>
+                            <div class="text-[11px] text-emerald-700 font-medium mt-0.5">Turbine Oil ISO VG 46</div>
+                        </div>
+                    </button>
+
+                    <button id="sub-btn-seal" onclick="selectSubsystem('seal')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-cyan-300 hover:bg-cyan-50/30">
+                        <div class="p-3 bg-cyan-100 text-cyan-700 rounded-xl">
+                            <i class="fa-solid fa-shield-halved text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Mechanical Seal & API Plan</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">John Crane 715 Plan 21/62</div>
+                        </div>
+                    </button>
+
+                    <button id="sub-btn-pds" onclick="selectSubsystem('pds')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30">
+                        <div class="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Pressure & Flow Curves</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">Suction vs Discharge Curve</div>
+                        </div>
+                    </button>
+
+                    <button id="sub-btn-driver" onclick="selectSubsystem('driver')" class="subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-amber-300 hover:bg-amber-50/30">
+                        <div class="p-3 bg-amber-100 text-amber-700 rounded-xl">
+                            <i class="fa-solid fa-bolt text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Driver & Motor Protection</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">2,960 RPM / Winding Temp</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Interactive Subsystem Display Area -->
+                <div id="subsystemDisplayArea" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 6: DIAGNOSTIC WIZARD ================= -->
+        <div id="tab-content-wizard" class="hidden space-y-6">
+            <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <!-- Header Title -->
+                <div class="border-b border-slate-200 pb-3">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-500 text-xl"></i>
+                        ระบบวิเคราะห์ปัญหาอัจฉริยะ (Interactive Diagnostic Wizard)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">เลือกอาการหรือสัญญาณขัดข้องที่พบของ Compressor 32K001A/B เพื่อทำตามขั้นตอนวินิจฉัยทีละขั้นตอน (Guided Diagnostic Decision Tree)</p>
+                </div>
+
+                <!-- 6 Scenario Selection Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 1. Discharge Press HH Trip -->
+                    <button onclick="startWizardFlow('DISCHARGE_HH')" class="wizard-scenario-card p-4 rounded-2xl border border-red-200 bg-red-50/50 hover:bg-red-50 hover:border-red-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-red-500 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-gauge-high text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-red-950">Discharge High-High Trip</div>
+                            <div class="text-xs font-mono text-red-700 mt-0.5"><span class="tag-label-inst">PSHH3271A</span> > 9.50 kg/cm²g</div>
+                        </div>
+                    </button>
+
+                    <!-- 2. Suction Press Low-Low Trip -->
+                    <button onclick="startWizardFlow('SUCTION_LL')" class="wizard-scenario-card p-4 rounded-2xl border border-amber-200 bg-amber-50/50 hover:bg-amber-50 hover:border-amber-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-amber-500 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-arrow-down-short-wide text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-amber-950">Suction Low-Low Trip</div>
+                            <div class="text-xs font-mono text-amber-700 mt-0.5"><span class="tag-label-inst">PSLL3271A</span> < 2.20 kg/cm²g</div>
+                        </div>
+                    </button>
+
+                    <!-- 3. Vibration Switch HH Trip -->
+                    <button onclick="startWizardFlow('VIBRATION_HH')" class="wizard-scenario-card p-4 rounded-2xl border border-purple-200 bg-purple-50/50 hover:bg-purple-50 hover:border-purple-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-purple-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-wave-square text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-purple-950">Motionwork Vibration Trip</div>
+                            <div class="text-xs font-mono text-purple-700 mt-0.5">VSHH3241 > 9.0 g (PK-PK)</div>
+                        </div>
+                    </button>
+
+                    <!-- 4. Lube Oil Press Low -->
+                    <button onclick="startWizardFlow('LUBE_LOW')" class="wizard-scenario-card p-4 rounded-2xl border border-blue-200 bg-blue-50/50 hover:bg-blue-50 hover:border-blue-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-blue-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-oil-can text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-blue-950">Lube Oil Supply Press Low</div>
+                            <div class="text-xs font-mono text-blue-700 mt-0.5"><span class="tag-label-inst">PSL3272A</span> / <span class="tag-label-inst">PSLL3272A</span></div>
+                        </div>
+                    </button>
+
+                    <!-- 5. Motor Winding Temp High -->
+                    <button onclick="startWizardFlow('MOTOR_TEMP')" class="wizard-scenario-card p-4 rounded-2xl border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 hover:border-indigo-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-indigo-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-temperature-full text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-indigo-950">Motor Winding Temp HH Trip</div>
+                            <div class="text-xs font-mono text-indigo-700 mt-0.5"><span class="tag-label-inst">TE3268A</span> > 145°C</div>
+                        </div>
+                    </button>
+
+                    <!-- 6. Mechanical Seal N2 Scavenging Low -->
+                    <button onclick="startWizardFlow('SEAL_FLOW_LOW')" class="wizard-scenario-card p-4 rounded-2xl border border-teal-200 bg-teal-50/50 hover:bg-teal-50 hover:border-teal-300 transition text-left flex items-start gap-3.5 shadow-sm">
+                        <div class="p-3 bg-teal-600 text-white rounded-2xl shrink-0 shadow-sm">
+                            <i class="fa-solid fa-wind text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-teal-950">Scavenging N2 Gas Supply Low</div>
+                            <div class="text-xs font-mono text-teal-700 mt-0.5"><span class="tag-label-inst">FI3251A</span> < 40 L/min</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Guided Decision Flow Box Container -->
+                <div id="wizardFlowBox" class="p-5 bg-emerald-50/30 rounded-2xl border border-emerald-200 space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 7: INSTRUMENT TAG INDEX ================= -->
+        <div id="tab-content-tags" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-3 gap-2">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-tags text-emerald-600"></i> ดัชนีเครื่องมือวัดและแบบอ้างอิง (<span id="tag-index-unit-title">32K001A</span> Complete Instrument Tag Index)
+                        </h2>
+                    </div>
+                    <div class="relative w-full md:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="tagIndexSearch" onkeyup="filterTagIndex()" placeholder="ค้นหา Tag No., ชนิดสัญญาณ..." class="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="table table-xs table-zebra w-full">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700">
+                                <th>TAG NO.</th>
+                                <th>TYPE & CATEGORY</th>
+                                <th>SERVICE / LOCATION</th>
+                                <th>SCALE RANGE</th>
+                                <th>OPERATING RANGE</th>
+                                <th>INTERLOCK / TRIP</th>
+                                <th>MANUFACTURER & MODEL</th>
+                                <th>DRAWING REF</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tagIndexTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 8: MAINTENANCE SOP ================= -->
+        <div id="tab-content-sop" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="border-b border-slate-200 pb-3 flex justify-between items-center">
+                    <h2 class="text-base font-bold text-emerald-900 flex items-center gap-2">
+                        <i class="fa-solid fa-screwdriver-wrench text-emerald-600"></i> ขั้นตอนการบำรุงรักษาและการตรวจสอบประจำวัน (Standard Operating Procedure)
+                    </h2>
+                    <span class="badge badge-warning text-xs font-mono font-bold">REFINERY PLANT 32 SAFETY CRITICAL</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
+                        <div class="flex items-center gap-2 text-amber-900 font-bold text-xs"><i class="fa-solid fa-circle-exclamation text-amber-600"></i> การตรวจสอบประจำวัน (Daily Route Check)</div>
+                        <ul class="text-[11px] text-amber-800 space-y-1 list-disc pl-4">
+                            <li>ตรวจสอบระดับน้ำมันหล่อลื่นในถังพัก (Lube Oil Reservoir Gauge)</li>
+                            <li>เช็คความต่างศักย์แรงดันกรองน้ำมันและกรอง N2 Flush</li>
+                            <li>สุ่มวัดค่าความสั่นสะเทือน (Vibration Switch Check)</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
+                        <div class="flex items-center gap-2 text-blue-900 font-bold text-xs"><i class="fa-solid fa-list-check text-blue-600"></i> ขั้นตอนการเปลี่ยนชุดกรอง Lube Oil Duplex Filter</div>
+                        <ol class="text-[11px] text-blue-800 space-y-1 list-decimal pl-4">
+                            <li>ค่อยๆ โยกคันเลื่อน Equalizing Valve เพื่อปรับแรงดันทั้งสองฝั่งให้เท่ากัน</li>
+                            <li>หมุน Changeover Valve ไปยังกรองฝั่งสแตนด์บายอย่างช้าๆ</li>
+                            <li>ทำการ Drain และถอดทำความสะอาดไส้กรองฝั่งเดิม</li>
+                        </ol>
+                    </div>
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+                        <div class="flex items-center gap-2 text-emerald-900 font-bold text-xs"><i class="fa-solid fa-check-double text-emerald-600"></i> การทดสอบสวิตช์ตัดการทำงาน (Trip Function Test)</div>
+                        <ul class="text-[11px] text-emerald-800 space-y-1 list-disc pl-4">
+                            <li>การทดสอบ Pressure Switch PSL3272A / PSLL3272A ต้องใช้ Manifold Valve บายพาส</li>
+                            <li>ตรวจสอบสัญญาณเตือนบน DCS และตู้ควบคุมหลักก่อน Reset</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <footer class="mt-8 pb-8 text-center text-xs font-medium text-slate-400 border-t border-slate-200 pt-4">
+            &copy; 2026 Reliability Engineering Division — Wet Gas Compressor 32K001A/B Standard Control & Diagnostic System
+        </footer>
+
+    </div>
+
+    <!-- ================= APPLICATION JAVASCRIPT ================= -->
+    <script>
+        // Global State Store for Unit A/B and active tabs
+        let currentUnit = '32K001A';
+        let currentAlarmCategory = 'ALL';
+        let currentCECategory = 'ALL';
+        let activeLogicDwg = 'DWG32K01';
+        let activeSubsystem = 'lube';
+        let currentActiveSequenceState = 1;
+
+        // 1. Alarm Knowledge Base for 32K001A/B
+        const ALARM_DATABASE = [
+            {
+                tag: "PSHH3271A",
+                name: "Discharge High-High Pressure Trip",
+                category: "TRIP",
+                setpoint: "9.50 kg/cm²g",
+                deadband: "0.2 kg/cm²g",
+                symptom: "มอเตอร์ไดรฟ์ตัดการทำงานทันที, วาล์วไอโซเลทปิด, สัญญาณเตือน Trip โชว์บน DCS",
+                cause: "ท่อ Discharge อุดตัน, วาล์วด้านส่งถูกปิดผิดพลาด หรือภาระป้อนก๊าซเพิ่มขึ้นรวดเร็วเกินพิกัด",
+                checks: ["เช็คค่าแรงดันจาก PG3202A/B", "ตรวจตำแหน่งวาล์วด้านส่ง Discharge Line", "เช็คประวัติแรงดันจาก DCS Trend"],
+                action: "ตรวจสอบจุดอุดตันในระบบส่งก๊าซ, ทำการปลดล็อค Reset Interlock ที่ตู้ควบคุมก่อนสตาร์ทใหม่"
+            },
+            {
+                tag: "PSLL3271A",
+                name: "Suction Low-Low Pressure Trip",
+                category: "TRIP",
+                setpoint: "2.20 kg/cm²g",
+                deadband: "0.15 kg/cm²g",
+                symptom: "มอเตอร์ไดรฟ์ตัดการทำงานทันที เพื่อป้องกันสภาวะ Suction Vacuum ในระบบ",
+                cause: "ปริมาณก๊าซเปียกจากหน่วยผลิต DCC ตกต่ำกระทันหัน หรือวาล์วด้าน Suction ปิด",
+                checks: ["เช็คค่าแรงดันทางเข้าจาก PG3201A/B", "ตรวจสอบระบบจ่ายก๊าซต้นทางจาก DCC Plant"],
+                action: "ปรับความสมดุลก๊าซเปียกต้นทางให้กลับสู่สภาวะปกติ (> 3.4 kg/cm²g) แล้วกด Reset Interlock"
+            },
+            {
+                tag: "VSHH3241",
+                name: "Motionwork Vibration Switch HH Trip",
+                category: "TRIP",
+                setpoint: "9.0 g (PK-PK)",
+                deadband: "Direct Mechanical Latch",
+                symptom: "คอมเพรสเซอร์ ทริปหยุดทำงานทันทีจากการสั่นสะเทือนรุนแรง",
+                cause: "เกิด Unbalance บนโรเตอร์, Bearing ชำรุดแตกหัก หรือ Alignment คลาดเคลื่อน",
+                checks: ["เช็คสวิตช์ Robertshaw 366 A0", "ตรวจสอบสภาพแบริ่ง DE 7314 BE และ NDE 6215 C3"],
+                action: "ให้ทีม Reliability ทำการวัด Spectrum ความสั่นสะเทือนและแก้ไขทางกลก่อน Reset"
+            },
+            {
+                tag: "PSLL3272A",
+                name: "Lube Oil Pressure Low-Low Trip",
+                category: "TRIP",
+                setpoint: "1.60 kg/cm²g",
+                deadband: "0.1 kg/cm²g",
+                symptom: "มอเตอร์ไดรฟ์ตัดการทำงานทันทีเพื่อป้องกัน Bearing ไหม้ชำรุด",
+                cause: "ปั๊มน้ำมันหล่อลื่นหลักและปั๊มสำรองล้มเหลว หรือไส้กรอง Lube Oil อุดตันรุนแรง",
+                checks: ["เช็คแรงดัน Lube Oil จาก PG3209A/B", "ตรวจสอบการทำงานของ Auxiliary Lube Oil Pump"],
+                action: "ตรวจสอบสาเหตุน้ำมันหล่อลื่นตกต่ำ เปลี่ยนไส้กรอง Duplex Filter แล้วกด Reset"
+            },
+            {
+                tag: "PSH3271A",
+                name: "Discharge High Pressure Alarm",
+                category: "PRESS",
+                setpoint: "8.40 kg/cm²g",
+                deadband: "0.2 kg/cm²g",
+                symptom: "สัญญาณเตือน Pre-Alarm บน DCS ก่อนถึงจุด HH Trip",
+                cause: "ความดันด้านส่งเริ่มสูงขึ้นจากภาระปลายทางเพิ่มขึ้น",
+                checks: ["เช็คค่า PG3202A/B", "เช็ควาล์วควบคุมแรงดันปลายทาง"],
+                action: "ปรับลดอัตราการป้อนก๊าซหรือเปิดวาล์วบายพาสหมุนวนก๊าซ"
+            },
+            {
+                tag: "PSL3271A",
+                name: "Suction Low Pressure Alarm",
+                category: "PRESS",
+                setpoint: "2.80 kg/cm²g",
+                deadband: "0.1 kg/cm²g",
+                symptom: "สัญญาณเตือน Pre-Alarm แรงดันทางเข้าตกต่ำบน DCS",
+                cause: "อัตราการจ่ายก๊าซจากหน่วยผลิต DCC ลดลง",
+                checks: ["เช็คแรงดัน PG3201A/B", "เช็คสถานะการทำงานของยูนิตต้นทาง"],
+                action: "ประสานงานห้องควบคุม DCC เพื่อรักษาแรงดันทางเข้าให้อยู่ช่วง 3.4 - 4.67 kg/cm²g"
+            },
+            {
+                tag: "PSL3272A",
+                name: "Lube Oil Pressure Low (Start Aux Pump)",
+                category: "LUBE_OIL",
+                setpoint: "2.20 kg/cm²g",
+                deadband: "0.1 kg/cm²g",
+                symptom: "สัญญาณเตือนบน DCS และปั๊ม Lube Oil สำรอง (Aux Pump) สตาร์ทอัตโนมัติ",
+                cause: "ปั๊ม Lube Oil หลักประสิทธิภาพตก หรือกรองน้ำมันเริ่มอุดตัน",
+                checks: ["ตรวจสอบการสตาร์ทของปั๊ม Aux Lube Oil", "เช็คค่าต่างศักย์แรงดันกรองน้ำมัน"],
+                action: "สลับกรองน้ำมันหล่อลื่น Duplex Filter และตรวจสอบปั๊มหลัก"
+            },
+            {
+                tag: "TE3268A",
+                name: "Motor Winding Temperature High-High Trip",
+                category: "VIB_TEMP",
+                setpoint: "145.0°C",
+                deadband: "2.0°C",
+                symptom: "มอเตอร์ไดรฟ์ตัดการทำงานทันทีเพื่อป้องกันขดลวดไหม้",
+                cause: "ระบายความร้อนตัวมอเตอร์ไม่ดี, Overload หรือกระแสไฟฟ้าสูงเกินพิกัด",
+                checks: ["เช็คค่าอุณหภูมิ RTD Pt100 ที่ขดลวดมอเตอร์", "วัดกระแสไฟฟ้า 3 เฟส"],
+                action: "ตรวจสอบพัดลมระบายความร้อนมอเตอร์และวัดค่าความเป็นฉนวนขดลวด (Megger Test)"
+            },
+            {
+                tag: "TE3265A",
+                name: "Packing Cylinder Temperature High Alarm",
+                category: "VIB_TEMP",
+                setpoint: "120.0°C (HH: 130°C)",
+                deadband: "1.0°C",
+                symptom: "สัญญาณเตือนอุณหภูมิบริเวณชุดแพ็คกิ้งสูงบน DCS",
+                cause: "การระบายความร้อนด้วยน้ำหล่อเย็นไม่เพียงพอ หรือมีการเสียดสีของชุดซีล",
+                checks: ["เช็คอุณหภูมิจาก Labom P1100", "เช็คอัตราไหลน้ำระบายความร้อน"],
+                action: "ปรับเพิ่มการไหลของน้ำระบายความร้อน Packing Cooler"
+            },
+            {
+                tag: "FI3251A",
+                name: "Scavenging Gas N2 Supply Low Alarm",
+                category: "SEAL",
+                setpoint: "40.0 L/min",
+                deadband: "2.0 L/min",
+                symptom: "สัญญาณเตือนอัตราไหล N2 หล่อเลี้ยงชุดซีลต่ำกว่าเกณฑ์",
+                cause: "แรงดัน N2 Supply จากโรงงานตก หรือวาล์วปรับอัตราไหลเข็มอุดตัน",
+                checks: ["เช็ค Krohne DK800 Flow Indicator", "เช็คแรงดัน N2 Line (0 - 0.5 kg/cm²g)"],
+                action: "ปรับหมุนวาล์ว Krohne DK800 ให้ได้อัตราไหลช่วง 40 - 50 L/min"
+            }
+        ];
+
+        // 2. Start Permissives Checklist for 32K001 (12 Items)
+        const PERMISSIVE_DATA = [
+            { id: 1, tag: "PG3201A", desc: "Suction Pressure Normal (3.4 - 4.67 kg/cm²g)", dwg: "P&ID 4-122 529", state: true },
+            { id: 2, tag: "PG3209A", desc: "Lube Oil Supply Pressure Normal (> 2.2 kg/cm²g)", dwg: "P&ID 4-122 529", state: true },
+            { id: 3, tag: "FI3251A", desc: "Scavenging N2 Supply Flow Normal (40 - 50 L/min)", dwg: "P&ID 4-122 480", state: true },
+            { id: 4, tag: "TE3268A", desc: "Motor Winding Temp Normal (< 135.0°C)", dwg: "Std Specs", state: true },
+            { id: 5, tag: "VSHH3241", desc: "Motionwork Vibration Switch Reset (Normal)", dwg: "DWG 4-122 537", state: true },
+            { id: 6, tag: "PSHH3271A", desc: "Discharge Pressure NOT High-High (< 9.50 kg/cm²g)", dwg: "DWG 4-122 537", state: true },
+            { id: 7, tag: "PSLL3271A", desc: "Suction Pressure NOT Low-Low (> 2.20 kg/cm²g)", dwg: "DWG 4-122 573", state: true },
+            { id: 8, tag: "PSLL3272A", desc: "Lube Oil Pressure NOT Low-Low (> 1.60 kg/cm²g)", dwg: "DWG 4-122 537", state: true },
+            { id: 9, tag: "TE3265A", desc: "Packing Cylinder Temp Normal (< 120.0°C)", dwg: "DWG 4-122 537", state: true },
+            { id: 10, tag: "JC-715-SEAL", desc: "John Crane Seal Flush Plan 21/62 Normal", dwg: "Doc JC-715", state: true },
+            { id: 11, tag: "DCS-PERM-32", desc: "DCS Process Start Permissive Active", dwg: "Logic 32K-01", state: true },
+            { id: 12, tag: "MCC-MOTOR-32", desc: "Motor Starter Ready Signal (Ex-d IIB T4)", dwg: "Electrical Spec", state: true }
+        ];
+
+        // 3. Sequence States (9 States 0 to 8)
+        const SEQUENCE_STATES = [
+            { state: 0, name: "STATE 0: SHUTDOWN / IDLE", desc: "เครื่องจักรอยู่ในสภาวะหยุดทำงาน มอเตอร์ไม่หมุน", speed: "0 RPM", suctionP: "0 kg/cm²g", dischargeP: "0 kg/cm²g", action: "ตรวจสอบระบบน้ำมันหล่อลื่นและไนโตรเจนก่อนเตรียมสตาร์ท" },
+            { state: 1, name: "STATE 1: READY TO START", desc: "เงื่อนไข Start Permissives ทั้ง 12 ข้อสมบูรณ์", speed: "0 RPM", suctionP: "3.40 kg/cm²g", dischargeP: "3.40 kg/cm²g", action: "ผู้ปฏิบัติงานกดปุ่ม START 32K001 ที่ตู้ควบคุม LCP หรือ DCS" },
+            { state: 2, name: "STATE 2: MOTOR START & PURGING", desc: "มอเตอร์ไดรฟ์เริ่มหมุน ล้างก๊าซในตัวเรือนคอมเพรสเซอร์", speed: "0 -> 1,480 RPM", suctionP: "3.40 kg/cm²g", dischargeP: "4.50 kg/cm²g", action: "ตรวจสอบกระแสไฟฟ้าสตาร์ทมอเตอร์และแรงดัน Lube Oil" },
+            { state: 3, name: "STATE 3: ACCELERATING TO FULL SPEED", desc: "เร่งความเร็วรอบมอเตอร์ขึ้นสู่ความเร็วรอบใช้งาน 2,960 RPM", speed: "1,480 -> 2,960 RPM", suctionP: "3.60 kg/cm²g", dischargeP: "6.73 kg/cm²g", action: "เฝ้าระวังค่าความสั่นสะเทือน VSHH3241" },
+            { state: 4, name: "STATE 4: NORMAL OPERATING RATED", desc: "เครื่องจักรทำงานเต็มประสิทธิภาพที่ความเร็วรอบ 2,960 RPM", speed: "2,960 RPM", suctionP: "3.4 - 4.67 kg/cm²g", dischargeP: "6.73 - 9.50 kg/cm²g", action: "ควบคุมแรงดันส่งก๊าซเปียกเข้ากระบวนการผลิต DCC" },
+            { state: 5, name: "STATE 5: PEAK LOAD OPERATION", desc: "สภาวะการทำงานที่ภาระการอัดก๊าซสูงสุด", speed: "2,960 RPM", suctionP: "4.67 kg/cm²g", dischargeP: "9.20 kg/cm²g", action: "เฝ้าระวังแรงดัน Discharge ไม่ให้แตะระดับ PSH3271A (8.4 kg/cm²g)" },
+            { state: 6, name: "STATE 6: RECIRCULATION & BYPASS", desc: "การเปิดวาล์วบายพาสหมุนวนก๊าซเมื่อภาระการผลิตตกต่ำ", speed: "2,960 RPM", suctionP: "3.40 kg/cm²g", dischargeP: "7.00 kg/cm²g", action: "ปรับขนาดการเปิดวาล์วบายพาสเพื่อป้องกันสภาวะ Suction Vacuum" },
+            { state: 7, name: "STATE 7: NORMAL SHUTDOWN", desc: "ลำดับการหยุดเดินเครื่องจักรตามขั้นตอนปกติ", speed: "2,960 -> 0 RPM", suctionP: "Equalizing", dischargeP: "Equalizing", action: "สวิตช์ปิดมอเตอร์ และเปิดเดินปั๊ม Lube Oil เลี้ยงลูกปืนจนเครื่องเย็น" },
+            { state: 8, name: "STATE 8: EMERGENCY TRIP", desc: "สภาวะทริปฉุกเฉิน มอเตอร์ตัดการทำงานทันที", speed: "Coasting Down to 0", suctionP: "Drop", dischargeP: "Vented", action: "ปั๊ม Aux Lube Oil สตาร์ท ทำการหาสาเหตุทริปก่อน Reset" }
+        ];
+
+        // 4. Cause & Effect Database for 32K001A/B
+        const CAUSE_AND_EFFECT_DATABASE = [
+            { cause: "Discharge Pressure High-High Trip", tag: "PSHH3271A/B", voting: "1oo1", setpoint: "9.50 kg/cm²g", tripMotor: "X", alarmOnly: "-", startAuxPump: "-", isolateGas: "X", annunciator: "X", category: "TRIP" },
+            { cause: "Suction Pressure Low-Low Trip", tag: "PSLL3271A/B", voting: "1oo1", setpoint: "2.20 kg/cm²g", tripMotor: "X", alarmOnly: "-", startAuxPump: "-", isolateGas: "X", annunciator: "X", category: "TRIP" },
+            { cause: "Motionwork Vibration Switch HH Trip", tag: "VSHH3241", voting: "1oo1", setpoint: "9.0 g (PK-PK)", tripMotor: "X", alarmOnly: "-", startAuxPump: "-", isolateGas: "X", annunciator: "X", category: "TRIP" },
+            { cause: "Lube Oil Pressure Low-Low Trip", tag: "PSLL3272A/B", voting: "1oo1", setpoint: "1.60 kg/cm²g", tripMotor: "X", alarmOnly: "-", startAuxPump: "X", isolateGas: "-", annunciator: "X", category: "TRIP" },
+            { cause: "Motor Winding Temperature HH Trip", tag: "TE3268A/B", voting: "1oo1", setpoint: "145.0°C", tripMotor: "X", alarmOnly: "-", startAuxPump: "-", isolateGas: "-", annunciator: "X", category: "TRIP" },
+            { cause: "Discharge Pressure High Alarm", tag: "PSH3271A/B", voting: "1oo1", setpoint: "8.40 kg/cm²g", tripMotor: "-", alarmOnly: "X", startAuxPump: "-", isolateGas: "-", annunciator: "X", category: "PRESS" },
+            { cause: "Suction Pressure Low Alarm", tag: "PSL3271A/B", voting: "1oo1", setpoint: "2.80 kg/cm²g", tripMotor: "-", alarmOnly: "X", startAuxPump: "-", isolateGas: "-", annunciator: "X", category: "PRESS" },
+            { cause: "Lube Oil Pressure Low (Start Aux Pump)", tag: "PSL3272A/B", voting: "1oo1", setpoint: "2.20 kg/cm²g", tripMotor: "-", alarmOnly: "X", startAuxPump: "X", isolateGas: "-", annunciator: "X", category: "LUBE" },
+            { cause: "Packing Cylinder Temp High Alarm", tag: "TE3265A/B", voting: "1oo1", setpoint: "120.0°C", tripMotor: "-", alarmOnly: "X", startAuxPump: "-", isolateGas: "-", annunciator: "X", category: "VIB" },
+            { cause: "Scavenging Gas Supply Flow Low Alarm", tag: "FI3251A/B", voting: "1oo1", setpoint: "40.0 L/min", tripMotor: "-", alarmOnly: "X", startAuxPump: "-", isolateGas: "-", annunciator: "X", category: "SEAL" }
+        ];
+
+        // 5. Complete Instrument Tag Index for 32K001A/B
+        const TAG_INDEX_DATABASE = [
+            { tag: "PG3201A", type: "Pressure Gauge", desc: "Suction side compressor inlet pressure", range: "0 - 10 kg/cm²g", opRange: "3.4 - 4.67", trip: "-", mfr: "WIKA (Model 100)", dwg: "4-122 529.219", cat: "Pressure" },
+            { tag: "PSL3271A", type: "Pressure Switch", desc: "Suction side low pressure alarm", range: "0.034 - 5.3 kg/cm²g", opRange: "3.4 - 4.67", trip: "L: 2.80 kg/cm²g", mfr: "Barksdale (D+X-M80)", dwg: "4-122 573.587", cat: "Pressure" },
+            { tag: "PSLL3271A", type: "Pressure Switch", desc: "Suction side low-low pressure trip", range: "0.034 - 5.3 kg/cm²g", opRange: "3.4 - 4.67", trip: "LL: 2.20 kg/cm²g", mfr: "Barksdale (D+X-M80)", dwg: "4-122 573.587", cat: "Pressure" },
+            { tag: "PG3202A", type: "Pressure Gauge", desc: "Discharge side compressor outlet pressure", range: "0 - 16 kg/cm²g", opRange: "6.73 - 9.50", trip: "-", mfr: "WIKA (Model 100)", dwg: "4-122 529.219", cat: "Pressure" },
+            { tag: "PSH3271A", type: "Pressure Switch", desc: "Discharge side high pressure alarm", range: "0.1 - 9.9 kg/cm²g", opRange: "6.73 - 9.50", trip: "H: 8.40 kg/cm²g", mfr: "Barksdale (D1X-M150)", dwg: "4-122 537.591", cat: "Pressure" },
+            { tag: "PSHH3271A", type: "Pressure Switch", desc: "Discharge side high-high pressure trip", range: "0.1 - 9.9 kg/cm²g", opRange: "6.73 - 9.50", trip: "HH: 9.50 kg/cm²g", mfr: "Barksdale (D1X-M150)", dwg: "4-122 537.591", cat: "Pressure" },
+            { tag: "TG3201A", type: "Temperature Gauge", desc: "Suction side damper temperature", range: "0 - 60 °C", opRange: "40 °C", trip: "H: 94 - 98 °C", mfr: "Rueger (Model 100)", dwg: "4-122 498.503", cat: "Temperature" },
+            { tag: "TG3202A", type: "Temperature Gauge", desc: "Discharge damper temperature", range: "0 - 160 °C", opRange: "94 - 98 °C", trip: "-", mfr: "Rueger (Model 100)", dwg: "4-122 498.503", cat: "Temperature" },
+            { tag: "TE3261A", type: "Temperature Element", desc: "Discharge side cylinder temp", range: "0 - 160 °C", opRange: "20 °C", trip: "H: 138 °C", mfr: "Rosemount (Pt100 RTD)", dwg: "4-122 537.632", cat: "Temperature" },
+            { tag: "TE3265A", type: "Temperature Element", desc: "Packing Cylinder I temp", range: "0 - 160 °C", opRange: "60 - 100 °C", trip: "H: 120°C / HH: 130°C", mfr: "Labom (P1100)", dwg: "4-122 537.576", cat: "Temperature" },
+            { tag: "PG3209A", type: "Pressure Gauge", desc: "Lube oil pressure supply", range: "0 - 10 kg/cm²g", opRange: "0 - 3.5 kg/cm²g", trip: "-", mfr: "WIKA (Model 100)", dwg: "4-122 529.219", cat: "Pressure" },
+            { tag: "PSL3272A", type: "Pressure Switch", desc: "Lube oil pressure low start aux pump", range: "0.034 - 5.3 kg/cm²g", opRange: "0 - 3.5", trip: "L: 2.20 kg/cm²g", mfr: "Barksdale (D1X-M80)", dwg: "4-122 537.587", cat: "Pressure" },
+            { tag: "PSLL3272A", type: "Pressure Switch", desc: "Lube oil pressure low-low trip", range: "0.034 - 5.3 kg/cm²g", opRange: "0 - 3.5", trip: "LL: 1.60 kg/cm²g", mfr: "Barksdale (D1X-M80)", dwg: "4-122 537.587", cat: "Pressure" },
+            { tag: "VSHH3241", type: "Vibration Switch", desc: "Motionwork vibration trip", range: "0 - 4.5 g", opRange: "< 2.5 g", trip: "HH: 9.0 g (PK-PK)", mfr: "Robertshaw (366 A0)", dwg: "4-122 537.579", cat: "Vibration" },
+            { tag: "FI3251A", type: "Flow Indicator", desc: "Scavenging gas supply N2 flow", range: "0.1 - 72 L/min", opRange: "40 - 50 L/min", trip: "Low: 40 L/min", mfr: "Krohne (DK800)", dwg: "4-122 480.712", cat: "Flow" },
+            { tag: "TE3268A", type: "Temperature Element", desc: "Motor Winding Temperature", range: "0 - 200 °C", opRange: "80 - 120 °C", trip: "H: 135°C / HH: 145°C", mfr: "Built-in Pt100", dwg: "Std Motor Specs", cat: "Temperature" }
+        ];
+
+        // 6. Diagnostic Wizard Decision Nodes
+        const WIZARD_NODES = {
+            'DISCHARGE_HH': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Discharge High-High Trip (PSHH3271A/B > 9.50 kg/cm²g)",
+                step1_title: "ขั้นที่ 1: ตรวจเช็คแรงดันจากเกจหน้าเครื่อง PG3202A และ DCS Trend",
+                step1_desc: "อ่านค่าแรงดันด้านส่งทันทีเพื่อยืนยันว่าเป็นสภาวะ Overshoot สัมผัสจริง หรือสวิตช์ Barksdale D1X-M150 รวน",
+                optionA_title: "กรณี เป็นแรงดันสูงเกินพิกัดจริง (Discharge Press > 9.50 kg/cm²g):",
+                optionA_desc: "เกิดจากท่อส่งก๊าซปลายทางอุดตัน หรือวาล์วด้านส่งถูกปิดกั้น ให้ตรวจสอบตำแหน่งวาล์วส่งเข้ายูนิต DCC",
+                optionA_color: "red",
+                optionB_title: "กรณี แรงดันเกจ PG3202A อ่านค่าปกติ (< 8.4 kg/cm²g):",
+                optionB_desc: "สวิตช์ PSHH3271A หรือไมโครสวิตช์ภายในตู้คลาดเคลื่อน ให้ทำการ Calibration และตรวจสอบสายสัญญาณ",
+                optionB_color: "amber",
+                step2_title: "ขั้นที่ 2: ตรวจสอบวาล์วระบายบายพาส (Recirculation Valve) และระบบ Interlock",
+                step2_desc: "ตรวจสอบว่าวาล์วหมุนวนเปิดเพื่อระบายแรงดันสะสมหรือไม่",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. ทำการระบายแรงดันสะสมในท่อส่งก๊าซจนลดลงต่ำกว่า 8.40 kg/cm²g",
+                    "2. ตรวจสอบวาล์วส่ง Discharge Valve ให้เปิดเต็มที่",
+                    "3. กดปุ่ม RESET Interlock บนหน้าจอ DCS HMI"
+                ]
+            },
+            'SUCTION_LL': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Suction Low-Low Trip (PSLL3271A/B < 2.20 kg/cm²g)",
+                step1_title: "ขั้นที่ 1: ตรวจเช็คแรงดันทางเข้าจาก PG3201A และ DCS Trend",
+                step1_desc: "ยืนยันค่าแรงดันก๊าซเปียกด้านดูดเพื่อป้องกันการเสียหายจากสภาวะ Suction Vacuum",
+                optionA_title: "กรณี แรงดันก๊าซเปียกทางเข้าตกต่ำจริง (< 2.20 kg/cm²g):",
+                optionA_desc: "เกิดจากโรงงานต้นทาง DCC ชะลออัตราการป้อนก๊าซ หรือวาล์วทางเข้าปิด ให้ปรับสมดุลก๊าซเปียกต้นทาง",
+                optionA_color: "red",
+                optionB_title: "กรณี แรงดัน PG3201A ปกติ (> 3.4 kg/cm²g):",
+                optionB_desc: "สวิตช์แรงดัน Barksdale D+X-M80 เสียหาย ให้สลับไปใช้สวิตช์สำรองและทำ Calibration",
+                optionB_color: "amber",
+                step2_title: "ขั้นที่ 2: ตรวจสอบอัตราการหมุนวนก๊าซผ่านไลน์ Bypass",
+                step2_desc: "เปิดวาล์วหมุนวนก๊าซบายพาสเพื่อเพิ่มแรงดันทางเข้า Suction",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. เพิ่มแรงดันก๊าซเปียกทางเข้าให้ได้ช่วง 3.40 - 4.67 kg/cm²g",
+                    "2. ปลดล็อคสัญญาณ Low Pressure Interlock บน DCS",
+                    "3. ทำการ Sequence Start สตาร์ทเครื่องจักรตามลำดับ"
+                ]
+            },
+            'VIBRATION_HH': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Motionwork Vibration Switch Trip (VSHH3241 > 9.0 g)",
+                step1_title: "ขั้นที่ 1: ตรวจเช็คสวิตช์ความสั่นสะเทือน Robertshaw 366 A0",
+                step1_desc: "ตรวจสอบว่าปุ่มกด Reset หน้าสวิตช์เด้งตัดการทำงานหรือไม่",
+                optionA_title: "กรณี เครื่องจักรเกิดเสียงดังผิดปกติและสั่นสะเทือนรุนแรงจริง:",
+                optionA_desc: "แบริ่ง DE 7314 BE หรือ NDE 6215 C3 ชำรุดแตกหัก — ห้ามสตาร์ทเครื่องเด็ดขาด ต้องถอดรื้อตรวจเช็คแบริ่ง",
+                optionA_color: "red",
+                optionB_title: "กรณี เครื่องจักรหมุนเรียบ ไม่มีอาการสั่นสะเทือนผิดปกติ:",
+                optionB_desc: "เกิดจากการกระแทกทางกลภายนอก หรือสวิตช์ Robertshaw ตั้งค่าความไวสูงเกินไป",
+                optionB_color: "amber",
+                step2_title: "ขั้นที่ 2: ตรวจเช็คสภาพน้ำมันหล่อลื่นและเศษโลหะใน Lube Oil Filter",
+                step2_desc: "ตรวจสอบเศษโลหะในไส้กรองเพื่อประเมินความชำรุดของแบริ่ง",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. กดปุ่ม Manual Reset ที่ตัวสวิตช์ Robertshaw 366 A0",
+                    "2. ตรวจสอบ Aligning และขันยึด Bolt ฐานเครื่องจักรให้แน่นหนา",
+                    "3. กดปุ่ม RESET บน DCS ก่อนทำ Sequence Start"
+                ]
+            },
+            'LUBE_LOW': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Lube Oil Pressure Low (PSL3272A / PSLL3272A)",
+                step1_title: "ขั้นที่ 1: ตรวจสอบสถานะการสตาร์ทปั๊มน้ำมันหล่อลื่นสำรอง (Aux Lube Oil Pump)",
+                step1_desc: "เมื่อแรงดันตกถึง 2.20 kg/cm²g ปั๊ม Aux Pump ต้องสตาร์ทอัตโนมัติ",
+                optionA_title: "กรณี Aux Lube Oil Pump สตาร์ทเรียบร้อยแต่แรงดันยังคงตก (< 1.60 kg/cm²g):",
+                optionA_desc: "เกิดจุดรั่วไหลรุนแรงในไลน์น้ำมันหล่อลื่น หรือถังพัก Lube Oil Reservoir น้ำมันแห้ง",
+                optionA_color: "red",
+                optionB_title: "กรณี Aux Lube Oil Pump ไม่สตาร์ทอัตโนมัติ:",
+                optionB_desc: "สวิตช์เลือกโหมดหน้าตู้ไม่อยู่ตำแหน่ง AUTO หรือสวิตช์ Barksdale D1X-M80 ไม่ส่งสัญญาณ",
+                optionB_color: "amber",
+                step2_title: "ขั้นที่ 2: ตรวจสอบกรอง Duplex Lube Oil Filter",
+                step2_desc: "หากไส้กรองอุดตัน ให้สลับไปใช้กรองฝั่งสแตนด์บายทันที",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. เติมน้ำมัน Turbine Oil ISO VG 46 เข้าถังพักให้ได้ระดับ",
+                    "2. สลับชุดไส้กรอง Duplex Filter และปรับแต่งแรงดันให้ได้ > 2.2 kg/cm²g",
+                    "3. กดปุ่ม RESET บน DCS"
+                ]
+            },
+            'MOTOR_TEMP': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Motor Winding Temp HH Trip (TE3268A > 145°C)",
+                step1_title: "ขั้นที่ 1: ตรวจเช็คค่าอุณหภูมิขดลวดมอเตอร์ 3 เฟส จาก RTD Pt100",
+                step1_desc: "อ่านค่าจาก DCS เพื่อดูอุณหภูมิแต่ละเฟสว่าสูงผิดปกติเฉพาะจุดหรือสูงพร้อมกัน",
+                optionA_title: "กรณี อุณหภูมิสูงพร้อมกันทุกเฟส (> 145°C):",
+                optionA_desc: "มอเตอร์เกิดสภาวะ Overload หรือพัดลมระบายความร้อนด้าน NDE ชำรุด",
+                optionA_color: "red",
+                optionB_title: "กรณี อุณหภูมิสูงเฉพาะเฟสเดียว:",
+                optionB_desc: "สายสัญญาณ RTD Pt100 ชำรุดหลวม หรือกระแสไฟฟ้า 3 เฟสไม่สมดุล (Unbalance Current)",
+                optionB_color: "amber",
+                step2_title: "ขั้นที่ 2: วัดค่าความต้านทานและกระแสไฟฟ้าของมอเตอร์",
+                step2_desc: "ทำการวัด Megger Test ขดลวดมอเตอร์ขณะหยุดหมุน",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. ปล่อยให้มอเตอร์คูลดาวน์จนอุณหภูมิลดลงต่ำกว่า 120°C",
+                    "2. ทำความสะอาดช่องระบายอากาศตัวมอเตอร์ Ex-d IIB T4",
+                    "3. กด RESET บนตู้ MCC และ DCS"
+                ]
+            },
+            'SEAL_FLOW_LOW': {
+                title: "ขั้นตอนการวินิจฉัยกรณี Scavenging N2 Gas Supply Low (FI3251A < 40 L/min)",
+                step1_title: "ขั้นที่ 1: ตรวจเช็คโฟลว์มิเตอร์ Krohne DK800 และแรงดัน N2 Header",
+                step1_desc: "ตรวจสอบลูกลอยโฟลว์มิเตอร์และแรงดัน N2 (0 - 0.5 kg/cm²g)",
+                optionA_title: "กรณี แรงดัน N2 Header โรงงานตกต่ำ:",
+                optionA_desc: "ประสานงานฝ่าย Utility ให้ปรับเพิ่มแรงดัน Nitrogen จ่ายเข้ายูนิต",
+                optionA_color: "amber",
+                optionB_title: "กรณี แรงดัน N2 ปกติ แต่ Flow ไม่ขึ้น:",
+                optionB_desc: "วาล์วปรับเข็ม Krohne DK800 หรือกรอง Seal Gas Filter อุดตัน",
+                optionB_color: "purple",
+                step2_title: "ขั้นที่ 2: ตรวจสอบระบบ Mechanical Seal John Crane 715 (Plan 62)",
+                step2_desc: "ตรวจสอบว่ามีก๊าซเปียกรั่วซึมย้อนเข้าชุดแพ็คกิ้งหรือไม่",
+                action_title: "ขั้นตอนการแก้ไขและ Reset Latch:",
+                actions: [
+                    "1. หมุนปรับวาล์วเข็ม Krohne DK800 ให้ได้อัตราไหล 40 - 50 L/min",
+                    "2. ทำความสะอาดไส้กรอง N2 Supply Line",
+                    "3. เคลียร์สัญญาณเตือน Alarm บน DCS"
+                ]
+            }
+        };
+
+        // Global Unit A/B Switcher
+        function setGlobalUnit(unitTag) {
+            currentUnit = unitTag;
+            const btnA = document.getElementById('header-btn-32K001A');
+            const btnB = document.getElementById('header-btn-32K001B');
+            const headerTag = document.getElementById('header-tag-badge');
+            const headerTitle = document.getElementById('header-unit-title');
+            const tagIndexTitle = document.getElementById('tag-index-unit-title');
+
+            if (unitTag === '32K001A') {
+                btnA.className = "join-item btn btn-xs bg-emerald-500 text-slate-950 font-bold border-0";
+                btnB.className = "join-item btn btn-xs bg-slate-800 text-slate-300 border-0 hover:bg-slate-700";
+                if (headerTag) headerTag.textContent = "TAG: 32K001A";
+                if (headerTitle) headerTitle.textContent = "32K001A";
+                if (tagIndexTitle) tagIndexTitle.textContent = "32K001A";
+            } else {
+                btnB.className = "join-item btn btn-xs bg-emerald-500 text-slate-950 font-bold border-0";
+                btnA.className = "join-item btn btn-xs bg-slate-800 text-slate-300 border-0 hover:bg-slate-700";
+                if (headerTag) headerTag.textContent = "TAG: 32K001B";
+                if (headerTitle) headerTitle.textContent = "32K001B";
+                if (tagIndexTitle) tagIndexTitle.textContent = "32K001B";
+            }
+
+            renderAlarms();
+            renderTagIndex();
+        }
+
+        // Tab Switch Function
+        function switchTab(tabId) {
+            const tabs = ['alarms', 'sequence', 'logic', 'ce', 'subsystems', 'wizard', 'tags', 'sop'];
+            tabs.forEach(t => {
+                const contentEl = document.getElementById(`tab-content-${t}`);
+                const btnEl = document.getElementById(`tab-btn-${t}`);
+                
+                if (t === tabId) {
+                    if (contentEl) contentEl.classList.remove('hidden');
+                    if (btnEl) {
+                        btnEl.classList.remove('text-slate-600', 'hover:bg-slate-100');
+                        btnEl.classList.add('text-emerald-800', 'bg-emerald-50', 'border', 'border-emerald-200');
+                    }
+                } else {
+                    if (contentEl) contentEl.classList.add('hidden');
+                    if (btnEl) {
+                        btnEl.classList.remove('text-emerald-800', 'bg-emerald-50', 'border', 'border-emerald-200');
+                        btnEl.classList.add('text-slate-600', 'hover:bg-slate-100');
+                    }
+                }
+            });
+
+            if (tabId === 'subsystems' && activeSubsystem === 'pds') {
+                setTimeout(initPDSChart, 50);
+            }
+        }
+
+        // Alarm Filter Functions
+        function setFilterCategory(cat) {
+            currentAlarmCategory = cat;
+            const categories = ['ALL', 'TRIP', 'PRESS', 'LUBE_OIL', 'VIB_TEMP', 'SEAL'];
+            categories.forEach(c => {
+                const btn = document.getElementById(`filter-btn-${c}`);
+                if (!btn) return;
+                if (c === cat) {
+                    btn.className = "filter-cat-btn btn btn-xs md:btn-sm bg-emerald-800 text-white rounded-xl border-0 shadow-sm font-bold";
+                } else {
+                    btn.className = "filter-cat-btn btn btn-xs md:btn-sm bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl border-0";
+                }
+            });
+            filterAlarms();
+        }
+
+        function filterAlarms() {
+            const searchVal = (document.getElementById('alarmSearch')?.value || '').toLowerCase();
+            const filtered = ALARM_DATABASE.filter(item => {
+                const matchesCategory = (currentAlarmCategory === 'ALL') || (item.category === currentAlarmCategory);
+                const displayTag = item.tag.replace("A", currentUnit.endsWith("A") ? "A" : "B");
+                const matchesSearch = !searchVal || displayTag.toLowerCase().includes(searchVal) || item.name.toLowerCase().includes(searchVal) || item.symptom.toLowerCase().includes(searchVal);
+                return matchesCategory && matchesSearch;
+            });
+            renderAlarms(filtered);
+        }
+
+        function renderAlarms(alarms = ALARM_DATABASE) {
+            const container = document.getElementById('alarmCardsContainer');
+            if (!container) return;
+            if (alarms.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200 text-xs">ไม่พบรายการสัญญาณ Alarm ตามเงื่อนไขที่ค้นหา</div>`;
+                return;
+            }
+            container.innerHTML = alarms.map(alarm => {
+                const displayTag = alarm.tag.replace("A", currentUnit.endsWith("A") ? "A" : "B");
+                return `
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs font-bold bg-slate-900 text-emerald-300 px-2.5 py-1 rounded-lg">${displayTag}</span>
+                            <h3 class="text-sm font-bold text-slate-800">${alarm.name}</h3>
+                        </div>
+                        <span class="badge badge-error text-white font-mono text-[11px]">${alarm.setpoint}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 bg-red-50/60 rounded-xl border border-red-100">
+                            <div class="font-bold text-red-900"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> Symptom (อาการ)</div>
+                            <p class="text-red-800 text-[11px] mt-1 leading-relaxed">${alarm.symptom}</p>
+                        </div>
+                        <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-100">
+                            <div class="font-bold text-amber-900"><i class="fa-solid fa-magnifying-glass mr-1"></i> Cause (สาเหตุ)</div>
+                            <p class="text-amber-800 text-[11px] mt-1 leading-relaxed">${alarm.cause}</p>
+                        </div>
+                        <div class="p-3 bg-blue-50/60 rounded-xl border border-blue-100">
+                            <div class="font-bold text-blue-900"><i class="fa-solid fa-screwdriver-wrench mr-1"></i> Action (แนวทางแก้ไข)</div>
+                            <p class="text-blue-800 text-[11px] mt-1 leading-relaxed">${alarm.action}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // Sequence & Permissives Renderers
+        function renderSequenceStates() {
+            const container = document.getElementById('stateButtonsContainer');
+            if (!container) return;
+            container.innerHTML = SEQUENCE_STATES.map(s => `
+                <button onclick="selectSequenceState(${s.state})" id="seq-btn-${s.state}" class="p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center gap-1 ${s.state === currentActiveSequenceState ? 'bg-emerald-600 text-white border-emerald-600 shadow-md font-bold' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'}">
+                    <span class="font-mono text-[11px]">STATE ${s.state}</span>
+                    <span class="text-[10px] truncate max-w-[80px]">${s.name.split(':')[1] || s.name}</span>
+                </button>
+            `).join('');
+            selectSequenceState(currentActiveSequenceState);
+        }
+
+        function selectSequenceState(stateId) {
+            currentActiveSequenceState = stateId;
+            const state = SEQUENCE_STATES.find(s => s.state === stateId) || SEQUENCE_STATES[1];
+            
+            SEQUENCE_STATES.forEach(s => {
+                const btn = document.getElementById(`seq-btn-${s.state}`);
+                if (!btn) return;
+                if (s.state === stateId) {
+                    btn.className = "p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center gap-1 bg-emerald-600 text-white border-emerald-600 shadow-md font-bold";
+                } else {
+                    btn.className = "p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center gap-1 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
+                }
+            });
+
+            const badge = document.getElementById('activeStateBadge');
+            if (badge) badge.textContent = `Active State: ${state.name}`;
+
+            const detailBox = document.getElementById('stateDetailBox');
+            if (detailBox) {
+                detailBox.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <h4 class="font-bold text-sm text-emerald-900">${state.name}</h4>
+                            <span class="badge badge-accent font-mono text-[11px] bg-emerald-500 text-slate-950 font-bold border-0">${state.speed}</span>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed">${state.desc}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <div class="text-slate-400 text-[10px]">SUCTION PRESSURE</div>
+                                <div class="font-mono font-bold text-emerald-700 mt-0.5">${state.suctionP}</div>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <div class="text-slate-400 text-[10px]">DISCHARGE PRESSURE</div>
+                                <div class="font-mono font-bold text-blue-700 mt-0.5">${state.dischargeP}</div>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200">
+                                <div class="text-slate-400 text-[10px]">RECOMMENDED OPERATOR ACTION</div>
+                                <div class="font-medium text-slate-800 mt-0.5">${state.action}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderPermissives() {
+            const container = document.getElementById('permissivesGrid');
+            if (!container) return;
+            container.innerHTML = PERMISSIVE_DATA.map(p => {
+                const displayTag = p.tag.replace("A", currentUnit.endsWith("A") ? "A" : "B");
+                return `
+                <div onclick="togglePermissive(${p.id})" class="p-3 bg-slate-50 rounded-xl border ${p.state ? 'border-emerald-300 bg-emerald-50/50' : 'border-red-300 bg-red-50/50'} cursor-pointer hover:shadow-md transition flex items-center justify-between gap-2">
+                    <div class="space-y-0.5">
+                        <div class="font-mono text-xs font-bold ${p.state ? 'text-emerald-900' : 'text-red-900'}">${displayTag}</div>
+                        <div class="text-[11px] ${p.state ? 'text-emerald-800' : 'text-red-800'}">${p.desc}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">${p.dwg}</div>
+                    </div>
+                    <div class="shrink-0">
+                        ${p.state ? '<i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>' : '<i class="fa-solid fa-circle-xmark text-red-500 text-lg"></i>'}
+                    </div>
+                </div>
+            `;
+            }).join('');
+            updatePermissiveBanner();
+        }
+
+        function togglePermissive(id) {
+            const item = PERMISSIVE_DATA.find(p => p.id === id);
+            if (item) item.state = !item.state;
+            renderPermissives();
+        }
+
+        function checkAllPermissives() {
+            PERMISSIVE_DATA.forEach(p => p.state = true);
+            renderPermissives();
+        }
+
+        function updatePermissiveBanner() {
+            const allTrue = PERMISSIVE_DATA.every(p => p.state);
+            const banner = document.getElementById('startPermissiveStatusBanner');
+            const dot = document.getElementById('permissiveStatusDot');
+            const title = document.getElementById('permissiveStatusTitle');
+            const sub = document.getElementById('permissiveStatusSub');
+            const badge = document.getElementById('permissiveBadge');
+
+            if (allTrue) {
+                if (banner) banner.className = "p-4 rounded-2xl border border-emerald-300 bg-emerald-50 text-emerald-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm";
+                if (dot) dot.className = "w-4 h-4 rounded-full bg-emerald-500 shadow shrink-0";
+                if (title) title.textContent = `COMPRESSOR ${currentUnit} START PERMISSIVE SATISFIED`;
+                if (sub) sub.textContent = "เงื่อนไขทั้ง 12 ข้อสมบูรณ์ - เครื่องจักรพร้อมทำการเดินเครื่อง (Ready to Start)";
+                if (badge) {
+                    badge.className = "badge bg-emerald-600 text-white font-mono text-xs font-bold py-2 px-3 border-0";
+                    badge.textContent = "START PERMISSIVE = SATISFIED";
+                }
+            } else {
+                if (banner) banner.className = "p-4 rounded-2xl border border-red-300 bg-red-50 text-red-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm";
+                if (dot) dot.className = "w-4 h-4 rounded-full bg-red-500 shadow shrink-0 animate-pulse";
+                if (title) title.textContent = "START PERMISSIVE NOT SATISFIED";
+                if (sub) sub.textContent = "มีเงื่อนไขไม่สมบูรณ์ - ไม่สามารถสตาร์ทเครื่องจักรได้";
+                if (badge) {
+                    badge.className = "badge bg-red-600 text-white font-mono text-xs font-bold py-2 px-3 border-0";
+                    badge.textContent = "START PERMISSIVE = BLOCKED";
+                }
+            }
+        }
+
+        // Logic Diagram Switcher
+        function switchLogicDiagram(key) {
+            activeLogicDwg = key;
+            const buttons = document.querySelectorAll('.logic-dwg-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('onclick')?.includes(`'${key}'`)) {
+                    btn.classList.remove('bg-slate-100', 'text-slate-700');
+                    btn.classList.add('bg-emerald-800', 'text-white');
+                } else {
+                    btn.classList.remove('bg-emerald-800', 'text-white');
+                    btn.classList.add('bg-slate-100', 'text-slate-700');
+                }
+            });
+
+            const container = document.getElementById('logicDiagramContainer');
+            if (!container) return;
+
+            if (key === 'DWG32K01') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-emerald-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 32K-01: COMPRESSOR 32K001 START PERMISSIVE LOGIC</span>
+                            <span class="text-emerald-400">OUTPUT: PERMISSIVE = 1</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2">
+                            <p class="text-slate-300 text-xs">ตรรกะประตู AND Gate รวบรวมสัญญาณ Permissives ทั้ง 12 ข้อสำหรับ 32K001A/B:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px] text-slate-300">
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [1] PG3201 (Suction Press Normal 3.4-4.67) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [2] PG3209 (Lube Oil Supply Press > 2.2) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [3] FI3251 (N2 Scavenging Flow 40-50 L/min) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [4] TE3268 (Motor Winding Temp < 135°C) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [5] VSHH3241 (Vibration Switch Reset) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [6] PSHH3271 (Discharge Press NOT HH) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [7] PSLL3271 (Suction Press NOT LL) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [8] PSLL3272 (Lube Oil Press NOT LL) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [9] TE3265 (Packing Cylinder Temp Normal) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [10] JC-715 (John Crane Seal Plan 21/62) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">├─ [11] DCS-PERM-32 (DCS Process Permissive) = 1</div>
+                                <div class="p-2 bg-slate-900/90 rounded border border-slate-700">└─ [12] MCC-MOTOR-32 (MCC Starter Ready) = 1</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (key === 'DWG32K02') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-red-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 32K-02: DISCHARGE HH & SUCTION LL MASTER TRIP LOGIC</span>
+                            <span class="text-red-400">TRIP OR GATE</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 text-xs">
+                            <p class="text-slate-300">ตรรกะตัดการทำงานมอเตอร์ไดรฟ์ฉุกเฉิน (Master Safety Interlock OR Gate):</p>
+                            <div class="space-y-1.5 text-[11px]">
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► PSHH3271A/B: Discharge High-High Trip (> 9.50 kg/cm²g)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► PSLL3271A/B: Suction Low-Low Trip (< 2.20 kg/cm²g)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► VSHH3241: Motionwork Vibration Switch Trip (> 9.0 g PK-PK)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► PSLL3272A/B: Lube Oil Pressure Low-Low Trip (< 1.60 kg/cm²g)</div>
+                                <div class="p-2 bg-red-950/40 border border-red-800/60 rounded text-red-300">► TE3268A/B: Motor Winding Temp HH Trip (> 145.0°C)</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (key === 'DWG32K03') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-blue-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 32K-03: LUBE OIL AUX PUMP AUTO-START LOGIC</span>
+                            <span>AUTO START CASCADING</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 text-xs text-slate-300">
+                            <p class="font-bold text-amber-300">ลำดับการสตาร์ทปั๊มน้ำมันหล่อลื่นสำรอง (Auxiliary Lube Oil Pump Auto-Start):</p>
+                            <div class="space-y-2 text-[11px]">
+                                <div class="p-2 bg-blue-900/40 border border-blue-700 rounded">
+                                    <div class="font-bold text-blue-300">1. Auxiliary Lube Oil Pump Auto-Start Signal:</div>
+                                    <div>เมื่อแรงดันน้ำมันหล่อลื่นป้อนเข้า <span class="text-amber-300">PSL3272A < 2.20 kg/cm²g</span> -> สั่งสตาร์ท Aux Pump ทันที</div>
+                                </div>
+                                <div class="p-2 bg-red-900/40 border border-red-700 rounded">
+                                    <div class="font-bold text-red-300">2. Emergency Motor Trip Protection:</div>
+                                    <div>หากแรงดันยังคงตกต่ำถึง <span class="text-red-300">PSLL3272A < 1.60 kg/cm²g</span> -> สั่งตัดไฟมอเตอร์ 32K001 ทันที</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (key === 'DWG32K04') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-purple-400 font-bold border-b border-slate-700 pb-2 flex justify-between">
+                            <span>DRAWING 32K-04: VIBRATION & MOTOR WINDING PROTECTION</span>
+                            <span>SAFETY SENSORS</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 text-xs text-slate-300">
+                            <p class="font-bold text-purple-300">โครงสร้างสวิตช์ความสั่นสะเทือน และเซนเซอร์วัดอุณหภูมิขดลวดมอเตอร์:</p>
+                            <div class="space-y-1 text-[11px]">
+                                <div>• VSHH3241: Robertshaw 366 A0 Mechanical Inertia Switch ตั้งค่า 9.0 g (PK-PK)</div>
+                                <div>• TE3268A: Built-in Pt100 RTD 3 ชุดในขดลวดมอเตอร์ (Alarm 135°C / Trip 145°C)</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Cause & Effect Matrix Renderers
+        function filterCEMatrix(cat) {
+            currentCECategory = cat;
+            const categories = ['ALL', 'TRIP', 'PRESS', 'LUBE', 'VIB'];
+            categories.forEach(c => {
+                const btn = document.getElementById(`ce-btn-${c}`);
+                if (!btn) return;
+                if (c === cat) {
+                    btn.className = "ce-cat-btn btn btn-xs bg-emerald-800 text-white rounded-lg font-bold";
+                } else {
+                    btn.className = "ce-cat-btn btn btn-xs bg-slate-100 text-slate-700 rounded-lg";
+                }
+            });
+            const filtered = CAUSE_AND_EFFECT_DATABASE.filter(item => (cat === 'ALL') || (item.category === cat));
+            renderCEMatrix(filtered);
+        }
+
+        function renderCEMatrix(data = CAUSE_AND_EFFECT_DATABASE) {
+            const container = document.getElementById('ceMatrixTableBody');
+            if (!container) return;
+            container.innerHTML = data.map(row => {
+                const displayTag = row.tag.replace("A", currentUnit.endsWith("A") ? "A" : "B");
+                return `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-2 font-medium text-slate-800">${row.cause}</td>
+                    <td class="p-2 font-mono text-emerald-900 font-bold">${displayTag}</td>
+                    <td class="p-2 font-mono text-slate-600">${row.voting}</td>
+                    <td class="p-2 font-mono text-amber-800">${row.setpoint}</td>
+                    <td class="p-2 text-center bg-red-50/50 font-bold text-red-600">${row.tripMotor}</td>
+                    <td class="p-2 text-center bg-amber-50/50 font-bold text-amber-600">${row.alarmOnly}</td>
+                    <td class="p-2 text-center bg-blue-50/50 font-bold text-blue-600">${row.startAuxPump}</td>
+                    <td class="p-2 text-center bg-emerald-50/50 font-bold text-emerald-600">${row.isolateGas}</td>
+                    <td class="p-2 text-center bg-slate-100 font-bold text-slate-700">${row.annunciator}</td>
+                </tr>
+            `;
+            }).join('');
+        }
+
+        // Subsystem Inspector Renderer
+        function selectSubsystem(subId) {
+            activeSubsystem = subId;
+            const cards = ['lube', 'seal', 'pds', 'driver'];
+            cards.forEach(c => {
+                const btn = document.getElementById(`sub-btn-${c}`);
+                if (!btn) return;
+                if (c === subId) {
+                    btn.className = "subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-emerald-50/80 border-emerald-300 shadow-sm";
+                } else {
+                    btn.className = "subsystem-card-btn p-4 rounded-2xl border text-left transition flex items-center gap-3 bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50";
+                }
+            });
+
+            const container = document.getElementById('subsystemDisplayArea');
+            if (!container) return;
+
+            if (subId === 'lube') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-2">
+                            <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-oil-can text-emerald-600"></i>
+                                ลอจิกการทำงานระบบน้ำมันหล่อลื่น (Lube Oil System Details)
+                            </h3>
+                            <span class="badge badge-neutral font-mono text-xs">Turbine Oil 46 (Capacity: 2.46L)</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                                <h4 class="font-bold text-sm text-slate-900">ปั๊มหล่อลื่นหลัก (Main Lube Oil Pump)</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">
+                                    จ่ายน้ำมันหล่อลื่นความดัน 0 - 3.5 kg/cm²g ไปยังแบริ่ง DE (7314 BE) และ NDE (6215 C3) ของตัวคอมเพรสเซอร์
+                                </p>
+                            </div>
+
+                            <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 space-y-2">
+                                <h4 class="font-bold text-sm text-amber-950">ปั๊มสำรอง (Auxiliary Lube Oil Pump)</h4>
+                                <p class="text-xs text-slate-700 leading-relaxed">
+                                    สวิตช์ PSL3272A ตั้งไว้ที่ <span class="font-bold font-mono text-amber-900">2.20 kg/cm²g</span> เพื่อสั่งปั๊ม Aux Pump สตาร์ทอัตโนมัติหากแรงดันตก
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (subId === 'seal') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-xs">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                            <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-cyan-600"></i> ระบบ Mechanical Seal John Crane 715 (BSARX)
+                            </h3>
+                            <span class="badge badge-neutral font-mono">API Plan 21 & Plan 62</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-cyan-50/50 rounded-2xl border border-cyan-200 space-y-2">
+                                <div class="font-bold text-cyan-950 text-sm">API Plan 21 (Seal Flush Cooler)</div>
+                                <p class="text-slate-700 leading-relaxed">
+                                    หมุนเวียนก๊าซผ่านออริฟิสและตัวระบายความร้อนเพื่อควบคุมอุณหภูมิหน้าซีลให้อยู่ในช่วง 120 - 160 °C
+                                </p>
+                            </div>
+                            <div class="p-4 bg-cyan-50/50 rounded-2xl border border-cyan-200 space-y-2">
+                                <div class="font-bold text-cyan-950 text-sm">API Plan 62 (N2 Scavenging Quench)</div>
+                                <p class="text-slate-700 leading-relaxed">
+                                    ป้อนก๊าซไนโตรเจนจาก FI3251A อัตราไหล 40 - 50 L/min เพื่อป้องกันการสะสมคราบสารระเหยบริเวณหน้าซีล
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (subId === 'pds') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm md:text-base">Suction vs Discharge Pressure Characteristic Curve</h3>
+                                <p class="text-xs text-slate-500">เส้นโค้งความสัมพันธ์แรงดันทางเข้า Suction และแรงดันทางออก Discharge ของ 32K001A/B</p>
+                            </div>
+                            <span id="pdsValueDisplay" class="badge badge-primary font-mono text-xs font-bold py-2 px-3 bg-emerald-600 border-0">Suction: 3.8 kg/cm²g</span>
+                        </div>
+                        <input type="range" id="pdsSlider" min="30" max="50" value="38" oninput="updatePDSCurve(this.value)" class="range range-emerald range-xs w-full" />
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 h-64">
+                            <canvas id="pdsChartCanvas"></canvas>
+                        </div>
+                    </div>
+                `;
+                setTimeout(initPDSChart, 50);
+            } else if (subId === 'driver') {
+                container.innerHTML = `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-xs">
+                        <div class="border-b border-slate-200 pb-3">
+                            <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-bolt text-amber-600"></i> รายละเอียด Electric Motor Driver (2,960 RPM)
+                            </h3>
+                        </div>
+                        <div class="p-4 bg-amber-50/60 rounded-2xl border border-amber-200 space-y-2 text-amber-950">
+                            <div class="font-bold text-sm">ระบบป้องกันมอเตอร์ และแบริ่ง:</div>
+                            <p class="leading-relaxed">
+                                • Motor DE Bearing: 6313-C3 | Motor NDE Bearing: 6313-C3<br>
+                                • Winding Temp Alarm/Trip: <span class="font-mono font-bold">135°C / 145°C</span> (TE3268A)<br>
+                                • Coupling Type: Flexible Disc Packs (Ex-d IIB T4 Protection Standard)
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Diagnostic Wizard Flow Controller
+        function startWizardFlow(scenarioKey) {
+            const flowBox = document.getElementById('wizardFlowBox');
+            if (!flowBox) return;
+
+            const node = WIZARD_NODES[scenarioKey] || WIZARD_NODES['DISCHARGE_HH'];
+
+            flowBox.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-emerald-200 pb-3">
+                        <h3 class="font-bold text-sm md:text-base text-emerald-950 flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i>
+                            ${node.title}
+                        </h3>
+                        <button onclick="closeWizardFlow()" class="btn btn-ghost btn-xs text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-xmark text-base"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
+                        <div class="font-bold text-xs text-slate-900">${node.step1_title}</div>
+                        <p class="text-[11px] text-slate-500">${node.step1_desc}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-3.5 rounded-xl border border-red-200 bg-red-50/60 space-y-1">
+                            <div class="font-bold text-xs text-red-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-xmark text-red-500"></i> ${node.optionA_title}
+                            </div>
+                            <p class="text-[11px] text-red-900 leading-relaxed">${node.optionA_desc}</p>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl border border-amber-200 bg-amber-50/60 space-y-1">
+                            <div class="font-bold text-xs text-amber-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> ${node.optionB_title}
+                            </div>
+                            <p class="text-[11px] text-amber-900 leading-relaxed">${node.optionB_desc}</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
+                        <div class="font-bold text-xs text-slate-900">${node.step2_title}</div>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">${node.step2_desc}</p>
+                    </div>
+
+                    <div class="p-4 bg-emerald-100/50 rounded-2xl border border-emerald-200 space-y-2 text-emerald-950">
+                        <div class="font-bold text-xs flex items-center gap-1.5 text-emerald-900">
+                            <i class="fa-solid fa-angles-down text-emerald-600"></i> ${node.action_title}
+                        </div>
+                        <ul class="text-[11px] space-y-1 pl-1">
+                            ${node.actions.map(act => `<li>${act}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeWizardFlow() {
+            const flowBox = document.getElementById('wizardFlowBox');
+            if (!flowBox) return;
+            flowBox.innerHTML = `
+                <div class="p-8 text-center text-slate-400 text-xs space-y-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-3xl text-slate-300"></i>
+                    <div>คลิกเลือกกรณีปัญหาขัดข้องจากปุ่มด้านบนเพื่อเริ่มต้นขั้นตอนการวินิจฉัย</div>
+                </div>
+            `;
+        }
+
+        // Tag Index Filter & Renderer
+        function filterTagIndex() {
+            const searchVal = (document.getElementById('tagIndexSearch')?.value || '').toLowerCase();
+            const filtered = TAG_INDEX_DATABASE.filter(item => {
+                const displayTag = item.tag.replace("A", currentUnit.endsWith("A") ? "A" : "B");
+                return displayTag.toLowerCase().includes(searchVal) || 
+                       item.desc.toLowerCase().includes(searchVal) || 
+                       item.mfr.toLowerCase().includes(searchVal) ||
+                       item.dwg.toLowerCase().includes(searchVal);
+            });
+            renderTagIndex(filtered);
+        }
+
+        function renderTagIndex(data = TAG_INDEX_DATABASE) {
+            const container = document.getElementById('tagIndexTableBody');
+            if (!container) return;
+            container.innerHTML = data.map(item => {
+                const displayTag = item.tag.replace("A", currentUnit.endsWith("A") ? "A" : "B");
+                let tripBadge = `<span class="text-slate-400">-</span>`;
+                if (item.trip.includes("HH") || item.trip.includes("LL")) {
+                    tripBadge = `<span class="px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 font-bold">${item.trip}</span>`;
+                } else if (item.trip.includes("H:") || item.trip.includes("L:")) {
+                    tripBadge = `<span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">${item.trip}</span>`;
+                }
+
+                return `
+                <tr>
+                    <td class="font-mono font-bold text-emerald-900">${displayTag}</td>
+                    <td class="font-medium text-slate-700">${item.type}</td>
+                    <td class="font-medium text-slate-800">${item.desc}</td>
+                    <td class="font-mono text-slate-500">${item.range}</td>
+                    <td class="font-mono text-emerald-800 font-semibold">${item.opRange}</td>
+                    <td class="font-mono">${tripBadge}</td>
+                    <td class="font-mono text-slate-600">${item.mfr}</td>
+                    <td class="font-mono text-blue-700">${item.dwg}</td>
+                </tr>
+            `;
+            }).join('');
+        }
+
+        // PDS / Performance Chart Initialization
+        let pdsChart = null;
+        function initPDSChart() {
+            const canvas = document.getElementById('pdsChartCanvas');
+            if (!canvas) return;
+
+            if (pdsChart) {
+                pdsChart.destroy();
+                pdsChart = null;
+            }
+
+            const ctx = canvas.getContext('2d');
+            pdsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['3.0', '3.4', '3.8', '4.2', '4.67', '5.0'],
+                    datasets: [
+                        {
+                            label: 'Discharge Pressure (kg/cm²g)',
+                            data: [6.0, 6.73, 7.6, 8.5, 9.5, 10.2],
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Suction Pressure (kg/cm²g)' } },
+                        y: { title: { display: true, text: 'Discharge Pressure (kg/cm²g)' }, min: 5, max: 11 }
+                    }
+                }
+            });
+        }
+
+        function updatePDSCurve(val) {
+            const suctionVal = (val / 10).toFixed(1);
+            const display = document.getElementById('pdsValueDisplay');
+            if (display) display.textContent = `Suction: ${suctionVal} kg/cm²g`;
+        }
+
+        // Global Window Bindings
+        window.switchTab = switchTab;
+        window.setFilterCategory = setFilterCategory;
+        window.filterAlarms = filterAlarms;
+        window.renderAlarms = renderAlarms;
+        window.renderSequenceStates = renderSequenceStates;
+        window.selectSequenceState = selectSequenceState;
+        window.renderPermissives = renderPermissives;
+        window.togglePermissive = togglePermissive;
+        window.checkAllPermissives = checkAllPermissives;
+        window.switchLogicDiagram = switchLogicDiagram;
+        window.filterCEMatrix = filterCEMatrix;
+        window.renderCEMatrix = renderCEMatrix;
+        window.selectSubsystem = selectSubsystem;
+        window.startWizardFlow = startWizardFlow;
+        window.closeWizardFlow = closeWizardFlow;
+        window.filterTagIndex = filterTagIndex;
+        window.renderTagIndex = renderTagIndex;
+        window.updatePDSCurve = updatePDSCurve;
+        window.setGlobalUnit = setGlobalUnit;
+
+        // Application Initialization
+        function initApp() {
+            setFilterCategory('ALL');
+            renderSequenceStates();
+            renderPermissives();
+            switchLogicDiagram('DWG32K01');
+            filterCEMatrix('ALL');
+            selectSubsystem('lube');
+            startWizardFlow('DISCHARGE_HH');
+            renderTagIndex();
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
